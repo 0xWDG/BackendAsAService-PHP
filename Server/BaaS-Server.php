@@ -528,6 +528,15 @@ class Server
                 return $this->rowAction($action[2][0], "delete");
             }
         }
+
+        // Handle /row.insert/xxx methods
+        if (preg_match_all("/row\.insert(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+            // If /row.insert/MAYNOTBEEMPTY is nog empty
+            if (!empty($action[2][0])) {
+                // Parse and echo
+                return $this->rowInsert($action[2][0], "insert");
+            }
+        }
     }
 
     /**
@@ -1230,6 +1239,37 @@ class Server
         }
     }
 
+    private function rowInsert($action)
+    {
+        return $this->getTableFields($action);
+    }
+
+    /**
+     * Get table fields (columns)
+     *
+     * @parameter string $tableName the table name
+     * @parameter bool $asJSON as JSON string?
+     * @return array|string Fieldnames
+     */
+    private function getTableFields($tableName, $asJSON = false)
+    {
+        $fields = array();
+
+        $query = sprintf(
+            "SHOW columns from `%s`;",
+            $this->escapeString(
+                preg_replace("/`/", "\\`", $tableName)
+            )
+        );
+
+        $rawFields = $this->db->query($query)->fetchAll();
+
+        for ($i = 0; $i < sizeof($rawFields); $i++) {
+            $fields[] = $rawFields[$i][0];
+        }
+
+        return $asJSON ? json_encode($fields) : $fields;
+    }
     /**
      * Creates a Shared Instance
      *

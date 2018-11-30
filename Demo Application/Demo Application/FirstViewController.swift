@@ -58,6 +58,10 @@ class FirstViewController: UIViewController, BaaSDelegate {
             )
         )
         
+        db.log(
+            db.test()
+        )
+        
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }

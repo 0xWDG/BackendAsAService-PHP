@@ -340,6 +340,20 @@ open class BaaS {
         )
     }
 
+    public func test() -> Any {
+        let dbURL = "\(serverAddress)/row.insert/x"
+        let task = self.urlTask(dbURL, [
+            "APIKey": self.apiKey,
+            "values": [
+                "latitude": "0",
+                "longitude": "0",
+                "x": "y"
+            ]
+        ])
+        
+        return String.init(data: task, encoding: .utf8)!
+    }
+    
     internal func value(where whereStr: [[String]], inDatabase: String) -> Any {
         let dbURL = "\(serverAddress)/row.get/\(inDatabase)"
         let task = self.urlTask(dbURL, [
