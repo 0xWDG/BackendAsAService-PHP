@@ -268,7 +268,9 @@ class Server
                         // Select count(*)
                         "SELECT count(*) FROM information_schema.tables WHERE table_name = '%s'",
                         // Santisize input
-                        $this->escapeString($tableName)
+                        $this->escapeString(
+                            preg_replace("/`/", "\\`", $tableName)
+                        )
                     )
                     // FetchColumns is more then 0 then the table exists.
                 )->fetchColumn() > 0
@@ -284,7 +286,9 @@ class Server
                     // Select count(*)
                     "select count(*) FROM `sqlite_master` WHERE `type`='table' AND `name`='%s'",
                     // Santisize input
-                    $this->escapeString($tableName)
+                    $this->escapeString(
+                        preg_replace("/`/", "\\`", $tableName)
+                    )
                 )
                 // FetchColumns is more then 0 then the table exists.
             )->fetchColumn() > 0
@@ -1239,9 +1243,29 @@ class Server
         }
     }
 
+    /**
+     * Insert row
+     *
+     * @parameter string $tableName the table name
+     * @parameter bool $asJSON as JSON string?
+     * @return array|string Fieldnames
+     */
     private function rowInsert($action)
     {
-        return $this->getTableFields($action);
+        if (!$this->tableExists($action)) {
+            return array(
+                "Error" => sprintf(
+                    "Table \"%s\" does not exists",
+                    $table
+                ),
+                "Table" => $table,
+                "Request" => $_SERVER['REQUEST_URI'],
+            );
+        }
+
+        return json_encode(
+            $this->getTableFields($action)
+        );
     }
 
     /**
