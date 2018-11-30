@@ -144,19 +144,19 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-2136534137"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1854957780"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-2136534137" class="accordion-body collapse in">
+            <div id="namespace-1854957780" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                                                     <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-871234432"></a>
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1958139403"></a>
                                 <a href="../namespaces/BaaS.html" style="margin-left: 30px; padding-left: 0">BaaS</a>
             </div>
-            <div id="namespace-871234432" class="accordion-body collapse ">
+            <div id="namespace-1958139403" class="accordion-body collapse ">
                 <div class="accordion-inner">
 
                     
@@ -215,7 +215,7 @@ Backend as a Service Server</em></p>
                                                                     <a href="../classes/BaaS.Server.html#method_setAlwaysLoggedIn" class="">setAlwaysLoggedIn()</a><br />
                                                                     <a href="../classes/BaaS.Server.html#method_serve" class="">serve()</a><br />
                                                                     <a href="../classes/BaaS.Server.html#method_escapeString" class="">escapeString()</a><br />
-                                                                    <a href="../classes/BaaS.Server.html#method_sql_distance_func" class="">sql_distance_func()</a><br />
+                                                                    <a href="../classes/BaaS.Server.html#method_sqlDistanceFunction" class="">sqlDistanceFunction()</a><br />
                                                                     <a href="../classes/BaaS.Server.html#method___sleep" class="">__sleep()</a><br />
                                                                     <a href="../classes/BaaS.Server.html#method___wakeup" class="">__wakeup()</a><br />
                                                                     <a href="../classes/BaaS.Server.html#method_shared" class="">shared()</a><br />
@@ -249,6 +249,8 @@ Backend as a Service Server</em></p>
                                                                     <a href="../classes/BaaS.Server.html#method_DBAdmin" class="">DBAdmin()</a><br />
                                                                     <a href="../classes/BaaS.Server.html#method_isLoggedInAsAdmin" class="">isLoggedInAsAdmin()</a><br />
                                                                     <a href="../classes/BaaS.Server.html#method_queryWithParameters" class="">queryWithParameters()</a><br />
+                                                                    <a href="../classes/BaaS.Server.html#method_rowInsert" class="">rowInsert()</a><br />
+                                                                    <a href="../classes/BaaS.Server.html#method_getTableFields" class="">getTableFields()</a><br />
                                                                     <a href="../classes/BaaS.Server.html#method_handleException" class="">handleException()</a><br />
                                                             </section>
                             <section class="span4">
@@ -976,11 +978,11 @@ Backend as a Service Server</em></p>
 
                                     <div class="row-fluid">
         <div class="span8 content class">
-            <a id="method_sql_distance_func" name="method_sql_distance_func" class="anchor"></a>
+            <a id="method_sqlDistanceFunction" name="method_sqlDistanceFunction" class="anchor"></a>
             <article class="method">
-                <h3 class="public ">sql_distance_func()</h3>
+                <h3 class="public ">sqlDistanceFunction()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">sql_distance_func(  <span class="argument">lat1</span>,   <span class="argument">lon1</span>,   <span class="argument">lat2</span>,   <span class="argument">lon2</span>) : </pre>
+                <pre class="signature" style="margin-right: 54px;">sqlDistanceFunction(  <span class="argument">lat1</span>,   <span class="argument">lon1</span>,   <span class="argument">lat2</span>,   <span class="argument">lon2</span>) : </pre>
                 <p><em>Function for SQL to calculate distance between 2 coordination points</em></p>
                 
 
@@ -1528,6 +1530,105 @@ Backend as a Service Server</em></p>
 
                                     <div class="row-fluid">
         <div class="span8 content class">
+            <a id="method_rowInsert" name="method_rowInsert" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">rowInsert()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">rowInsert( <span class="argument">action</span>) : array|string</pre>
+                <p><em>Insert row</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>action </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array|string
+                                            &mdash; <p>Fieldnames</p>
+                                    
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                    <dt>Inherited from</dt>
+                    <dd><a href="../classes/BaaS.Server.html"><div class="path-wrapper">\BaaS\Server</div></a></dd>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            parameter
+                        </th>
+                        <td>
+                                                                                            <p>string $tableName the table name</p>
+                                                                                            <p>bool $asJSON as JSON string?</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getTableFields" name="method_getTableFields" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">getTableFields()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getTableFields( <span class="argument">tableName</span>,  <span class="argument">asJSON = false</span>) : array|string</pre>
+                <p><em>Get table fields (columns)</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>tableName </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>asJSON </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    array|string
+                                            &mdash; <p>Fieldnames</p>
+                                    
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                    <dt>Inherited from</dt>
+                    <dd><a href="../classes/BaaS.Server.html"><div class="path-wrapper">\BaaS\Server</div></a></dd>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            parameter
+                        </th>
+                        <td>
+                                                                                            <p>string $tableName the table name</p>
+                                                                                            <p>bool $asJSON as JSON string?</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
             <a id="method_handleException" name="method_handleException" class="anchor"></a>
             <article class="method">
                 <h3 class="private ">handleException()</h3>
@@ -1622,7 +1723,7 @@ Backend as a Service Server</em></p>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on November 30th, 2018 at 20:00.
+                    on November 30th, 2018 at 23:00.
                 </section>
             </section>
         </section>
