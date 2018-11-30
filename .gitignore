@@ -1,0 +1,24 @@
+# Hide all IP-Adresses.
+Server/BFlog/*.txt
+
+# Hide temporary files
+*.tmp
+
+# Temporaru files for documentation
+Framework/build/BaaS.build
+Framework/build/XCBuildData
+
+# Hide php documentation builds
+Server/build
+Server/__*
+Server/*.sqllite
+Server/*min.html
+
+# Do not include databases
+*.db
+*.database
+*.sqlite
+*.sqlite3
+
+#TYPO :-)
+*.sqllite

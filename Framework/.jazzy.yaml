@@ -1,0 +1,31 @@
+# Create Documentation
+
+# Set author name
+author: "Wesley de Groot"
+
+# Set author url
+author_url: https://wesleydegroot.nl
+
+# Set Module name
+module: BaaS
+
+# Set module version
+module_version: 1.0
+
+# Set github URL
+github_url: https://github.com/wdg/BaaS
+
+# Set github direct file url
+github_file_prefix: https://github.com/wdg/BaaS/blob/master/Framework
+
+# Set Output path
+output: ../docs/Framework
+
+# Set readme path
+readme: ../README.md
+
+# Set dash URL
+dash_url: https://wdg.github.io/BaaS/Framework/docsets/BaaS.docset
+
+# Set a nice text for undocumented.
+undocumented_text: Undocumented, Help us document it!

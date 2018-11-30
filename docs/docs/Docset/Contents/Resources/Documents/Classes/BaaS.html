@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>BaaS Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/BaaS" class="dashAnchor"></a>
+    <a title="BaaS Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">BaaS_Framework Docs</a> (63% documented)</p>
+        <p class="header-right"><a href="https://github.com/wdg/BaaS"><img src="../img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right"><a href="dash-feed://https%3A%2F%2Fgithub%2Ecom%2Fwdg%2FBaaS%2FFramework%2Fdocsets%2FBaaS%2Edocset"><img src="../img/dash.png"/>Install in Dash</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">BaaS_Framework Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        BaaS Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/BaaS.html">BaaS</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BaaS.html#/s:14BaaS_Framework0A1SC0A9S_dbFieldV">– BaaS_dbField</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BaaS/BaaS_dbFieldType.html">– BaaS_dbFieldType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BaaS/BaaS_SearchType.html">– BaaS_SearchType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BaaS.html#/s:14BaaS_Framework0A1SC0A17S_WhereExpressionV">– BaaS_WhereExpression</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/BaaSDelegate.html">BaaSDelegate</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>BaaS</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">BaaS</span></code></pre>
+
+                </div>
+              </div>
+            <p><strong>B</strong>ackend <strong>a</strong>s <strong>a</strong> <strong>S</strong>ervice (<em>BaaS</em>)</p>
+
+<p>This class is used for the BaaS Server Interface.</p>
+
+<p>.</p>
+
+<p><strong>Simple usage</strong></p>
+<pre class="highlight swift"><code>  <span class="kd">class</span> <span class="nv">myClass</span><span class="p">:</span> <span class="kt">UIViewController</span><span class="p">,</span> <span class="kt">BaaSDelegate</span> <span class="p">{</span>
+      <span class="k">let</span> <span class="nv">db</span> <span class="o">=</span> <span class="kt">BaaS</span><span class="o">.</span><span class="n">shared</span>
+
+      <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+          <span class="n">db</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="k">self</span>
+          <span class="n">db</span><span class="o">.</span><span class="nf">set</span><span class="p">(</span><span class="nv">apiKey</span><span class="p">:</span> <span class="s">"YOURAPIKEY"</span><span class="p">)</span>
+          <span class="n">db</span><span class="o">.</span><span class="nf">set</span><span class="p">(</span><span class="nv">server</span><span class="p">:</span> <span class="s">"https://yourserver.tld/BaaS"</span><span class="p">)</span>
+      <span class="p">}</span>
+  <span class="p">}</span>
+</code></pre>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC8delegateAA0A9SDelegate_pSgXwvp"></a>
+                    <a name="//apple_ref/swift/Property/delegate" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC8delegateAA0A9SDelegate_pSgXwvp">delegate</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Delegate of the Backend to return</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt"><a href="../Protocols/BaaSDelegate.html">BaaSDelegate</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L34">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC6sharedACvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/shared" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC6sharedACvpZ">shared</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Shared (instance)</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">shared</span><span class="p">:</span> <span class="kt">BaaS</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L59">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SCACycfc"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SCACycfc">init()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Init</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L64-L67">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC3log_4file4line8functionSbSS_SSSiSStF"></a>
+                    <a name="//apple_ref/swift/Method/log(_:file:line:function:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC3log_4file4line8functionSbSS_SSSiSStF">log(_:file:line:function:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Log</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">open</span> <span class="kd">func</span> <span class="nf">log</span><span class="p">(</span><span class="n">_</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">file</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="kd">#file</span><span class="p">,</span> <span class="nv">line</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="kd">#line</span><span class="p">,</span> <span class="nv">function</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="kd">#function</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>message</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the message to send</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>file</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the filename</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>line</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the line</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>function</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>function name</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L78-L85">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC4noopyyF"></a>
+                    <a name="//apple_ref/swift/Method/noop()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC4noopyyF">noop()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>NOOP (<strong>NO</strong> <strong>OP</strong>eration)</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">noop</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L90-L96">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC3set6apiKeyySS_tF"></a>
+                    <a name="//apple_ref/swift/Method/set(apiKey:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC3set6apiKeyySS_tF">set(apiKey:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set the API key</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">set</span><span class="p">(</span><span class="nv">apiKey</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>apiKey</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Your personal API key</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L103-L105">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC3set6serverSbSS_tF"></a>
+                    <a name="//apple_ref/swift/Method/set(server:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC3set6serverSbSS_tF">set(server:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set server URL</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">set</span><span class="p">(</span><span class="nv">server</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>server</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Server URL (<em>Without /</em>)</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L113-L120">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC3set6servery10Foundation3URLV_tF"></a>
+                    <a name="//apple_ref/swift/Method/set(server:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC3set6servery10Foundation3URLV_tF">set(server:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set server URL</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">set</span><span class="p">(</span><span class="nv">server</span><span class="p">:</span> <span class="kt">URL</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>server</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Server URL (<em>Without /</em>)</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L127-L129">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC3set7timeoutySi_tF"></a>
+                    <a name="//apple_ref/swift/Method/set(timeout:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC3set7timeoutySi_tF">set(timeout:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Set server maximum Timeout</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">set</span><span class="p">(</span><span class="nv">timeout</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>timeout</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Maximum timeout</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L136-L138">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC0A9S_dbFieldV"></a>
+                    <a name="//apple_ref/swift/Struct/BaaS_dbField" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC0A9S_dbFieldV">BaaS_dbField</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>BaaS database Field</p>
+<pre class="highlight swift"><code> <span class="n">parameter</span> <span class="nv">name</span><span class="p">:</span>         <span class="kt">Field</span> <span class="kt">Name</span>
+ <span class="n">parameter</span> <span class="nv">type</span><span class="p">:</span>         <span class="kt">Field</span> <span class="k">Type</span>
+ <span class="n">parameter</span> <span class="n">defaultValue</span><span class="p">:</span> <span class="kt">Field</span> <span class="kt">Default</span> <span class="kt">Value</span>
+ <span class="n">parameter</span> <span class="nv">canBeEmpty</span><span class="p">:</span>   <span class="kt">Field</span> <span class="n">can</span> <span class="n">be</span> <span class="n">empty</span><span class="p">?</span>
+ <span class="n">parameter</span> <span class="nv">unique</span><span class="p">:</span>       <span class="kt">Field</span> <span class="kt">Unique</span><span class="p">?</span> <span class="p">(</span><span class="n">only</span> <span class="n">use</span> <span class="n">with</span> <span class="kt">ID</span><span class="p">)</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">BaaS_dbField</span> <span class="p">:</span> <span class="kt">Codable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L149-L155">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC0A13S_dbFieldTypeO"></a>
+                    <a name="//apple_ref/swift/Enum/BaaS_dbFieldType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC0A13S_dbFieldTypeO">BaaS_dbFieldType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>BaaS database Field Type</p>
+
+<p><strong>.text</strong></p>
+
+<p>For text fields</p>
+
+<p><strong>.number</strong></p>
+
+<p>For numberic fields</p>
+
+                        <a href="../Classes/BaaS/BaaS_dbFieldType.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">BaaS_dbFieldType</span> <span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L169-L172">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC0A12S_SearchTypeO"></a>
+                    <a name="//apple_ref/swift/Enum/BaaS_SearchType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC0A12S_SearchTypeO">BaaS_SearchType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented, Help us document it!</p>
+
+                        <a href="../Classes/BaaS/BaaS_SearchType.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">BaaS_SearchType</span> <span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L174-L178">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC0A17S_WhereExpressionV"></a>
+                    <a name="//apple_ref/swift/Struct/BaaS_WhereExpression" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC0A17S_WhereExpressionV">BaaS_WhereExpression</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented, Help us document it!</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">BaaS_WhereExpression</span> <span class="p">:</span> <span class="kt">Codable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L180-L184">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC8database19createFieldWithName4type12defaultValue10canBeEmpty6uniqueAC0a4S_dbE0VSS_AC0a2S_oE4TypeOSSS2bSgtF"></a>
+                    <a name="//apple_ref/swift/Method/database(createFieldWithName:type:defaultValue:canBeEmpty:unique:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC8database19createFieldWithName4type12defaultValue10canBeEmpty6uniqueAC0a4S_dbE0VSS_AC0a2S_oE4TypeOSSS2bSgtF">database(createFieldWithName:type:defaultValue:canBeEmpty:unique:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create Database Field</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">database</span><span class="p">(</span>
+    <span class="nv">createFieldWithName</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">type</span><span class="p">:</span> <span class="kt"><a href="../Classes/BaaS/BaaS_dbFieldType.html">BaaS_dbFieldType</a></span><span class="p">,</span>
+    <span class="n">defaultValue</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="nv">canBeEmpty</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span>
+    <span class="nv">unique</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">?</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/BaaS.html#/s:14BaaS_Framework0A1SC0A9S_dbFieldV">BaaS_dbField</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>createFieldWithName</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Field name</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>type</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Field type (.text / .number)</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>defaultValue</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Fields default value</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>canBeEmpty</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Can the field be empty?</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>unique</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Is the field unique? (only use for ID)</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p><code><a href="../Classes/BaaS.html#/s:14BaaS_Framework0A1SC0A9S_dbFieldV">BaaS_dbField</a></code></p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L196-L210">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC8database14createWithName10withFieldsSbSS_SayAC0A9S_dbFieldVGtF"></a>
+                    <a name="//apple_ref/swift/Method/database(createWithName:withFields:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC8database14createWithName10withFieldsSbSS_SayAC0A9S_dbFieldVGtF">database(createWithName:withFields:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create Database</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">database</span><span class="p">(</span><span class="nv">createWithName</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">withFields</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/BaaS.html#/s:14BaaS_Framework0A1SC0A9S_dbFieldV">BaaS_dbField</a></span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>createWithName</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Table name</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>withFields</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Table fields</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>Boolean</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L219-L243">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC8database14existsWithNameSbSS_tF"></a>
+                    <a name="//apple_ref/swift/Method/database(existsWithName:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC8database14existsWithNameSbSS_tF">database(existsWithName:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Database Exists?</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">database</span><span class="p">(</span><span class="nv">existsWithName</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>existsWithName</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Table name</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>Boolean</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L251-L259">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC10valueWhere11expression110searchType11expression2AC0a2S_D10ExpressionVSS_AC0a8S_SearchG0OSStF"></a>
+                    <a name="//apple_ref/swift/Method/valueWhere(expression1:searchType:expression2:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC10valueWhere11expression110searchType11expression2AC0a2S_D10ExpressionVSS_AC0a8S_SearchG0OSStF">valueWhere(expression1:searchType:expression2:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented, Help us document it!</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">valueWhere</span><span class="p">(</span><span class="nv">expression1</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">searchType</span><span class="p">:</span> <span class="kt"><a href="../Classes/BaaS/BaaS_SearchType.html">BaaS_SearchType</a></span><span class="p">,</span> <span class="nv">expression2</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/BaaS.html#/s:14BaaS_Framework0A1SC0A17S_WhereExpressionV">BaaS_WhereExpression</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L261-L267">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC5value6forKey10inDatabaseypSS_SStF"></a>
+                    <a name="//apple_ref/swift/Method/value(forKey:inDatabase:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC5value6forKey10inDatabaseypSS_SStF">value(forKey:inDatabase:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented, Help us document it!</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">value</span><span class="p">(</span><span class="nv">forKey</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">inDatabase</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Any</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L269-L278">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC5value5where10inDatabaseypSS_SStF"></a>
+                    <a name="//apple_ref/swift/Method/value(where:inDatabase:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC5value5where10inDatabaseypSS_SStF">value(where:inDatabase:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented, Help us document it!</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">value</span><span class="p">(</span><span class="k">where</span> <span class="nv">whereStr</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">inDatabase</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Any</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L280-L289">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC22createWhereForDatabase17expressionContextSSSayAC0a2S_D10ExpressionVG_tF"></a>
+                    <a name="//apple_ref/swift/Method/createWhereForDatabase(expressionContext:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC22createWhereForDatabase17expressionContextSSSayAC0a2S_D10ExpressionVG_tF">createWhereForDatabase(expressionContext:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented, Help us document it!</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">createWhereForDatabase</span><span class="p">(</span><span class="nv">expressionContext</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Classes/BaaS.html#/s:14BaaS_Framework0A1SC0A17S_WhereExpressionV">BaaS_WhereExpression</a></span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L291-L318">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC7urlTasky10Foundation4DataVSS_SDySSypGSgtF"></a>
+                    <a name="//apple_ref/swift/Method/urlTask(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC7urlTasky10Foundation4DataVSS_SDySSypGSgtF">urlTask(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Get getDataFrom</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">urlTask</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">url</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+    <span class="n">_</span> <span class="nv">posting</span><span class="p">:</span> <span class="kt">Dictionary</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">Any</span><span class="o">&gt;</span><span class="p">?</span> <span class="o">=</span> <span class="p">[</span><span class="s">"nothing"</span><span class="p">:</span> <span class="s">"send"</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Data</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>url</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the URL of the file</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>the contents of the webpage</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS_Webhelper.swift#L22-L92">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2018 <a class="link" href="https://wesleydegroot.nl" target="_blank" rel="external">Wesley de Groot</a>. All rights reserved. (Last updated: 2018-11-27)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

@@ -1,0 +1,11 @@
+framework module BaaS {
+  umbrella header "BaaS.h"
+
+  export *
+  module * { export * }
+}
+
+module BaaS.Swift {
+    header "BaaS-Swift.h"
+    requires objc
+}

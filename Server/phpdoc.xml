@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+    <title>BaaS</title>
+    <parser>
+        <target>../docs/PHPDocCache/</target>
+        <encoding>utf8</encoding>
+        <markers>
+            <item>TODO</item>
+            <item>FIXME</item>
+        </markers>
+        <extensions>
+            <extension>php</extension>
+        </extensions>
+        <visibility></visibility>
+    </parser>
+    <transformer>
+        <target>../docs/Server/</target>
+    </transformer>
+    <logging>
+        <level>warn</level>
+        <paths>
+            <default>log_{DATE}.log</default>
+            <errors>log_{DATE}.errors.log</errors>
+        </paths>
+    </logging>
+    <files>
+        <file>BaaS-Server.php</file>
+        <file>index.php</file>
+    </files>
+</phpdoc>

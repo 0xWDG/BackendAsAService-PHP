@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Classes  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Section/Classes" class="dashAnchor"></a>
+    <a title="Classes  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">BaaS_Framework Docs</a> (63% documented)</p>
+        <p class="header-right"><a href="https://github.com/wdg/BaaS"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right"><a href="dash-feed://https%3A%2F%2Fgithub%2Ecom%2Fwdg%2FBaaS%2FFramework%2Fdocsets%2FBaaS%2Edocset"><img src="img/dash.png"/>Install in Dash</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">BaaS_Framework Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Classes  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/BaaS.html">BaaS</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BaaS.html#/s:14BaaS_Framework0A1SC0A9S_dbFieldV">– BaaS_dbField</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BaaS/BaaS_dbFieldType.html">– BaaS_dbFieldType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BaaS/BaaS_SearchType.html">– BaaS_SearchType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BaaS.html#/s:14BaaS_Framework0A1SC0A17S_WhereExpressionV">– BaaS_WhereExpression</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/BaaSDelegate.html">BaaSDelegate</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Classes</h1>
+            <p>The following classes are available globally.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:14BaaS_Framework0A1SC"></a>
+                    <a name="//apple_ref/swift/Class/BaaS" class="dashAnchor"></a>
+                    <a class="token" href="#/s:14BaaS_Framework0A1SC">BaaS</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p><strong>B</strong>ackend <strong>a</strong>s <strong>a</strong> <strong>S</strong>ervice (<em>BaaS</em>)</p>
+
+<p>This class is used for the BaaS Server Interface.</p>
+
+<p>.</p>
+
+<p><strong>Simple usage</strong></p>
+<pre class="highlight swift"><code>  <span class="kd">class</span> <span class="nv">myClass</span><span class="p">:</span> <span class="kt">UIViewController</span><span class="p">,</span> <span class="kt">BaaSDelegate</span> <span class="p">{</span>
+      <span class="k">let</span> <span class="nv">db</span> <span class="o">=</span> <span class="kt">BaaS</span><span class="o">.</span><span class="n">shared</span>
+
+      <span class="k">override</span> <span class="kd">func</span> <span class="nf">viewDidLoad</span><span class="p">()</span> <span class="p">{</span>
+          <span class="n">db</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="k">self</span>
+          <span class="n">db</span><span class="o">.</span><span class="nf">set</span><span class="p">(</span><span class="nv">apiKey</span><span class="p">:</span> <span class="s">"YOURAPIKEY"</span><span class="p">)</span>
+          <span class="n">db</span><span class="o">.</span><span class="nf">set</span><span class="p">(</span><span class="nv">server</span><span class="p">:</span> <span class="s">"https://yourserver.tld/BaaS"</span><span class="p">)</span>
+      <span class="p">}</span>
+  <span class="p">}</span>
+</code></pre>
+
+                        <a href="Classes/BaaS.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">BaaS</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L30-L319">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2018 <a class="link" href="https://wesleydegroot.nl" target="_blank" rel="external">Wesley de Groot</a>. All rights reserved. (Last updated: 2018-11-27)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

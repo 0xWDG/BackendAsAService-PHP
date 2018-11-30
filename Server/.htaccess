@@ -1,0 +1,8 @@
+# DELETE THIS FLAG ON PRODUCTION
+php_flag display_errors on 
+php_value error_reporting 7
+
+#Everything trough index.php
+RewriteEngine on
+RewriteCond %{REQUEST_URI} !\.(?:jpe?g|gif|bmp|png|ico|tiff|css|js|svg|ttf|otf)$ [NC]
+RewriteRule !^index\.php$ index.php [L,NC]
