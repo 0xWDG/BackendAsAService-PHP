@@ -124,6 +124,7 @@ class Server
                         // Say wrong APIKey
                         header("API-Key: Invalid");
 
+                        // Exit, blocked.
                         exit(
                             json_encode(
                                 array(
@@ -228,7 +229,12 @@ class Server
         //   INSERT * INTO X VALUES ()
         //   DELETE FROM X WHERE ...
         //   CREATE TABLE X ()
-        preg_match_all("/(FROM|INTO|FROM|TABLE) (`)?([a-zA-Z0-9]+)(`)?/i", $SQLString, $match);
+        preg_match_all(
+            "/(FROM|INTO|FROM|TABLE) (`)?([a-zA-Z0-9]+)(`)?/i",
+            $SQLString,
+            $match
+        );
+        // ^ Probally not the best Regex... it works fine.
 
         // There's a match!
         if (isset($match[3][0])) {
@@ -413,6 +419,7 @@ class Server
      */
     public function serve()
     {
+        // Check if there is a DATABASE_TYPE defined.
         if (!defined('DATABASE_TYPE')) {
             return json_encode(
                 array(
@@ -423,7 +430,9 @@ class Server
         }
 
         if (strtolower(DATABASE_TYPE) == "mysql") {
+            // Check if there is a DATABASE_HOST defined.
             if (!defined('DATABASE_HOST')) {
+                // Missing, so return a error.
                 return json_encode(
                     array(
                         "Error" => "No database host is entered",
@@ -431,7 +440,9 @@ class Server
                     )
                 );
             }
+            // Check if there is a DATABASE_NAME defined.
             if (!defined('DATABASE_NAME')) {
+                // Missing, so return a error.
                 return json_encode(
                     array(
                         "Error" => "No database name is entered",
@@ -439,7 +450,9 @@ class Server
                     )
                 );
             }
+            // Check if there is a DATABASE_USER defined.
             if (!defined('DATABASE_USER')) {
+                // Missing, so return a error.
                 return json_encode(
                     array(
                         "Error" => "No database user is entered",
@@ -447,7 +460,9 @@ class Server
                     )
                 );
             }
+            // Check if there is a DATABASE_PASS defined.
             if (!defined('DATABASE_PASS')) {
+                // Missing, so return a error.
                 return json_encode(
                     array(
                         "Error" => "No database password is entered",
@@ -478,6 +493,7 @@ class Server
         $this->resetOldAttempts();
 
         if (preg_match_all("/db\.admin(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+            // Run "DBAdmin"
             return $this->DBAdmin(
                 empty($action[2][0]) ? 'index' : $action[2][0]
             );
@@ -490,8 +506,8 @@ class Server
         if (preg_match_all("/row\.get(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
             // If /row.get/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
-                // Parse and echo
-                return $this->row_action($action[2][0], "get");
+                // Run "rowAction"
+                return $this->rowAction($action[2][0], "get");
             }
         }
 
@@ -500,7 +516,7 @@ class Server
             // If /row.set/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Parse and echo
-                return $this->row_action($action[2][0], "set");
+                return $this->rowAction($action[2][0], "set");
             }
         }
 
@@ -509,7 +525,7 @@ class Server
             // If /row.delete/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Parse and echo
-                return $this->row_action($action[2][0], "delete");
+                return $this->rowAction($action[2][0], "delete");
             }
         }
     }
@@ -552,7 +568,7 @@ class Server
      * @internal
      * @return mixed
      */
-    private function row_action($databaseName, $action = "get")
+    private function rowAction($databaseName, $action = "get")
     {
         // First, decode the JSON input.
         $decodedJSON = json_decode(
@@ -896,7 +912,7 @@ class Server
      * @param int $lon2 Longitude 2
      * @return int Distance in kilometers
      */
-    public function sql_distance_func($lat1 = 0, $lon1 = 0, $lat2 = 0, $lon2 = 0)
+    public function sqlDistanceFunction($lat1 = 0, $lon1 = 0, $lat2 = 0, $lon2 = 0)
     {
         // convert lat1 into radian
         $lat1rad = deg2rad($lat1);
@@ -1022,7 +1038,7 @@ class Server
                 // Distance
                 'DISTANCE',
                 // Distance calculation function
-                'BaaS\Server::sql_distance_func',
+                'BaaS\Server::sqlDistanceFunction',
                 // Custom function expect 4 parameters
                 4
             );
