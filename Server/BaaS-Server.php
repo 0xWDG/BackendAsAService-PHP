@@ -427,7 +427,9 @@ class Server
         if (!defined('DATABASE_TYPE')) {
             return json_encode(
                 array(
+                    // Database type is missing
                     "Error" => "No database type is selected",
+                    // Show a fix
                     "Fix" => "Please select a database type!",
                 )
             );
@@ -439,7 +441,9 @@ class Server
                 // Missing, so return a error.
                 return json_encode(
                     array(
+                        // Database host is missing
                         "Error" => "No database host is entered",
+                        // Show a fix
                         "Fix" => "Please select a valid database host",
                     )
                 );
@@ -449,7 +453,9 @@ class Server
                 // Missing, so return a error.
                 return json_encode(
                     array(
+                        // Database name is missing
                         "Error" => "No database name is entered",
+                        // Show a fix
                         "Fix" => "Please select a valid database name",
                     )
                 );
@@ -459,7 +465,9 @@ class Server
                 // Missing, so return a error.
                 return json_encode(
                     array(
+                        // Database user is missing
                         "Error" => "No database user is entered",
+                        // Show a fix
                         "Fix" => "Please select a valid database user",
                     )
                 );
@@ -469,7 +477,9 @@ class Server
                 // Missing, so return a error.
                 return json_encode(
                     array(
+                        // Database password is missing
                         "Error" => "No database password is entered",
+                        // Show a fix
                         "Fix" => "Please select a valid database password",
                     )
                 );
@@ -487,7 +497,9 @@ class Server
             // Exit with a error, we cannot continue now.
             return json_encode(
                 array(
+                    // File path is not writeable
                     "Error" => "File path is not writeable",
+                    // Show file path
                     "FilePath" => $this->blockFilePath,
                 )
             );
@@ -499,6 +511,7 @@ class Server
         if (preg_match_all("/db\.admin(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
             // Run "DBAdmin"
             return $this->DBAdmin(
+                // If no action then show index
                 empty($action[2][0]) ? 'index' : $action[2][0]
             );
         }
@@ -511,7 +524,12 @@ class Server
             // If /row.get/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Run "rowAction"
-                return $this->rowAction($action[2][0], "get");
+                return $this->rowAction(
+                    // With value xxx
+                    $action[2][0],
+                    // It's a get action
+                    "get"
+                );
             }
         }
 
@@ -520,7 +538,12 @@ class Server
             // If /row.set/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Parse and echo
-                return $this->rowAction($action[2][0], "set");
+                return $this->rowAction(
+                    // With value xxx
+                    $action[2][0],
+                    // It's a set action
+                    "set"
+                );
             }
         }
 
@@ -529,7 +552,12 @@ class Server
             // If /row.delete/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Parse and echo
-                return $this->rowAction($action[2][0], "delete");
+                return $this->rowAction(
+                    // With value xxx
+                    $action[2][0],
+                    // It's a delete action
+                    "delete"
+                );
             }
         }
 
@@ -538,7 +566,10 @@ class Server
             // If /row.insert/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Parse and echo
-                return $this->rowInsert($action[2][0], "insert");
+                return $this->rowInsert(
+                    // With value xxx
+                    $action[2][0]
+                );
             }
         }
     }
@@ -552,7 +583,8 @@ class Server
      */
     private function query($query)
     {
-        return $this->db->exec($query);
+        // Execute the query
+        return $this->db->query($query);
     }
 
     /**
@@ -564,9 +596,13 @@ class Server
      */
     public function escapeString($insecureInput)
     {
+        // Replace unsafe characters
         return str_replace(
+            // Unsafe
             array("\\", "\x00", "\n", "\r", "'", '"', "\x1a"),
+            // Sanitized
             array("\\\\", "\\0", "\\n", "\\r", "\'", '\"', "\\Z"),
+            // Original input
             $insecureInput
         );
     }
@@ -623,10 +659,14 @@ class Server
 
             // Set/Update something
             case 'set':
+                // Check if we have values
                 if (!isset($decodedJSON['values'])) {
+                    // Return error message
                     return json_encode(
                         array(
+                            // Missing value
                             "Error" => "Can not update nothing",
+                            // Which one?
                             "Fix" => "Use: values[[key, value]]",
                         )
                     );
@@ -670,10 +710,15 @@ class Server
                 );
                 break;
 
+            // This should never happen
             default:
+                // JSON encode
                 return json_encode(
+                    // Error messages
                     array(
+                        // Invalid request
                         "Error" => "Invalid request",
+                        // Invalid action
                         "Request" => $action,
                     )
                 );
@@ -682,10 +727,15 @@ class Server
 
         // Check if "where" exists!
         if (isset($decodedJSON['values'])) {
+            // Check if we have values
             if (is_array($decodedJSON['values'])) {
+                // Parse trough our values
                 for ($i = 0; $i < sizeof($decodedJSON['values']); $i++) {
+                    // Check if there were enough values sended
                     if (sizeof($decodedJSON['values'][$i]) == 1) {
+                        // If i is more then 0 append a , seporator
                         if ($i > 0) {
+                            // Append seporator
                             $SQLcommand .= ', ';
                         }
 
@@ -710,9 +760,12 @@ class Server
                         // Append paramID with value to our array
                         $bindings[$paramID] = $decodedJSON['values'][$i][1];
                     } else {
+                        // Show error
                         return json_encode(
                             array(
+                                // Show error
                                 "Error" => "Incorrect number of (set) parameters [Expected: 2]",
+                                // Return sended values
                                 "Where" => $decodedJSON['values'][$i],
                             )
                         );
@@ -880,9 +933,12 @@ class Server
                                 break;
                         }
                     } else {
+                        // Show error
                         return json_encode(
                             array(
+                                // Show error
                                 "Error" => "Incorrect number of (where) parameters [Expected: 3]",
+                                // Return values
                                 "Where" => $decodedJSON['where'][$i],
                             )
                         );
@@ -958,28 +1014,49 @@ class Server
         $adminTemplate = file_get_contents("Data/layout.html");
 
         // Replace title
-        $adminTemplate = preg_replace("/{%Title%}/", $task, $adminTemplate);
+        $adminTemplate = preg_replace(
+            "/{%Title%}/",
+            $task,
+            $adminTemplate
+        );
 
         // Replace Contents
-        $adminTemplate = preg_replace("/{%Contents%}/", "Welcome Database Admin ($task).", $adminTemplate);
+        $adminTemplate = preg_replace(
+            "/{%Contents%}/",
+            "Welcome Database Admin ($task).",
+            $adminTemplate
+        );
 
         // Checks if admin is logged in
         if ($this->isAdmin) {
             // Admin is logged in
 
             // Replace {%inOut%} to out (Logout)
-            $adminTemplate = preg_replace("/{%inOut%}/", "out", $adminTemplate);
+            $adminTemplate = preg_replace(
+                "/{%inOut%}/",
+                "out",
+                $adminTemplate
+            );
         } else {
             // Admin is not logged in
 
             // Replace {%inOut%} to in (Login)
-            $adminTemplate = preg_replace("/{%inOut%}/", "in", $adminTemplate);
+            $adminTemplate = preg_replace(
+                "/{%inOut%}/",
+                "in",
+                $adminTemplate
+            );
 
             // Hide administration links
-            $adminTemplate = preg_replace("/{%USER_LOGGEDIN%}(?s).*{%END_USER_LOGGEDIN%}/mi", "", $adminTemplate);
+            $adminTemplate = preg_replace(
+                "/{%USER_LOGGEDIN%}(?s).*{%END_USER_LOGGEDIN%}/mi",
+                "",
+                $adminTemplate
+            );
         }
 
-        echo $adminTemplate;
+        // Return admin template
+        return $adminTemplate;
     }
 
     /**
@@ -1252,7 +1329,9 @@ class Server
      */
     private function rowInsert($action)
     {
+        // Check if the table exists
         if (!$this->tableExists($action)) {
+            // Return a error, it does not exists.
             return array(
                 "Error" => sprintf(
                     "Table \"%s\" does not exists",
@@ -1277,23 +1356,33 @@ class Server
      */
     private function getTableFields($tableName, $asJSON = false)
     {
+        // Create a empty array
         $fields = array();
 
+        // our SQL query
         $query = sprintf(
+            // Query
             "SHOW columns from `%s`;",
+            // Replace %s with tableName
             $this->escapeString(
+                // Escape `
                 preg_replace("/`/", "\\`", $tableName)
             )
         );
 
+        // Run query.
         $rawFields = $this->db->query($query)->fetchAll();
 
+        // Walk trough the values
         for ($i = 0; $i < sizeof($rawFields); $i++) {
+            // Append value to fields
             $fields[] = $rawFields[$i][0];
         }
 
+        // Return the fields as json or array
         return $asJSON ? json_encode($fields) : $fields;
     }
+
     /**
      * Creates a Shared Instance
      *
@@ -1396,14 +1485,16 @@ class Server
             try {
                 // Connect to our SQLite database
                 if (strtolower(DATABASE_TYPE) == "mysql") {
-                    // If defined DATABASE_HOST, DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD
+                    // If defined DATABASE_HOST, DATABASE_NAME,
+                    // DATABASE_USER, DATABASE_PASSWORD
                     if (defined('DATABASE_HOST') &&
                         defined('DATABASE_NAME') &&
                         defined('DATABASE_USER') &&
                         defined('DATABASE_PASS')) {
                         // Then let's try to connect!
                         $this->db = new \PDO(
-                            // mysql:host=DATABASE_HOST;dbname=DATABASE_NAME;charset=UTF8
+                            // mysql:host=DATABASE_HOST;
+                            // dbname=DATABASE_NAME;charset=UTF8
                             sprintf(
                                 "mysql:host=%s;dbname=%s;charset=UTF8",
                                 // Host
@@ -1456,27 +1547,39 @@ class Server
      */
     private function handleException($exception)
     {
+        // This is a PDO Exception
         if ($exception instanceof PDOException) {
+            // Return the error in JSON
             return json_encode(
                 array(
+                    // Show error message
                     "Error" => "PDOException happend!",
+                    // Show the exception
                     "Exception" => $exception->getMessage(),
                 )
             );
         }
 
+        // This is a Normal Exception
         if ($exception instanceof Exception) {
+            // Return the error in JSON
             return json_encode(
                 array(
+                    // Show error message
                     "Error" => "Exception happend!",
+                    // Show the exception
                     "Exception" => $exception->getMessage(),
                 )
             );
         }
 
+        // This is Exceptional...
         return json_encode(
+            // Return the error in JSON
             array(
+                // Show error message
                 "Error" => "Uncought exception!",
+                // Show the exceptional message
                 "Exception" => $exception,
             )
         );
