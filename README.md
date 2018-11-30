@@ -36,3 +36,6 @@ See: https://wdg.github.io/BaaS/
         <td><a target='_blank' href='http://github.com/github'>@github</a></td>
     </tr>
 </table>
+
+---
+Thanks to: [Jazzy](https://github.com/realm/jazzy) for generating Swift Documentation, [PHPDocumentor](https://github.com/realm/jazzy) for generating PHP Documentation, [You](#) For using `BaaS` and all our [Contributors](https://github.com/wdg/BaaS/blob/master/Contributors.md).
