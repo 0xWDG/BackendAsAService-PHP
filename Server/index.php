@@ -5,16 +5,23 @@ include 'BaaS-Server.php';
 // Initialize BaaS Server
 $server = BaaS\Server::shared();
 
-// always send this key in your post requests, otherwise it will not answer your request at all. (no error, b/c of bruteforcing)
+// Set Connection type
 $server->setDatabase(
+    // Type
     'MySQL',
+    // Host
     '127.0.0.1',
+    // Database name
     'test',
+    // Username
     'root',
+    // Password
     ''
 );
 // $server->setDatabase(
+//     // Type
 //     'SQLite',
+//     // Database Path
 //     'Data/database.sqlite'
 // );
 
