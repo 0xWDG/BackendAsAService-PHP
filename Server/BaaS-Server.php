@@ -18,7 +18,7 @@ class Server
      * Debugmode
      *
      * @since 1.0
-     * @param bool $debugmode set debug mode
+     * @var bool $debugmode set debug mode
      */
     private $debugmode = false;
 
@@ -26,7 +26,7 @@ class Server
      * Automatic translation
      *
      * @since 1.0
-     * @param bool $translate set automatic translation on(auto)/off
+     * @var bool $translate set automatic translation on(auto)/off
      */
     private $translate = true;
 
@@ -34,7 +34,7 @@ class Server
      * API Key
      *
      * @since 1.0
-     * @param string $APIKey the API key
+     * @var string $APIKey the API key
      */
     private $APIKey = "invalid";
 
@@ -42,7 +42,7 @@ class Server
      * Maximum retries
      *
      * @since 1.0
-     * @param integer $triesMaximum maximum tries
+     * @var integer $triesMaximum maximum tries
      */
     private $triesMaximum = 3;
 
@@ -50,7 +50,7 @@ class Server
      * Time befor resetting the maximum retries
      *
      * @since 1.0
-     * @param string $triesTime time to reset maximum tries
+     * @var string $triesTime time to reset maximum tries
      */
     private $tiesTime = "+24 hours";
 
@@ -58,7 +58,7 @@ class Server
      * Save file location.
      *
      * @since 1.0
-     * @param string $BFfile File location
+     * @var string $BFfile File location
      */
     private $BFfile = "BFlog/%s.txt";
 
@@ -66,7 +66,7 @@ class Server
      * Save file directory.
      *
      * @since 1.0
-     * @param string $blockFilePath Directory location
+     * @var string $blockFilePath Directory location
      */
     private $blockFilePath = "BFlog/";
 
@@ -74,7 +74,7 @@ class Server
      * Set API Version
      *
      * @since 1.0
-     * @param string $APIVer API Version
+     * @var string $APIVer API Version
      */
     private $APIVer = "1.0";
 
@@ -82,7 +82,7 @@ class Server
      * is current user an Admin?
      *
      * @since 1.0
-     * @param bool $isAdmin is it a admin
+     * @var bool $isAdmin is it a admin
      */
     private $isAdmin = false;
 
@@ -90,7 +90,7 @@ class Server
      * Is there a error
      *
      * @since 1.0
-     * @param bool $error is there a error
+     * @var bool $error is there a error
      */
     private $error = false;
 
@@ -98,7 +98,7 @@ class Server
      * What is the error message
      *
      * @since 1.0
-     * @param string $errorMessage error message
+     * @var string $errorMessage error message
      */
     private $errorMessage = "";
 
@@ -718,7 +718,7 @@ class Server
      * @param string $insecureInput the unsecure SQL Query
      * @return string the (more)secure SQL Query
      */
-    public function escapeString($insecureInput)
+    private function escapeString($insecureInput)
     {
         // Replace unsafe characters
         return str_replace(
@@ -1107,6 +1107,7 @@ class Server
      * Function for SQL to calculate distance between 2 coordination points
      *
      * @since 1.0
+     * @internal
      * @param int $lat1 Latitude 1
      * @param int $lon1 Longitude 1
      * @param int $lat2 Latitude 2
