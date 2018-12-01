@@ -87,6 +87,140 @@ class Server
     private $isAdmin = false;
 
     /**
+     * Is there a error
+     *
+     * @since 1.0
+     * @param bool $error is there a error
+     */
+    private $error = false;
+
+    /**
+     * What is the error message
+     *
+     * @since 1.0
+     * @param string $errorMessage error message
+     */
+    private $errorMessage = "";
+
+    /**
+     * Database Configuration
+     *
+     * @since 1.0
+     * @var mixed database configuration
+     */
+    private $database = array(
+        'path' => 'Data/database.sqlite',
+        'type' => '',
+        'name' => '',
+        'user' => '',
+        'pass' => '',
+    );
+
+    /**
+     * Set database configuration
+     *
+     * @since 1.0
+     * @param string $type mysql/sqlite
+     * @param string $hostOrPath Host or Path name
+     * @param string $databaseName Database name
+     * @param string $username username
+     * @param string $password Password
+     * @return void
+     */
+    public function setDatabase($type, $hostOrPath = '', $databaseName = '', $username = '', $password = '')
+    {
+        // Set error = no
+        $this->error = false;
+
+        // Error message empty
+        $this->errorMessage = "";
+
+        // Check database type
+        switch (strtolower($type)) {
+            // database type is SQLite
+            case 'sqlite':
+                // Set database type to SQLite
+                $this->database['type'] = 'sqlite';
+
+                // If host/path name is not empty
+                if (!empty($hostOrPath)) {
+                    // Check if the path is writeable
+                    if (is_writable($hostOrPath)) {
+                        // Set the path
+                        $this->database['path'] = $hostOrPath;
+                    } else {
+                        // Error
+                        $this->error = true;
+                        // Path is not writeable
+                        $this->errorMessage = "Path is not writeable";
+                    }
+                }
+                break;
+
+            case 'mysql':
+                // Set database type to MySQL
+                $this->database['type'] = 'mysql';
+
+                // Check if required information is not missing
+                if (empty($hostOrPath)) {
+                    // Error
+                    $this->error = true;
+                    // Missing hostname and username!
+                    $this->errorMessage = "Missing hostname";
+                }
+
+                // Check if required information is not missing
+                if (empty($username)) {
+                    // Error
+                    $this->error = true;
+                    // Missing hostname and username!
+                    $this->errorMessage = "Missing username";
+                }
+
+                // Check if required information is not missing
+                if (empty($databaseName)) {
+                    // Error
+                    $this->error = true;
+                    // Missing hostname and username!
+                    $this->errorMessage = "Missing database name.";
+                }
+
+                // If not empty
+                if (!empty($hostOrPath)) {
+                    // Set the database host
+                    $this->database['host'] = $hostOrPath;
+                }
+
+                // If not empty
+                if (!empty($databaseName)) {
+                    // Set the database name
+                    $this->database['name'] = $databaseName;
+                }
+
+                // If not empty
+                if (!empty($username)) {
+                    // Set the database username
+                    $this->database['user'] = $username;
+                }
+
+                // Set the database password
+                $this->database['pass'] = $password;
+                break;
+
+            default:
+                // Oops a error
+                $this->error = false;
+
+                // Set the error message
+                $this->errorMessage = sprintf(
+                    "Database type %s does not exists",
+                    $type
+                );
+                break;
+        }
+    }
+
+    /**
      * Check API Key
      *
      * @since 1.0
@@ -258,7 +392,7 @@ class Server
     private function tableExists($tableName)
     {
         // Check database type
-        if (strtolower(DATABASE_TYPE) == "mysql") {
+        if ($this->dbConfig['type'] == "mysql") {
             // Return
             return (
                 // Query
@@ -424,20 +558,22 @@ class Server
     public function serve()
     {
         // Check if there is a DATABASE_TYPE defined.
-        if (!defined('DATABASE_TYPE')) {
+        if ($this->error) {
             return json_encode(
                 array(
                     // Database type is missing
-                    "Error" => "No database type is selected",
+                    "Error" => !empty($this->errorMessage)
+                    ? $this->errorMessage
+                    : "No database type is selected",
                     // Show a fix
-                    "Fix" => "Please select a database type!",
+                    "Fix" => "Check the documentation!",
                 )
             );
         }
 
-        if (strtolower(DATABASE_TYPE) == "mysql") {
-            // Check if there is a DATABASE_HOST defined.
-            if (!defined('DATABASE_HOST')) {
+        if ($this->dbConfig['type'] == "mysql") {
+            // Check if there is a $this->dbConfig['host'] defined.
+            if (!empty($this->dbConfig['host'])) {
                 // Missing, so return a error.
                 return json_encode(
                     array(
@@ -448,8 +584,8 @@ class Server
                     )
                 );
             }
-            // Check if there is a DATABASE_NAME defined.
-            if (!defined('DATABASE_NAME')) {
+            // Check if there is a $this->dbConfig['name'] defined.
+            if (!empty($this->dbConfig['name'])) {
                 // Missing, so return a error.
                 return json_encode(
                     array(
@@ -460,8 +596,8 @@ class Server
                     )
                 );
             }
-            // Check if there is a DATABASE_USER defined.
-            if (!defined('DATABASE_USER')) {
+            // Check if there is a $this->dbConfig['user'] defined.
+            if (!empty($this->dbConfig['user'])) {
                 // Missing, so return a error.
                 return json_encode(
                     array(
@@ -469,18 +605,6 @@ class Server
                         "Error" => "No database user is entered",
                         // Show a fix
                         "Fix" => "Please select a valid database user",
-                    )
-                );
-            }
-            // Check if there is a DATABASE_PASS defined.
-            if (!defined('DATABASE_PASS')) {
-                // Missing, so return a error.
-                return json_encode(
-                    array(
-                        // Database password is missing
-                        "Error" => "No database password is entered",
-                        // Show a fix
-                        "Fix" => "Please select a valid database password",
                     )
                 );
             }
@@ -626,6 +750,14 @@ class Server
             // to array
             true
         );
+
+        if (!is_array($decodedJSON) ||
+            sizeof($decodedJSON) < 1) {
+            return array(
+                "Error" => "Please post JSON",
+                "Fix" => "Failed to decode JSON",
+            );
+        }
 
         // Create empty bindings array
         $bindings = array();
@@ -885,7 +1017,7 @@ class Server
                                 // Create a unique Parameter ID for Distance
                                 $disParamID = "x" . uniqid();
 
-                                if (strtolower(DATABASE_TYPE) == "sqlite") {
+                                if ($this->dbConfig['type'] == "sqlite") {
                                     // Append our special function to the SQL command
                                     // distance(latitude, longitude, $lat, $lon) is a custom function.
                                     $SQLcommand .= sprintf(
@@ -1122,7 +1254,7 @@ class Server
         }
 
         // If the database type is SQLite then
-        if (strtolower(DATABASE_TYPE) == "sqlite") {
+        if ($this->dbConfig['type'] == "sqlite") {
             // Append our custom function
             $this->db->sqliteCreateFunction(
                 // Distance
@@ -1158,7 +1290,7 @@ class Server
                 // value
                 $bindValue,
                 // Type (Only text supported right now)
-                (strtolower(DATABASE_TYPE) == "sqlite" ? SQLITE3_TEXT : \PDO::PARAM_STR)
+                ($this->dbConfig['type'] == "sqlite" ? SQLITE3_TEXT : \PDO::PARAM_STR)
             );
         }
 
@@ -1289,9 +1421,9 @@ class Server
     {
         // If there is defined a DATABASE_TYPE
         if (defined('DATABASE_TYPE')) {
-            // If it is SQLite and there is a DATABASE_PATH
-            if (strtolower(DATABASE_TYPE) == "sqlite" &&
-                defined('DATABASE_PATH')) {
+            // If it is SQLite and there is a $this->database['path']
+            if ($this->dbConfig['type'] == "sqlite" &&
+                !empty($this->database['path'])) {
                 try {
                     // Try to create/load a SQLite database
                     $this->db = new \PDO(
@@ -1300,7 +1432,7 @@ class Server
                             // sqlite:DBName.sqlite
                             'sqlite:%s',
                             // Database Path
-                            DATABASE_PATH
+                            $this->database['path']
                         )
                     );
 
@@ -1339,6 +1471,26 @@ class Server
                 ),
                 "Table" => $table,
                 "Request" => $_SERVER['REQUEST_URI'],
+            );
+        }
+
+        if (!isset($_POST['JSON'])) {
+            return array(
+                "Error" => "Please post JSON",
+                "Fix" => "Post JSON",
+            );
+        }
+
+        /**
+         * @var mixed JSON Data
+         */
+        $decodedJSON = json_decode($_POST['JSON'], true);
+
+        if (!is_array($decodedJSON) ||
+            sizeof($decodedJSON) < 1) {
+            return array(
+                "Error" => "Please post JSON",
+                "Fix" => "Failed to decode JSON",
             );
         }
 
@@ -1484,33 +1636,33 @@ class Server
             // Try it
             try {
                 // Connect to our SQLite database
-                if (strtolower(DATABASE_TYPE) == "mysql") {
-                    // If defined DATABASE_HOST, DATABASE_NAME,
-                    // DATABASE_USER, DATABASE_PASSWORD
-                    if (defined('DATABASE_HOST') &&
-                        defined('DATABASE_NAME') &&
-                        defined('DATABASE_USER') &&
-                        defined('DATABASE_PASS')) {
+                if ($this->dbConfig['type'] == "mysql") {
+                    // If defined $this->dbConfig['host'], $this->dbConfig['name'],
+                    // $this->dbConfig['user'], $this->dbConfig['pass']WORD
+                    if (!empty($this->dbConfig['host']) &&
+                        !empty($this->dbConfig['name']) &&
+                        !empty($this->dbConfig['user']) &&
+                        !empty($this->dbConfig['pass'])) {
                         // Then let's try to connect!
                         $this->db = new \PDO(
-                            // mysql:host=DATABASE_HOST;
-                            // dbname=DATABASE_NAME;charset=UTF8
+                            // mysql:host=$this->dbConfig['host'];
+                            // dbname=$this->dbConfig['name'];charset=UTF8
                             sprintf(
                                 "mysql:host=%s;dbname=%s;charset=UTF8",
                                 // Host
-                                DATABASE_HOST,
+                                $this->dbConfig['host'],
                                 // DB Name
-                                DATABASE_NAME
+                                $this->dbConfig['name']
                             ),
                             // Username
-                            DATABASE_USER,
+                            $this->dbConfig['user'],
                             // Password
-                            DATABASE_PASS
+                            $this->dbConfig['pass']
                         );
                     }
                 } else {
                     // SQLite!
-                    if (defined('DATABASE_PATH')) {
+                    if (!empty($this->database['path'])) {
                         // Try to create/load a SQLite database
                         $this->db = new \PDO(
                             // sqlite:DBName.sqlite
@@ -1518,7 +1670,7 @@ class Server
                                 // sqlite:DBName.sqlite
                                 'sqlite:%s',
                                 // Database Path
-                                DATABASE_PATH
+                                $this->database['path']
                             )
                         );
                     }
@@ -1594,7 +1746,3 @@ define('off', false);
 
 // define auto = true
 define('auto', true);
-
-if (!defined('DATABASE_PATH')) {
-    define('DATABASE_PATH', 'Data/database.sqlite');
-}

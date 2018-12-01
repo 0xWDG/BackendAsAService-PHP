@@ -1,19 +1,22 @@
 <?php
-// Settings
-define('DATABASE_TYPE', 'MySQL');
-define('DATABASE_HOST', '127.0.0.1');
-define('DATABASE_NAME', 'test');
-define('DATABASE_USER', 'root');
-define('DATABASE_PASS', '');
-
-// define('DATABASE_TYPE', 'SQLite');
-// define('DATABASE_PATH', 'Data/database.sqlite');
-
 // Include BaaS-Server
 include 'BaaS-Server.php';
 
 // Initialize BaaS Server
 $server = BaaS\Server::shared();
+
+// always send this key in your post requests, otherwise it will not answer your request at all. (no error, b/c of bruteforcing)
+$server->setDatabase(
+    'MySQL',
+    '127.0.0.1',
+    'test',
+    'root',
+    ''
+);
+// $server->setDatabase(
+//     'SQLite',
+//     'Data/database.sqlite'
+// );
 
 // always send this key in your post requests, otherwise it will not answer your request at all. (no error, b/c of bruteforcing)
 $server->setRegisteredAPIkey('§§DEVELOPMENT_UNSAFE_KEY§§');
