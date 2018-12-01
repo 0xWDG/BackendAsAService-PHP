@@ -372,11 +372,15 @@ class Server
         //   DELETE FROM X WHERE ...
         //   CREATE TABLE X ()
         preg_match_all(
+            // Regular expression
             "/(FROM|INTO|FROM|TABLE) (`)?([a-zA-Z0-9]+)(`)?/i",
+
+            // Matches the Query?
             $SQLString,
+
+            // Return matches
             $match
         );
-        // ^ Probally not the best Regex... it works fine.
 
         // There's a match!
         if (isset($match[3][0])) {
@@ -409,9 +413,18 @@ class Server
                     sprintf(
                         // Select count(*)
                         "SELECT count(*) FROM information_schema.tables WHERE table_name = '%s'",
+
                         // Santisize input
                         $this->escapeString(
-                            preg_replace("/`/", "\\`", $tableName)
+                        preg_replace(
+                            // `
+                            "/`/", 
+
+                            // \`
+                            "\\`", 
+
+                            // tableName
+                            $tableName
                         )
                     )
                     // FetchColumns is more then 0 then the table exists.
@@ -427,9 +440,19 @@ class Server
                 sprintf(
                     // Select count(*)
                     "select count(*) FROM `sqlite_master` WHERE `type`='table' AND `name`='%s'",
+
                     // Santisize input
                     $this->escapeString(
-                        preg_replace("/`/", "\\`", $tableName)
+                        preg_replace(
+                            // `
+                            "/`/", 
+
+                            // \`
+                            "\\`", 
+
+                            // tableName
+                            $tableName
+                        )
                     )
                 )
                 // FetchColumns is more then 0 then the table exists.
@@ -573,6 +596,7 @@ class Server
                     "Error" => !empty($this->errorMessage)
                     ? $this->errorMessage
                     : "No database type is selected",
+
                     // Show a fix
                     "Fix" => "Check the documentation!",
                 )
@@ -581,36 +605,39 @@ class Server
 
         if ($this->dbConfig['type'] == "mysql") {
             // Check if there is a $this->dbConfig['host'] defined.
-            if (!empty($this->dbConfig['host'])) {
+            if (empty($this->dbConfig['host'])) {
                 // Missing, so return a error.
                 return json_encode(
                     array(
                         // Database host is missing
                         "Error" => "No database host is entered",
+
                         // Show a fix
                         "Fix" => "Please select a valid database host",
                     )
                 );
             }
             // Check if there is a $this->dbConfig['name'] defined.
-            if (!empty($this->dbConfig['name'])) {
+            if (empty($this->dbConfig['name'])) {
                 // Missing, so return a error.
                 return json_encode(
                     array(
                         // Database name is missing
                         "Error" => "No database name is entered",
+
                         // Show a fix
                         "Fix" => "Please select a valid database name",
                     )
                 );
             }
             // Check if there is a $this->dbConfig['user'] defined.
-            if (!empty($this->dbConfig['user'])) {
+            if (empty($this->dbConfig['user'])) {
                 // Missing, so return a error.
                 return json_encode(
                     array(
                         // Database user is missing
                         "Error" => "No database user is entered",
+
                         // Show a fix
                         "Fix" => "Please select a valid database user",
                     )
@@ -631,6 +658,7 @@ class Server
                 array(
                     // File path is not writeable
                     "Error" => "File path is not writeable",
+
                     // Show file path
                     "FilePath" => $this->blockFilePath,
                 )
@@ -659,6 +687,7 @@ class Server
                 return $this->rowAction(
                     // With value xxx
                     $action[2][0],
+
                     // It's a get action
                     "get"
                 );
@@ -673,6 +702,7 @@ class Server
                 return $this->rowAction(
                     // With value xxx
                     $action[2][0],
+
                     // It's a set action
                     "set"
                 );
@@ -687,6 +717,7 @@ class Server
                 return $this->rowAction(
                     // With value xxx
                     $action[2][0],
+
                     // It's a delete action
                     "delete"
                 );
@@ -732,8 +763,10 @@ class Server
         return str_replace(
             // Unsafe
             array("\\", "\x00", "\n", "\r", "'", '"', "\x1a"),
+
             // Sanitized
             array("\\\\", "\\0", "\\n", "\\r", "\'", '\"', "\\Z"),
+
             // Original input
             $insecureInput
         );
@@ -755,12 +788,14 @@ class Server
         $decodedJSON = json_decode(
             // JSON input
             $_POST['JSON'],
+
             // to array
             true
         );
 
-        if (!is_array($decodedJSON) ||
-            sizeof($decodedJSON) < 1) {
+        // If the size of decoded JSON < 1 or not a array
+        if (!is_array($decodedJSON) || sizeof($decodedJSON) < 1) {
+            // return error
             return array(
                 "Error" => "Please post JSON",
                 "Fix" => "Failed to decode JSON",
@@ -780,16 +815,20 @@ class Server
                 $SQLcommand = sprintf(
                     // Select .. FROM `database`
                     "SELECT %s FROM `%s`",
+
                     // Select * (all)
                     "*",
+
                     // Escape the database
                     $this->escapeString(
                         // Replace insecure fields
                         preg_replace(
                             // `
                             "/`/",
+
                             // to \\`
                             "\\`",
+
                             // in $databaseName
                             $databaseName
                         )
@@ -806,6 +845,7 @@ class Server
                         array(
                             // Missing value
                             "Error" => "Can not update nothing",
+
                             // Which one?
                             "Fix" => "Use: values[[key, value]]",
                         )
@@ -815,14 +855,17 @@ class Server
                 $SQLcommand = sprintf(
                     // Select .. FROM `database`
                     "UPDATE `%s` SET ",
+
                     // Escape the database
                     $this->escapeString(
                         // Replace insecure fields
                         preg_replace(
                             // `
                             "/`/",
+
                             // to \\`
                             "\\`",
+
                             // in $databaseName
                             $databaseName
                         )
@@ -841,8 +884,10 @@ class Server
                         preg_replace(
                             // `
                             "/`/",
+
                             // to \\`
                             "\\`",
+
                             // in $databaseName
                             $databaseName
                         )
@@ -858,6 +903,7 @@ class Server
                     array(
                         // Invalid request
                         "Error" => "Invalid request",
+
                         // Invalid action
                         "Request" => $action,
                     )
@@ -905,6 +951,7 @@ class Server
                             array(
                                 // Show error
                                 "Error" => "Incorrect number of (set) parameters [Expected: 2]",
+
                                 // Return sended values
                                 "Where" => $decodedJSON['values'][$i],
                             )
@@ -1030,10 +1077,13 @@ class Server
                                     // distance(latitude, longitude, $lat, $lon) is a custom function.
                                     $SQLcommand .= sprintf(
                                         "distance(latitude, longitude, :%s, :%s) < :%s",
+
                                         // Latitude Parameter ID
                                         $latParamID,
+
                                         // Longitude Parameter ID
                                         $lonParamID,
+
                                         // Distance Parameter ID
                                         $disParamID
                                     );
@@ -1041,10 +1091,13 @@ class Server
                                     // Append our special calculatoion function to the SQL command
                                     $SQLcommand .= sprintf(
                                         "ST_Distance(point (latitude, longitude), point (:%s, :%s)) < :%s",
+
                                         // Latitude Parameter ID
                                         $latParamID,
+
                                         // Longitude Parameter ID
                                         $lonParamID,
+
                                         // Distance Parameter ID
                                         $disParamID
                                     );
@@ -1078,6 +1131,7 @@ class Server
                             array(
                                 // Show error
                                 "Error" => "Incorrect number of (where) parameters [Expected: 3]",
+
                                 // Return values
                                 "Where" => $decodedJSON['where'][$i],
                             )
@@ -1105,6 +1159,7 @@ class Server
             $this->queryWithParameters(
                 // SQL Command
                 $SQLcommand,
+
                 // Our bindings
                 $bindings
             )
@@ -1268,8 +1323,10 @@ class Server
             $this->db->sqliteCreateFunction(
                 // Distance
                 'DISTANCE',
+
                 // Distance calculation function
                 'BaaS\Server::sqlDistanceFunction',
+
                 // Custom function expect 4 parameters
                 4
             );
@@ -1296,8 +1353,10 @@ class Server
             $stmt->bindValue(
                 // :key
                 $bindKey,
+
                 // value
                 $bindValue,
+
                 // Type (Only text supported right now)
                 ($this->dbConfig['type'] == "sqlite" ? SQLITE3_TEXT : \PDO::PARAM_STR)
             );
@@ -1357,10 +1416,19 @@ class Server
              * @var string
              */
             $newQuery = preg_replace(
+                // :bindKey
                 '/:' . $bindKey . '/',
+
+                // to ?
                 '?',
+
+                // In new Query
                 $newQuery,
+
+                // one time
                 1,
+
+                // Count
                 $count
             );
 
@@ -1440,6 +1508,7 @@ class Server
                         sprintf(
                             // sqlite:DBName.sqlite
                             'sqlite:%s',
+
                             // Database Path
                             $this->database['path']
                         )
@@ -1524,6 +1593,7 @@ class Server
         $query = sprintf(
             // Query
             "SHOW columns from `%s`;",
+            
             // Replace %s with tableName
             $this->escapeString(
                 // Escape `
@@ -1594,9 +1664,10 @@ class Server
         // Overwrite PHP
         header(
             sprintf(
-                "X-Powered-By: BaaS/%s%s (https://github.com/wdg/BaaS)",
-                $this->APIVer,
-                $this->debugmode ? ' (Debugmode)' : ''
+                "X-Powered-By: BaaS/%s (https://github.com/wdg/BaaS)",
+
+                // API Version
+                $this->APIVer
             )
         );
 
@@ -1620,6 +1691,7 @@ class Server
             sprintf(
                 // Expire after %s
                 "Expires: %s",
+
                 // %s = current time + 10 seconds
                 gmdate('D, d M Y H:i:s \G\M\T', time() + 10)
             )
@@ -1647,24 +1719,27 @@ class Server
                 // Connect to our SQLite database
                 if ($this->dbConfig['type'] == "mysql") {
                     // If defined $this->dbConfig['host'], $this->dbConfig['name'],
-                    // $this->dbConfig['user'], $this->dbConfig['pass']WORD
+                    // $this->dbConfig['user']
                     if (!empty($this->dbConfig['host']) &&
                         !empty($this->dbConfig['name']) &&
-                        !empty($this->dbConfig['user']) &&
-                        !empty($this->dbConfig['pass'])) {
+                        !empty($this->dbConfig['user'])) {
                         // Then let's try to connect!
                         $this->db = new \PDO(
-                            // mysql:host=$this->dbConfig['host'];
-                            // dbname=$this->dbConfig['name'];charset=UTF8
                             sprintf(
+                                // mysql:host=$this->dbConfig['host'];
+                                // dbname=$this->dbConfig['name'];charset=UTF8
                                 "mysql:host=%s;dbname=%s;charset=UTF8",
+
                                 // Host
                                 $this->dbConfig['host'],
+
                                 // DB Name
                                 $this->dbConfig['name']
                             ),
+
                             // Username
                             $this->dbConfig['user'],
+
                             // Password
                             $this->dbConfig['pass']
                         );
@@ -1678,6 +1753,7 @@ class Server
                             sprintf(
                                 // sqlite:DBName.sqlite
                                 'sqlite:%s',
+
                                 // Database Path
                                 $this->database['path']
                             )
@@ -1715,6 +1791,7 @@ class Server
                 array(
                     // Show error message
                     "Error" => "PDOException happend!",
+                    
                     // Show the exception
                     "Exception" => $exception->getMessage(),
                 )
@@ -1728,6 +1805,7 @@ class Server
                 array(
                     // Show error message
                     "Error" => "Exception happend!",
+                    
                     // Show the exception
                     "Exception" => $exception->getMessage(),
                 )
@@ -1740,6 +1818,7 @@ class Server
             array(
                 // Show error message
                 "Error" => "Uncought exception!",
+                
                 // Show the exceptional message
                 "Exception" => $exception,
             )
