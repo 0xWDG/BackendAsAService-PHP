@@ -258,8 +258,8 @@ class Server
                         // Say wrong APIKey
                         header("API-Key: Invalid");
 
-                        // Exit, blocked.
-                        exit(
+                        // blocked.
+                        echo (
                             json_encode(
                                 array(
                                     'Warning' => sprintf(
@@ -277,6 +277,10 @@ class Server
                                 )
                             )
                         );
+
+                        // Exit
+                        // 0 means no error, since we'll want to output the error.
+                        exit(0);
 
                         // You're still blocked
                         return false;
@@ -318,7 +322,7 @@ class Server
         // Say wrong APIKey
         header("API-Key: Invalid");
 
-        exit(
+        echo (
             json_encode(
                 array(
                     'WARNING' => sprintf(
@@ -336,6 +340,10 @@ class Server
                 )
             )
         );
+
+        // Exit
+        // 0 means no error, since we'll want to output the error.
+        exit(0);
 
         return false;
     }
@@ -618,7 +626,7 @@ class Server
 
         // Check if block file path is writeable
         if (!is_writeable($this->blockFilePath)) {
-            // Exit with a error, we cannot continue now.
+            // error, we cannot continue now.
             return json_encode(
                 array(
                     // File path is not writeable
