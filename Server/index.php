@@ -39,10 +39,10 @@ $server->setTriesTime("+24 hours");
 
 // Set debug level (overwrites Maximum retries)
 // Default: off
-$server->setDebugmode(on);
+$server->setDebugmode(true);
 
 // DO NEVER USE setAlwaysLoggedIn.
-$server->setAlwaysLoggedIn(on);
+$server->setAlwaysLoggedIn(true);
 
 // Serve
 echo $server->serve();

@@ -1746,12 +1746,3 @@ class Server
         );
     }
 }
-
-// define on = true
-define('on', true);
-
-// define off = false
-define('off', false);
-
-// define auto = true
-define('auto', true);
