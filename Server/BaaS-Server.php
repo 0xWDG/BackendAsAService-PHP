@@ -106,7 +106,7 @@ class Server
      * Database Configuration
      *
      * @since 1.0
-     * @var mixed database configuration
+     * @var mixed $database database configuration
      */
     private $database = array(
         'path' => 'Data/database.sqlite',
@@ -114,6 +114,26 @@ class Server
         'name' => '',
         'user' => '',
         'pass' => '',
+    );
+
+    /**
+     * HTTP Protocol
+     *
+     * @since 1.0
+     * @var string $protocol The protocol
+     */
+    private $protocol = 'HTTP/1.1';
+
+    /**
+     * return HTTP codes
+     *
+     * @since 1.0
+     * @var string|array $errorCode Return this error codes
+     */
+    private $errorCode = array(
+        'blocked' => 406,
+        'invalidRequest' => 501,
+        'ok' => 200,
     );
 
     /**
@@ -246,14 +266,7 @@ class Server
                 } else {
                     // Check if not in debug mode
                     if (!$this->debugmode) {
-                        // Send new headers.
-                        if (function_exists('http_response_code')) {
-                            // Set header to forbidden
-                            http_response_code(403);
-                        } else {
-                            // Fallback for older servers.
-                            header("HTTP/1.0 403 Forbidden");
-                        }
+                        $this->set_http_code($this->errorCode['blocked']);
 
                         // Say wrong APIKey
                         header("API-Key: Invalid");
@@ -311,13 +324,7 @@ class Server
         $this->setAttempt($_SERVER['REMOTE_ADDR']);
 
         // Send new headers.
-        if (function_exists('http_response_code')) {
-            // Set header to forbidden
-            http_response_code(403);
-        } else {
-            // Fallback for older servers.
-            header("HTTP/1.0 403 Forbidden");
-        }
+        $this->set_http_code($this->errorCode['blocked']);
 
         // Say wrong APIKey
         header("API-Key: Invalid");
@@ -416,15 +423,16 @@ class Server
 
                         // Santisize input
                         $this->escapeString(
-                        preg_replace(
-                            // `
-                            "/`/", 
+                            preg_replace(
+                                // `
+                                "/`/",
 
-                            // \`
-                            "\\`", 
+                                // \`
+                                "\\`",
 
-                            // tableName
-                            $tableName
+                                // tableName
+                                $tableName
+                            )
                         )
                     )
                     // FetchColumns is more then 0 then the table exists.
@@ -445,10 +453,10 @@ class Server
                     $this->escapeString(
                         preg_replace(
                             // `
-                            "/`/", 
+                            "/`/",
 
                             // \`
-                            "\\`", 
+                            "\\`",
 
                             // tableName
                             $tableName
@@ -676,11 +684,11 @@ class Server
             );
         }
 
-        // No admin action, so we'll need to check the API KEY
-        $this->checkAPIKey();
-
         // Handle /row.get/xxx methods
         if (preg_match_all("/row\.get(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+            // check the API KEY
+            $this->checkAPIKey();
+
             // If /row.get/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Run "rowAction"
@@ -696,6 +704,9 @@ class Server
 
         // Handle /row.set/xxx methods
         if (preg_match_all("/row\.set(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+            // check the API KEY
+            $this->checkAPIKey();
+
             // If /row.set/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Parse and echo
@@ -711,6 +722,9 @@ class Server
 
         // Handle /row.delete/xxx methods
         if (preg_match_all("/row\.delete(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+            // check the API KEY
+            $this->checkAPIKey();
+
             // If /row.delete/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Parse and echo
@@ -726,6 +740,9 @@ class Server
 
         // Handle /row.insert/xxx methods
         if (preg_match_all("/row\.insert(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+            // check the API KEY
+            $this->checkAPIKey();
+
             // If /row.insert/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Parse and echo
@@ -735,6 +752,105 @@ class Server
                 );
             }
         }
+
+        // Handle /table.create/xxx methods
+        if (preg_match_all("/table\.create(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+            // check the API KEY
+            $this->checkAPIKey();
+
+            // If /table.create/MAYNOTBEEMPTY is nog empty
+            if (!empty($action[2][0])) {
+                // Parse and echo
+                return $this->invalidRequest(
+                    // With value xxx
+                    $action[2][0]
+                );
+            }
+        }
+
+        // Handle /table.append/xxx methods
+        if (preg_match_all("/table\.append(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+            // check the API KEY
+            $this->checkAPIKey();
+
+            // If /table.append/MAYNOTBEEMPTY is nog empty
+            if (!empty($action[2][0])) {
+                // Parse and echo
+                return $this->invalidRequest(
+                    // With value xxx
+                    $action[2][0]
+                );
+            }
+        }
+
+        // Handle /table.empty/xxx methods
+        if (preg_match_all("/table\.empty(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+            // check the API KEY
+            $this->checkAPIKey();
+
+            // If /table.empty/MAYNOTBEEMPTY is nog empty
+            if (!empty($action[2][0])) {
+                // Parse and echo
+                return $this->invalidRequest(
+                    // With value xxx
+                    $action[2][0]
+                );
+            }
+        }
+
+        // Handle /table.remove/xxx methods
+        if (preg_match_all("/table\.remove(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+            // check the API KEY
+            $this->checkAPIKey();
+
+            // If /table.remove/MAYNOTBEEMPTY is nog empty
+            if (!empty($action[2][0])) {
+                // Parse and echo
+                return $this->invalidRequest(
+                    // With value xxx
+                    $action[2][0]
+                );
+            }
+        }
+
+        // Oh, dear, that is a invalid request.
+        return $this->invalidRequest();
+    }
+
+    /**
+     * Invalid request
+     *
+     * @since 1.0
+     * @param string $request the type/value
+     * @return string JSON Error.
+     */
+    private function invalidRequest($request = 'Unknown')
+    {
+        // Set HTTP status code
+        $this->set_http_code($this->errorCode['invalidRequest']);
+
+        // Explode the "uri" split all /'es
+        $requestedURI = explode("/", $_SERVER['REQUEST_URI']);
+
+        // Get current method
+        $method = (sizeof($requestedURI) > 2) ? $requestedURI[sizeof($requestedURI) - 2] : 'Unknown';
+
+        // Display error to the user
+        return json_encode(
+            array(
+                // Error Message
+                "Error" => "Method not implented.",
+
+                // Get current Method
+                "Method" => $method,
+
+                // Wit. data
+                "Data" => $request,
+
+                // Requested URI
+                "ReqURI" => $_SERVER['REQUEST_URI'],
+            )
+        );
     }
 
     /**
@@ -811,6 +927,7 @@ class Server
         // What do we need to do?
         switch ($action) {
             // Get something
+            // row.get
             case 'get':
                 $SQLcommand = sprintf(
                     // Select .. FROM `database`
@@ -837,6 +954,7 @@ class Server
                 break;
 
             // Set/Update something
+            // row.set
             case 'set':
                 // Check if we have values
                 if (!isset($decodedJSON['values'])) {
@@ -874,6 +992,7 @@ class Server
                 break;
 
             // Delete something
+            // row.delete
             case 'delete':
                 $SQLcommand = sprintf(
                     // Select .. FROM `database`
@@ -1539,6 +1658,7 @@ class Server
      */
     private function rowInsert($action)
     {
+        // row.insert
         // Check if the table exists
         if (!$this->tableExists($action)) {
             // Return a error, it does not exists.
@@ -1593,7 +1713,7 @@ class Server
         $query = sprintf(
             // Query
             "SHOW columns from `%s`;",
-            
+
             // Replace %s with tableName
             $this->escapeString(
                 // Escape `
@@ -1642,6 +1762,11 @@ class Server
      */
     public function __construct()
     {
+        // Get the HTTP Protocol
+        $this->protocol = (
+            isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1'
+        );
+
         // Create a temporary array
         $checkWritePermissions = explode("/", $this->BFfile);
 
@@ -1791,7 +1916,7 @@ class Server
                 array(
                     // Show error message
                     "Error" => "PDOException happend!",
-                    
+
                     // Show the exception
                     "Exception" => $exception->getMessage(),
                 )
@@ -1805,7 +1930,7 @@ class Server
                 array(
                     // Show error message
                     "Error" => "Exception happend!",
-                    
+
                     // Show the exception
                     "Exception" => $exception->getMessage(),
                 )
@@ -1818,10 +1943,151 @@ class Server
             array(
                 // Show error message
                 "Error" => "Uncought exception!",
-                
+
                 // Show the exceptional message
                 "Exception" => $exception,
             )
         );
+    }
+
+    /**
+     * Set the HTTP Status Code
+     *
+     * @since 1.0
+     * @param int $code HTTP Status Code
+     */
+    private function set_http_code($code = 200)
+    {
+        switch ($code) {
+            case 100:
+                $text = 'Continue';
+                break;
+            case 101:
+                $text = 'Switching Protocols';
+                break;
+            case 200:
+                $text = 'OK';
+                break;
+            case 201:
+                $text = 'Created';
+                break;
+            case 202:
+                $text = 'Accepted';
+                break;
+            case 203:
+                $text = 'Non-Authoritative Information';
+                break;
+            case 204:
+                $text = 'No Content';
+                break;
+            case 205:
+                $text = 'Reset Content';
+                break;
+            case 206:
+                $text = 'Partial Content';
+                break;
+            case 300:
+                $text = 'Multiple Choices';
+                break;
+            case 301:
+                $text = 'Moved Permanently';
+                break;
+            case 302:
+                $text = 'Moved Temporarily';
+                break;
+            case 303:
+                $text = 'See Other';
+                break;
+            case 304:
+                $text = 'Not Modified';
+                break;
+            case 305:
+                $text = 'Use Proxy';
+                break;
+            case 400:
+                $text = 'Bad Request';
+                break;
+            case 401:
+                $text = 'Unauthorized';
+                break;
+            case 402:
+                $text = 'Payment Required';
+                break;
+            case 403:
+                $text = 'Forbidden';
+                break;
+            case 404:
+                $text = 'Not Found';
+                break;
+            case 405:
+                $text = 'Method Not Allowed';
+                break;
+            case 406:
+                $text = 'Not Acceptable';
+                break;
+            case 407:
+                $text = 'Proxy Authentication Required';
+                break;
+            case 408:
+                $text = 'Request Time-out';
+                break;
+            case 409:
+                $text = 'Conflict';
+                break;
+            case 410:
+                $text = 'Gone';
+                break;
+            case 411:
+                $text = 'Length Required';
+                break;
+            case 412:
+                $text = 'Precondition Failed';
+                break;
+            case 413:
+                $text = 'Request Entity Too Large';
+                break;
+            case 414:
+                $text = 'Request-URI Too Large';
+                break;
+            case 415:
+                $text = 'Unsupported Media Type';
+                break;
+            case 500:
+                $text = 'Internal Server Error';
+                break;
+            case 501:
+                $text = 'Not Implemented';
+                break;
+            case 502:
+                $text = 'Bad Gateway';
+                break;
+            case 503:
+                $text = 'Service Unavailable';
+                break;
+            case 504:
+                $text = 'Gateway Time-out';
+                break;
+            case 505:
+                $text = 'HTTP Version not supported';
+                break;
+            default:
+                $code = 200;
+                $text = 'OK';
+                break;
+        }
+
+        // Set HTTP code
+        if (function_exists('http_response_code')) {
+            // http_response_code
+            http_response_code($code);
+        } else {
+            // Fallback for older servers.
+            header(
+                "%s %s %s",
+                $this->protocol,
+                $code,
+                $text
+            );
+        }
     }
 }
