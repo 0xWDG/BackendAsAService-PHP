@@ -1,3 +1,14 @@
+<!--
+    Hi,
+
+    This HTML file will be compressed by the BaaS Server.
+    Please note that ALL HTML comments will be removed.
+    ", " will be compressed to ",".
+    Newlines will be removed.
+
+    (c) Wesley de Groot, Et al.
+    https://github.com/wdg/BaaS
+-->
 <!DOCTYPE html>
 <html>
 
@@ -44,6 +55,11 @@
     .header .left {
         width: 19%;
         font-weight: bold;
+    }
+
+    .header .left small {
+        font-size: 12px;
+        font-weight: normal;
     }
 
     .header .right {
@@ -106,6 +122,7 @@
     .footer {
         padding-top: 20px;
         text-align: center;
+        font-size: 15px;
     }
 
     .footer a {
@@ -118,9 +135,12 @@
 
 <body>
     <div class='header'>
-        <div class='left'>BaaS Administration</div>
+        <div class='left'>
+            BaaS Administration
+        </div>
         <div class='right'>
             <ul>
+                <!-- Checks if the user is logged in, otherwise hide this information -->
                 <!-- {%USER_LOGGEDIN%} -->
                 <li><a href='db.admin/tables.display'>Display tables</a></li>
                 <li><a href='db.admin/tables.create'>Create table</a></li>
@@ -137,7 +157,20 @@
         <div class='body'>{%Contents%}</div>
         <div class='footer'>&nbsp;</div>
     </div>
-    <div class="footer">&copy;&nbsp;<a target='_blank' href='https://wesleydegroot.nl'>Wesley de Groot</a>,&nbsp;<a target='_blank' href='https://github.com/wdg/BaaS/'>et. al</a>,&nbsp;All Rights Reserved.</div>
+    <!-- Please leave the &nbsp; intact, ", " will be compressed to "," in the BaaS Server to reduce output -->
+    <!-- HTML Comments will be removed also -->
+    <div class="footer">
+        <b>B</b>ackend&nbsp;<b>a</b>s&nbsp;<b>a</b>&nbsp;<b>S</b>ervice&nbsp;(BaaS)<br />
+        <!-- {%USER_LOGGEDIN%} -->
+        <small>
+                Version:&nbsp;{%BaaS_Version%},&nbsp;
+                API Version:&nbsp;{%BaaS_API_Version%},&nbsp;
+                Build:&nbsp;{%BaaS_Build%}
+            </small>
+        <br /><br />
+        <!-- {%END_USER_LOGGEDIN%} -->
+        &copy;&nbsp;<a target='_blank' href='https://wesleydegroot.nl'>Wesley de Groot</a>,&nbsp;<a target='_blank' href='https://github.com/wdg/BaaS/'>et. al</a>,&nbsp;All Rights Reserved.
+    </div>
 </body>
 
 </html>

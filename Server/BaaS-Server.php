@@ -5,15 +5,47 @@
 namespace BaaS;
 
 /**
- * Class 'BaaS_Server'
- * Backend as a Service Server
+ * Class 'Server'
+ * Backend as a Service Server (BaaS Server)
  *
  * @version 1.0
- * @copyright Wesley de Groot
+ * @copyright Wesley de Groot (https://wesleydegroot.nl), et al.
+ * @link https://github.com/wdg/BaaS
+ * @url https://github.com/wdg/BaaS
  * @package BaaS
  */
 class Server
 {
+    /**
+     * BaaS version
+     *
+     * This one will never be exposed to the outside world.
+     *
+     * @since 1.0
+     * @var string $version BaaS Version number
+     */
+    private $version = "1.0";
+
+    /**
+     * BaaS build
+     *
+     * This one will never be exposed to the outside world.
+     *
+     * @since 1.0
+     * @var string $build BaaS build number
+     */
+    private $build = "181207 Beta";
+
+    /**
+     * Set API Version
+     *
+     * The API Version which we'll use to connect to.
+     *
+     * @since 1.0
+     * @var string $APIVer API Version
+     */
+    private $APIVer = "1.0";
+
     /**
      * Debugmode
      *
@@ -69,14 +101,6 @@ class Server
      * @var string $blockFilePath Directory location
      */
     private $blockFilePath = "BFlog/";
-
-    /**
-     * Set API Version
-     *
-     * @since 1.0
-     * @var string $APIVer API Version
-     */
-    private $APIVer = "1.0";
 
     /**
      * is current user an Admin?
@@ -1714,6 +1738,42 @@ class Server
                 $adminTemplate
             );
         }
+
+        // Replace BaaS_Version
+        $adminTemplate = preg_replace(
+            // Replace {%BaaS_Version%}
+            "/{%BaaS_Version%}/",
+
+            // With
+            $this->version,
+
+            // In admin template
+            $adminTemplate
+        );
+
+        // Replace BaaS_Build
+        $adminTemplate = preg_replace(
+            // Replace {%BaaS_Build%}
+            "/{%BaaS_Build%}/",
+
+            // With
+            $this->build,
+
+            // In admin template
+            $adminTemplate
+        );
+
+        // Replace BaaS_API_Version
+        $adminTemplate = preg_replace(
+            // Replace {%BaaS_API_Version%}
+            "/{%BaaS_API_Version%}/",
+
+            // With
+            $this->APIVer,
+
+            // In admin template
+            $adminTemplate
+        );
 
         // create a search array
         $search = array(
