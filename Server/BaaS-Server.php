@@ -187,14 +187,17 @@ class Server
                 // If host/path name is not empty
                 if (!empty($hostOrPath)) {
                     // Check if the path is writeable
-                    if (is_writable($hostOrPath)) {
+                    if (is_writable($hostOrPath) || touch($hostOrPath)) {
                         // Set the path
                         $this->dbConfig['path'] = $hostOrPath;
                     } else {
                         // Error
                         $this->error = true;
                         // Path is not writeable
-                        $this->errorMessage = "Path is not writeable";
+                        $this->errorMessage = sprintf(
+                            "Path \"%s\" is not writeable",
+                            $hostOrPath
+                        );
                     }
                 }
                 break;
