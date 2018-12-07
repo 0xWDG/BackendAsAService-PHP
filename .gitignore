@@ -12,7 +12,7 @@ Framework/build/XCBuildData
 Server/build
 Server/__*
 Server/*.sqllite
-Server/*.min.html
+*.min.html
 
 # Do not include databases
 *.db
