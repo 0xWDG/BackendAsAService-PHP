@@ -322,13 +322,16 @@ class Server
                                     // Send Status
                                     "Status" => "Failed",
 
-                                    'Warning' => sprintf(
-                                        "You are blocked from using this service."
-                                    ),
+                                    // Send the warning message
+                                    'Warning' => "You are blocked from using this service.",
+
+                                    // Send some details
                                     'Details' => sprintf(
                                         "BaaS/%s, Connection: Close, IP-Address: %s",
                                         $this->APIVer, $_SERVER['REMOTE_ADDR']
                                     ),
+
+                                    // Return the API Key
                                     'APIKey' => (
                                         isset($_POST['APIKey'])
                                         ? $_POST['APIKey']
@@ -387,13 +390,16 @@ class Server
                     // Send Status
                     "Status" => "Failed",
 
-                    'Warning' => sprintf(
-                        "You are using an invalid API key for this service."
-                    ),
+                    // Send warning
+                    'Warning' => "You are using an invalid API key for this service.",
+
+                    // Send details
                     'Details' => sprintf(
                         "BaaS/%s, Connection: Close, IP-Address: %s",
                         $this->APIVer, $_SERVER['REMOTE_ADDR']
                     ),
+
+                    // Send API key back
                     'APIKey' => (
                         isset($_POST['APIKey']) ? $_POST['APIKey'] : (
                             json_decode($_POST['JSON'])->APIKey ? json_decode($_POST['JSON'])->APIKey : 'None prodived'
@@ -471,8 +477,13 @@ class Server
                     // Send Status
                     "Status" => "Failed",
 
+                    // Send error message
                     "Error" => "Not connected to a database",
+
+                    // Send how-to-fix
                     "Fix" => "Please check the database configuration",
+
+                    // Send debug text if debugmode is on.
                     "Debug" => ($this->debugmode ? $this->dbConfig : 'Off'),
                 )
             );
@@ -732,7 +743,10 @@ class Server
                     // Send Status
                     "Status" => "Failed",
 
+                    // Send Error message
                     "Error" => "Missing server type, cannot continue.",
+
+                    // Send how-to-fix
                     "Fix" => "Please review your configuration settings",
                 )
             );
@@ -744,10 +758,18 @@ class Server
                     // Send Status
                     "Status" => "Failed",
 
+                    // Send Error message
                     "Error" => sprintf("Failed to connect to the %s database", $this->dbConfig['type']),
+
+                    // Send how-to-fix
                     "Fix" => "Please review your configuration settings",
+
+                    // Send server information
                     "Server" => array(
+                        // Send server type
                         "Type" => $this->dbConfig['type'],
+
+                        // Send server status
                         "Status" => (
                             $this->dbConfig['type'] == 'mysql'
                             ? $this->isTheServerAvailable($this->dbConfig['host'])
@@ -784,9 +806,14 @@ class Server
                     // Send Status
                     "Status" => "Failed",
 
+                    // Send error message
                     "Error" => "Not connected to a database!",
+
+                    // Send how-to-fix
                     "Fix" => "Set database configuration.",
-                    "DBType" => $this->dbConfig['type'],
+
+                    // Send server/database type
+                    "Type" => $this->dbConfig['type'],
                 )
             );
         }
@@ -1049,6 +1076,62 @@ class Server
     }
 
     /**
+     * Create table
+     *
+     * @since 1.0
+     * @param string $tableName the table name
+     * @return mixed
+     */
+    private function tableCreate($tableName)
+    {
+        /*
+    CREATE TABLE `x` (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `latitude` text DEFAULT NULL,
+    `longitude` text DEFAULT NULL,
+    `x` text DEFAULT NULL,
+    PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1
+     */
+    }
+
+    /**
+     * Append column to table
+     *
+     * @since 1.0
+     * @param string $tableName the table name
+     * @return mixed
+     */
+    private function tableAppend($tableName)
+    {
+
+    }
+
+    /**
+     * Empty table
+     *
+     * @since 1.0
+     * @param string $tableName the table name
+     * @return mixed
+     */
+    private function tableEmpty($tableName)
+    {
+
+    }
+
+    /**
+     * Remove table
+     *
+     * @since 1.0
+     * @param string $tableName the table name
+     * @return mixed
+     */
+    private function tableRemove($tableName)
+    {
+
+    }
+
+    /**
      * SQL query
      *
      * @since 1.0
@@ -1110,7 +1193,11 @@ class Server
             return array(
                 // Send Status
                 "Status" => "Failed",
+
+                // Send error
                 "Error" => "Please post JSON",
+
+                // Send how-to-fix
                 "Fix" => "Failed to decode JSON",
             );
         }
@@ -1261,7 +1348,16 @@ class Server
                         // values %s = firstParameter
                         $SQLcommand .= sprintf(
                             "`%s` = :%s",
-                            preg_replace("/`/", "\\`", $firstParameter),
+                            preg_replace(
+                                // Replace `
+                                "/`/",
+
+                                // With \`
+                                "\\`",
+
+                                // in
+                                $firstParameter
+                            ),
                             $paramID
                         );
 
@@ -1331,7 +1427,16 @@ class Server
                                 // where %s = firstParameter
                                 $SQLcommand .= sprintf(
                                     "`%s` = :%s",
-                                    preg_replace("/`/", "\\`", $firstParameter),
+                                    preg_replace(
+                                        // Replace `
+                                        "/`/",
+
+                                        // With \`
+                                        "\\`",
+
+                                        // in
+                                        $firstParameter
+                                    ),
                                     $paramID
                                 );
 
@@ -1353,7 +1458,16 @@ class Server
                                 // where %s = firstParameter
                                 $SQLcommand .= sprintf(
                                     "`%s` != :%s",
-                                    preg_replace("/`/", "\\`", $firstParameter),
+                                    preg_replace(
+                                        // Replace `
+                                        "/`/",
+
+                                        // With \`
+                                        "\\`",
+
+                                        // in
+                                        $firstParameter
+                                    ),
                                     $paramID
                                 );
 
@@ -1374,7 +1488,16 @@ class Server
                                 // where %s = firstParameter
                                 $SQLcommand .= sprintf(
                                     "`%s` LIKE :%s",
-                                    preg_replace("/`/", "\\`", $firstParameter),
+                                    preg_replace(
+                                        // Replace `
+                                        "/`/",
+
+                                        // With \`
+                                        "\\`",
+
+                                        // in
+                                        $firstParameter
+                                    ),
                                     $paramID
                                 );
 
@@ -1539,15 +1662,13 @@ class Server
 
         // Replace title
         $adminTemplate = preg_replace(
+            // Replace {%Title%}
             "/{%Title%}/",
-            $task,
-            $adminTemplate
-        );
 
-        // Replace Contents
-        $adminTemplate = preg_replace(
-            "/{%Contents%}/",
-            "Welcome Database Admin ($task).",
+            // With
+            $task,
+
+            // In admin template
             $adminTemplate
         );
 
@@ -1557,8 +1678,13 @@ class Server
 
             // Replace {%inOut%} to out (Logout)
             $adminTemplate = preg_replace(
+                // Replace {%inOut%}
                 "/{%inOut%}/",
+
+                // With
                 "out",
+
+                // In admin template
                 $adminTemplate
             );
         } else {
@@ -1566,18 +1692,84 @@ class Server
 
             // Replace {%inOut%} to in (Login)
             $adminTemplate = preg_replace(
+                // Replace {%inOut%}
                 "/{%inOut%}/",
+
+                // With
                 "in",
+
+                // In admin template
                 $adminTemplate
             );
 
             // Hide administration links
             $adminTemplate = preg_replace(
+                // Replace {%USER_LOGGEDIN%}
                 "/{%USER_LOGGEDIN%}(?s).*{%END_USER_LOGGEDIN%}/mi",
+
+                // With
                 "",
+
+                // In admin template
                 $adminTemplate
             );
         }
+
+        // create a search array
+        $search = array(
+            // strip whitespaces after tags, except space
+            '/\>[^\S ]+/s',
+
+            // strip whitespaces before tags, except space
+            '/[^\S ]+\</s',
+
+            // shorten multiple whitespace sequences
+            '/(\s)+/s',
+
+            // Remove HTML comments
+            '/<!--(.|\s)*?-->/',
+
+            // Remove all spaces after and before elements
+            '/\s?(,|:|;|>|}|{|>|<)\s?/',
+        );
+
+        // create a replace array
+        $replace = array(
+            // strip whitespaces after tags, except space
+            '>',
+            // strip whitespaces before tags, except space
+            '<',
+            // shorten multiple whitespace sequences
+            '\\1',
+            // Remove HTML comments
+            '',
+            // Remove all spaces after and before elements
+            '\\1',
+        );
+
+        // Minify template and return.
+        $adminTemplate = preg_replace(
+            // the search array
+            $search,
+
+            // the replace array
+            $replace,
+
+            // In admin template
+            $adminTemplate
+        );
+
+        // Replace Contents
+        $adminTemplate = preg_replace(
+            // Replace {%Contents%}
+            "/{%Contents%}/",
+
+            // With...
+            "Welcome Database Admin ($task).",
+
+            // In admin template
+            $adminTemplate
+        );
 
         // Return admin template
         return $adminTemplate;
@@ -1638,11 +1830,17 @@ class Server
             return array(
                 // Send Status
                 "Status" => "Failed",
+
+                // Send error
                 "Error" => sprintf(
                     "Table \"%s\" does not exists",
                     $table
                 ),
+
+                // Send table
                 "Table" => $table,
+
+                // Send request uri
                 "Request" => $_SERVER['REQUEST_URI'],
             );
         }
@@ -2077,7 +2275,16 @@ class Server
             // Replace %s with tableName
             $this->escapeString(
                 // Escape `
-                preg_replace("/`/", "\\`", $tableName)
+                preg_replace(
+                    // Replace `
+                    "/`/",
+
+                    // With \`
+                    "\\`",
+
+                    // in
+                    $tableName)
+
             )
         );
 
