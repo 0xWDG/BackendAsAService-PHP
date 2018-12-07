@@ -76,6 +76,13 @@
       "symbol": "BaaS.value(expression:inDatabase:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
+    },
+    {
+      "file": "/Users/wes/Cloud/GITHUB.COM/WDG/BaaS/Framework/BaaS/BaaS/BaaS.swift",
+      "line": 343,
+      "symbol": "BaaS.test()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
     }
   ],
   "source_directory": "/Users/wes/Cloud/GITHUB.COM/WDG/BaaS/Framework"

@@ -12,7 +12,7 @@ See: https://wdg.github.io/BaaS/
 <tr><td></td><td><b>Append to table</b></td><td>http://127.0.0.1:8000/index.php/table.append/$TABLE$</td></tr>
 <tr><td></td><td><b>Empty table</b></td><td>http://127.0.0.1:8000/index.php/table.empty/$TABLE$</td></tr>
 <tr><td></td><td><b>Remove table</b></td><td>http://127.0.0.1:8000/index.php/table.remove/$TABLE$</td></tr>
-<tr><td></td><td><b>Insert row</b></td><td>http://127.0.0.1:8000/index.php/row.insert/$TABLE$</td></tr>
+<tr><td>☑️</td><td><b>Insert row</b></td><td>http://127.0.0.1:8000/index.php/row.insert/$TABLE$</td></tr>
 <tr><td>☑️</td><td><b>Set row</b></td><td>http://127.0.0.1:8000/index.php/row.set/$TABLE$</td></tr>
 <tr><td>☑️</td><td><b>Get row</b></td><td>http://127.0.0.1:8000/index.php/row.get/$TABLE$</td></tr>
 <tr><td>☑️</td><td><b>Delete row</b></td><td>http://127.0.0.1:8000/index.php/row.del/$TABLE$</td></tr>

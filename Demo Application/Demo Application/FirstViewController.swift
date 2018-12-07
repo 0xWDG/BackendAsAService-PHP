@@ -58,8 +58,14 @@ class FirstViewController: UIViewController, BaaSDelegate {
             )
         )
         
+//        db.log(db.test())
         db.log(
-            db.test()
+            db.insert(
+                values: [
+                    "x": "Hello from Swift"
+                ],
+                inDatabase: "x"
+            )
         )
         
         super.viewDidLoad()

@@ -159,6 +159,25 @@ class Server
     );
 
     /**
+     * Defaults fields
+     *
+     * The fields which may be missing on insertion
+     *
+     * @since 1.0
+     * @var string|array $errorCode Return this error codes
+     */
+    private $defaultFields = array(
+        // ID field
+        "id",
+
+        // Latitude field
+        "latitude",
+
+        // Longitude field
+        "longitude",
+    );
+
+    /**
      * Set database configuration
      *
      * @since 1.0
@@ -300,10 +319,13 @@ class Server
                         echo (
                             json_encode(
                                 array(
+                                    // Send Status
+                                    "Status" => "Failed",
+
                                     'Warning' => sprintf(
                                         "You are blocked from using this service."
                                     ),
-                                    'DETAILS' => sprintf(
+                                    'Details' => sprintf(
                                         "BaaS/%s, Connection: Close, IP-Address: %s",
                                         $this->APIVer, $_SERVER['REMOTE_ADDR']
                                     ),
@@ -362,10 +384,13 @@ class Server
         echo (
             json_encode(
                 array(
-                    'WARNING' => sprintf(
+                    // Send Status
+                    "Status" => "Failed",
+
+                    'Warning' => sprintf(
                         "You are using an invalid API key for this service."
                     ),
-                    'DETAILS' => sprintf(
+                    'Details' => sprintf(
                         "BaaS/%s, Connection: Close, IP-Address: %s",
                         $this->APIVer, $_SERVER['REMOTE_ADDR']
                     ),
@@ -443,6 +468,9 @@ class Server
         if (!isset($this->db)) {
             echo json_encode(
                 array(
+                    // Send Status
+                    "Status" => "Failed",
+
                     "Error" => "Not connected to a database",
                     "Fix" => "Please check the database configuration",
                     "Debug" => ($this->debugmode ? $this->dbConfig : 'Off'),
@@ -701,6 +729,9 @@ class Server
         } else {
             echo json_encode(
                 array(
+                    // Send Status
+                    "Status" => "Failed",
+
                     "Error" => "Missing server type, cannot continue.",
                     "Fix" => "Please review your configuration settings",
                 )
@@ -710,6 +741,9 @@ class Server
         if (!isset($this->db)) {
             echo json_encode(
                 array(
+                    // Send Status
+                    "Status" => "Failed",
+
                     "Error" => sprintf("Failed to connect to the %s database", $this->dbConfig['type']),
                     "Fix" => "Please review your configuration settings",
                     "Server" => array(
@@ -730,6 +764,9 @@ class Server
         if ($this->error) {
             return json_encode(
                 array(
+                    // Send Status
+                    "Status" => "Failed",
+
                     // Database type is missing
                     "Error" => !empty($this->errorMessage)
                     ? $this->errorMessage
@@ -744,6 +781,9 @@ class Server
         if (empty($this->dbConfig['type'])) {
             return json_encode(
                 array(
+                    // Send Status
+                    "Status" => "Failed",
+
                     "Error" => "Not connected to a database!",
                     "Fix" => "Set database configuration.",
                     "DBType" => $this->dbConfig['type'],
@@ -757,6 +797,9 @@ class Server
                 // Missing, so return a error.
                 return json_encode(
                     array(
+                        // Send Status
+                        "Status" => "Failed",
+
                         // Database host is missing
                         "Error" => "No database host is entered",
 
@@ -770,6 +813,9 @@ class Server
                 // Missing, so return a error.
                 return json_encode(
                     array(
+                        // Send Status
+                        "Status" => "Failed",
+
                         // Database name is missing
                         "Error" => "No database name is entered",
 
@@ -783,6 +829,9 @@ class Server
                 // Missing, so return a error.
                 return json_encode(
                     array(
+                        // Send Status
+                        "Status" => "Failed",
+
                         // Database user is missing
                         "Error" => "No database user is entered",
 
@@ -804,6 +853,9 @@ class Server
             // error, we cannot continue now.
             return json_encode(
                 array(
+                    // Send Status
+                    "Status" => "Failed",
+
                     // File path is not writeable
                     "Error" => "File path is not writeable",
 
@@ -978,6 +1030,9 @@ class Server
         // Display error to the user
         return json_encode(
             array(
+                // Send Status
+                "Status" => "Failed",
+
                 // Error Message
                 "Error" => "Method not implented.",
 
@@ -1053,6 +1108,8 @@ class Server
         if (!is_array($decodedJSON) || sizeof($decodedJSON) < 1) {
             // return error
             return array(
+                // Send Status
+                "Status" => "Failed",
                 "Error" => "Please post JSON",
                 "Fix" => "Failed to decode JSON",
             );
@@ -1101,6 +1158,9 @@ class Server
                     // Return error message
                     return json_encode(
                         array(
+                            // Send Status
+                            "Status" => "Failed",
+
                             // Missing value
                             "Error" => "Can not update nothing",
 
@@ -1160,6 +1220,9 @@ class Server
                 return json_encode(
                     // Error messages
                     array(
+                        // Send Status
+                        "Status" => "Failed",
+
                         // Invalid request
                         "Error" => "Invalid request",
 
@@ -1208,6 +1271,9 @@ class Server
                         // Show error
                         return json_encode(
                             array(
+                                // Send Status
+                                "Status" => "Failed",
+
                                 // Show error
                                 "Error" => "Incorrect number of (set) parameters [Expected: 2]",
 
@@ -1388,6 +1454,9 @@ class Server
                         // Show error
                         return json_encode(
                             array(
+                                // Send Status
+                                "Status" => "Failed",
+
                                 // Show error
                                 "Error" => "Incorrect number of (where) parameters [Expected: 3]",
 
@@ -1567,6 +1636,8 @@ class Server
         // Check if table exists...
         if (!$this->tableExists($table)) {
             return array(
+                // Send Status
+                "Status" => "Failed",
                 "Error" => sprintf(
                     "Table \"%s\" does not exists",
                     $table
@@ -1803,18 +1874,34 @@ class Server
         if (!$this->tableExists($action)) {
             // Return a error, it does not exists.
             return array(
+                // Send Status
+                "Status" => "Failed",
+
+                // Table ... does not exists
                 "Error" => sprintf(
                     "Table \"%s\" does not exists",
                     $table
                 ),
+
+                // Table
                 "Table" => $table,
+
+                // Request
                 "Request" => $_SERVER['REQUEST_URI'],
             );
         }
 
+        // Check if we got some data
         if (!isset($_POST['JSON'])) {
+            // Return a error
             return array(
+                // Send Status
+                "Status" => "Failed",
+
+                // No JSON
                 "Error" => "Please post JSON",
+
+                // No JSON
                 "Fix" => "Post JSON",
             );
         }
@@ -1824,16 +1911,149 @@ class Server
          */
         $decodedJSON = json_decode($_POST['JSON'], true);
 
-        if (!is_array($decodedJSON) ||
-            sizeof($decodedJSON) < 1) {
+        // Check if we have undecoded the JSON
+        if (!is_array($decodedJSON) || sizeof($decodedJSON) < 1) {
+            // Could not decode
             return array(
-                "Error" => "Please post JSON",
+                // Send Status
+                "Status" => "Failed",
+
+                // Error message
+                "Error" => "Please post valid JSON",
+
+                // Fix
                 "Fix" => "Failed to decode JSON",
             );
         }
 
+        // Insert info ..
+        $SQLcommand = sprintf(
+            "INSERT INTO `%s` (",
+            // Escape the database
+            $this->escapeString(
+                // Replace insecure fields
+                preg_replace(
+                    // `
+                    "/`/",
+
+                    // to \\`
+                    "\\`",
+
+                    // in $databaseName
+                    $action
+                )
+            )
+        );
+
+        // Create empty string for values
+        $SQLValues = "";
+
+        // Get the current table fields / columns
+        $tableFields = $this->getTableFields($action);
+
+        // Comparing fields.
+        for ($i = 0; $i < sizeof($tableFields); $i++) {
+            // If not exists field, and may not be ignored
+            if (!isset($decodedJSON['values'][$tableFields[$i]]) &&
+                !in_array($tableFields[$i], $this->defaultFields)) {
+                // Return the error
+                return json_encode(
+                    array(
+                        // Send Status
+                        "Status" => "Failed",
+
+                        // Send error message
+                        "Error" => "Missing required parameter",
+
+                        // Send missing parameter
+                        "Parameter" => $tableFields[$i],
+
+                        // Send how to fix
+                        "Fix" => sprintf(
+                            "Provide parameter \"%s\".",
+                            $tableFields[$i]
+                        ),
+                    )
+                );
+            } else {
+                // Check if field is not ID
+                if ($tableFields[$i] != 'id') {
+                    // Append to SQL command string
+                    $SQLcommand .= sprintf(
+                        "`%s`, ",
+                        $tableFields[$i]
+                    );
+
+                    // Append to value string
+                    $SQLValues .= sprintf(
+                        "'%s', ",
+                        $this->escapeString(
+                            preg_replace(
+                                // Replace '
+                                "/'/",
+
+                                // With \'
+                                "\\'",
+
+                                // In JSONData[values][field]
+                                $decodedJSON['values'][$tableFields[$i]]
+                            )
+                        )
+                    );
+                }
+            }
+        }
+
+        // INSERT INTO ... (....) VALUES (....);
+        $SQLcommand = sprintf(
+            // Create the string
+            "%s) VALUES (%s);",
+
+            // Remove the extra ", " (2 characters) so 0, -2
+            substr($SQLcommand, 0, -2),
+
+            // Remove the extra ", " (2 characters) so 0, -2
+            substr($SQLValues, 0, -2)
+        );
+
+        // Run the query
+        $action = $this->db->query($SQLcommand);
+
+        // Get the row ID
+        $insertID = $this->db->lastInsertId();
+
+        // Check if insertion passed
+        if ($action) {
+            // Return
+            return json_encode(
+                array(
+                    // Send Status
+                    "Status" => "Success",
+
+                    // Send info
+                    "Info" => "Row inserted",
+
+                    // Send RowID
+                    "RowID" => $insertID,
+                )
+            );
+        }
+
+        // Failed...
         return json_encode(
-            $this->getTableFields($action)
+            array(
+                // Send Status
+                "Status" => "Failed",
+
+                // Send Error message
+                "Error" => "Could not insert row",
+
+                // Send how-to-fix
+                "Fix" => "Please try again later",
+
+                // Append debug fields (if debugmode is true)
+                "Debug" => ($this->debugmode ? $SQLcommand : 'Off'),
+            )
         );
     }
 
@@ -1970,7 +2190,10 @@ class Server
 
         // Set the "Block" file
         $this->BFfile = sprintf(
+            // Block file
             $this->BFfile,
+
+            // Replace %s with current IP-Address
             $_SERVER['REMOTE_ADDR']
         );
 
@@ -1978,15 +2201,19 @@ class Server
         $this->isAdmin = $this->isLoggedInAsAdmin();
     }
 
+    /**
+     * Is the server available?
+     *
+     * @since 1.0
+     * @param string $serverAddr Server address
+     * @return mixed|string Offline/Online
+     */
     private function isTheServerAvailable($serverAddr)
     {
+        // Connect to the MySQL Server
         $fp = fsockopen($serverAddr, 3306, $errno, $errstr);
 
-        // return ()
-        if (!$fp) {
-            echo "ERROR: $errno - $errstr<br />\n";
-        }
-
+        // Return offline, or online
         return (!$fp ? 'Offline' : 'Online');
     }
 
@@ -2004,6 +2231,9 @@ class Server
             // Return the error in JSON
             return json_encode(
                 array(
+                    // Send Status
+                    "Status" => "Failed",
+
                     // Show error message
                     "Error" => "PDOException happend!",
 
@@ -2018,6 +2248,9 @@ class Server
             // Return the error in JSON
             return json_encode(
                 array(
+                    // Send Status
+                    "Status" => "Failed",
+
                     // Show error message
                     "Error" => "Exception happend!",
 
@@ -2031,6 +2264,9 @@ class Server
         return json_encode(
             // Return the error in JSON
             array(
+                // Send Status
+                "Status" => "Failed",
+
                 // Show error message
                 "Error" => "Uncought exception!",
 
@@ -2166,16 +2402,24 @@ class Server
                 break;
         }
 
-        // Set HTTP code
+        // set response code
         if (function_exists('http_response_code')) {
-            // http_response_code
+            // set response code
             http_response_code($code);
         } else {
+            // set response code
             // Fallback for older servers.
             header(
+                // PROTOCOL CODE TEXT
                 "%s %s %s",
+
+                // Protocol
                 $this->protocol,
+
+                // HTTP-Code
                 $code,
+
+                // HTTP-Text
                 $text
             );
         }
