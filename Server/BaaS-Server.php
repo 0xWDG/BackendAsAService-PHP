@@ -87,6 +87,14 @@ class Server
     private $isAdmin = false;
 
     /**
+     * Are we running on a cli (command line interface)
+     *
+     * @since 1.0
+     * @var bool $isCLI is it a cli?
+     */
+    private $isCLI = (PHP_SAPI === 'cli');
+
+    /**
      * Is there a error
      *
      * @since 1.0
@@ -108,11 +116,20 @@ class Server
      * @since 1.0
      * @var mixed $database database configuration
      */
-    private $database = array(
+    private $dbConfig = array(
+        // Database Path
         'path' => 'Data/database.sqlite',
+
+        // Database Type
         'type' => '',
+
+        // Database Name
         'name' => '',
+
+        // Database Username
         'user' => '',
+
+        // Database Password
         'pass' => '',
     );
 
@@ -131,8 +148,13 @@ class Server
      * @var string|array $errorCode Return this error codes
      */
     private $errorCode = array(
+        // HTTP 406 = Not Acceptable
         'blocked' => 406,
+
+        // HTTP 501 = Not Implemented
         'invalidRequest' => 501,
+
+        // HTTP 200 = OK
         'ok' => 200,
     );
 
@@ -160,14 +182,14 @@ class Server
             // database type is SQLite
             case 'sqlite':
                 // Set database type to SQLite
-                $this->database['type'] = 'sqlite';
+                $this->dbConfig['type'] = 'sqlite';
 
                 // If host/path name is not empty
                 if (!empty($hostOrPath)) {
                     // Check if the path is writeable
                     if (is_writable($hostOrPath)) {
                         // Set the path
-                        $this->database['path'] = $hostOrPath;
+                        $this->dbConfig['path'] = $hostOrPath;
                     } else {
                         // Error
                         $this->error = true;
@@ -179,7 +201,7 @@ class Server
 
             case 'mysql':
                 // Set database type to MySQL
-                $this->database['type'] = 'mysql';
+                $this->dbConfig['type'] = 'mysql';
 
                 // Check if required information is not missing
                 if (empty($hostOrPath)) {
@@ -208,23 +230,23 @@ class Server
                 // If not empty
                 if (!empty($hostOrPath)) {
                     // Set the database host
-                    $this->database['host'] = $hostOrPath;
+                    $this->dbConfig['host'] = $hostOrPath;
                 }
 
                 // If not empty
                 if (!empty($databaseName)) {
                     // Set the database name
-                    $this->database['name'] = $databaseName;
+                    $this->dbConfig['name'] = $databaseName;
                 }
 
                 // If not empty
                 if (!empty($username)) {
                     // Set the database username
-                    $this->database['user'] = $username;
+                    $this->dbConfig['user'] = $username;
                 }
 
                 // Set the database password
-                $this->database['pass'] = $password;
+                $this->dbConfig['pass'] = $password;
                 break;
 
             default:
@@ -283,8 +305,13 @@ class Server
                                         $this->APIVer, $_SERVER['REMOTE_ADDR']
                                     ),
                                     'APIKey' => (
-                                        isset($_POST['APIKey']) ? $_POST['APIKey'] : (
-                                            json_decode($_POST['JSON'])->APIKey ? json_decode($_POST['JSON'])->APIKey : 'None prodived'
+                                        isset($_POST['APIKey'])
+                                        ? $_POST['APIKey']
+                                        :
+                                        (
+                                            json_decode($_POST['JSON'])->APIKey
+                                            ? json_decode($_POST['JSON'])->APIKey
+                                            : 'None prodived'
                                         )
                                     ),
                                 )
@@ -293,7 +320,7 @@ class Server
 
                         // Exit
                         // 0 means no error, since we'll want to output the error.
-                        exit(0);
+                        exit($this->$isCLI ? 1 : 0);
 
                         // You're still blocked
                         return false;
@@ -350,7 +377,7 @@ class Server
 
         // Exit
         // 0 means no error, since we'll want to output the error.
-        exit(0);
+        exit($this->$isCLI ? 1 : 0);
 
         return false;
     }
@@ -410,6 +437,18 @@ class Server
      */
     private function tableExists($tableName)
     {
+        if (!isset($this->db)) {
+            echo json_encode(
+                array(
+                    "Error" => "Not connected to a database",
+                    "Fix" => "Please check the database configuration",
+                    "Debug" => ($this->debugmode ? $this->dbConfig : 'Off'),
+                )
+            );
+
+            exit($this->$isCLI ? 1 : 0);
+        }
+
         // Check database type
         if ($this->dbConfig['type'] == "mysql") {
             // Return
@@ -596,6 +635,94 @@ class Server
      */
     public function serve()
     {
+        // If exists (DATABASE_TYPE)
+        if (!empty($this->dbConfig['type'])) {
+            // Try it
+            try {
+                // Connect to our SQLite database
+                if ($this->dbConfig['type'] == "mysql") {
+                    // If defined $this->dbConfig['host'], $this->dbConfig['name'],
+                    // $this->dbConfig['user']
+                    if (!empty($this->dbConfig['host']) &&
+                        !empty($this->dbConfig['name']) &&
+                        !empty($this->dbConfig['user'])) {
+                        // Then let's try to connect!
+                        $this->db = new \PDO(
+                            sprintf(
+                                // mysql:host=$this->dbConfig['host'];
+                                // dbname=$this->dbConfig['name'];charset=UTF8
+                                "mysql:host=%s;dbname=%s;charset=UTF8",
+
+                                // Host
+                                $this->dbConfig['host'],
+
+                                // DB Name
+                                $this->dbConfig['name']
+                            ),
+
+                            // Username
+                            $this->dbConfig['user'],
+
+                            // Password
+                            $this->dbConfig['pass']
+                        );
+                    }
+                } else {
+                    // SQLite!
+                    if (!empty($this->dbConfig['path'])) {
+                        // Try to create/load a SQLite database
+                        $this->db = new \PDO(
+                            // sqlite:DBName.sqlite
+                            sprintf(
+                                // sqlite:DBName.sqlite
+                                'sqlite:%s',
+
+                                // Database Path
+                                $this->dbConfig['path']
+                            )
+                        );
+                    }
+                }
+                // Set the error mode
+                $this->db->setAttribute(
+                    // Set the error mode
+                    \PDO::ATTR_ERRMODE,
+
+                    // To Trow Exceptions.
+                    \PDO::ERRMODE_EXCEPTION
+                );
+            } catch (PDOException $e) {
+                // Handle the exception
+                return $this->handleException($e);
+            }
+        } else {
+            echo json_encode(
+                array(
+                    "Error" => "Missing server type, cannot continue.",
+                    "Fix" => "Please review your configuration settings",
+                )
+            );
+        }
+
+        if (!isset($this->db)) {
+            echo json_encode(
+                array(
+                    "Error" => sprintf("Failed to connect to the %s database", $this->dbConfig['type']),
+                    "Fix" => "Please review your configuration settings",
+                    "Server" => array(
+                        "Type" => $this->dbConfig['type'],
+                        "Status" => (
+                            $this->dbConfig['type'] == 'mysql'
+                            ? $this->isTheServerAvailable($this->dbConfig['host'])
+                            : 'N/A'
+                        ),
+                    ),
+                )
+            );
+
+            exit($this->$isCLI ? 1 : 0);
+        }
+
         // Check if there is a DATABASE_TYPE defined.
         if ($this->error) {
             return json_encode(
@@ -607,6 +734,16 @@ class Server
 
                     // Show a fix
                     "Fix" => "Check the documentation!",
+                )
+            );
+        }
+
+        if (empty($this->dbConfig['type'])) {
+            return json_encode(
+                array(
+                    "Error" => "Not connected to a database!",
+                    "Fix" => "Set database configuration.",
+                    "DBType" => $this->dbConfig['type'],
                 )
             );
         }
@@ -928,7 +1065,7 @@ class Server
         switch ($action) {
             // Get something
             // row.get
-            case 'get':
+            case 'get' :
                 $SQLcommand = sprintf(
                     // Select .. FROM `database`
                     "SELECT %s FROM `%s`",
@@ -1616,10 +1753,10 @@ class Server
     public function __wakeup()
     {
         // If there is defined a DATABASE_TYPE
-        if (defined('DATABASE_TYPE')) {
-            // If it is SQLite and there is a $this->database['path']
+        if (!empty($this->dbConfig['type'])) {
+            // If it is SQLite and there is a $this->dbConfig['path']
             if ($this->dbConfig['type'] == "sqlite" &&
-                !empty($this->database['path'])) {
+                !empty($this->dbConfig['path'])) {
                 try {
                     // Try to create/load a SQLite database
                     $this->db = new \PDO(
@@ -1629,7 +1766,7 @@ class Server
                             'sqlite:%s',
 
                             // Database Path
-                            $this->database['path']
+                            $this->dbConfig['path']
                         )
                     );
 
@@ -1836,68 +1973,18 @@ class Server
 
         // Checks isAdmin state
         $this->isAdmin = $this->isLoggedInAsAdmin();
+    }
 
-        // If exists (DATABASE_TYPE)
-        if (defined('DATABASE_TYPE')) {
-            // Try it
-            try {
-                // Connect to our SQLite database
-                if ($this->dbConfig['type'] == "mysql") {
-                    // If defined $this->dbConfig['host'], $this->dbConfig['name'],
-                    // $this->dbConfig['user']
-                    if (!empty($this->dbConfig['host']) &&
-                        !empty($this->dbConfig['name']) &&
-                        !empty($this->dbConfig['user'])) {
-                        // Then let's try to connect!
-                        $this->db = new \PDO(
-                            sprintf(
-                                // mysql:host=$this->dbConfig['host'];
-                                // dbname=$this->dbConfig['name'];charset=UTF8
-                                "mysql:host=%s;dbname=%s;charset=UTF8",
+    private function isTheServerAvailable($serverAddr)
+    {
+        $fp = fsockopen($serverAddr, 3306, $errno, $errstr);
 
-                                // Host
-                                $this->dbConfig['host'],
-
-                                // DB Name
-                                $this->dbConfig['name']
-                            ),
-
-                            // Username
-                            $this->dbConfig['user'],
-
-                            // Password
-                            $this->dbConfig['pass']
-                        );
-                    }
-                } else {
-                    // SQLite!
-                    if (!empty($this->database['path'])) {
-                        // Try to create/load a SQLite database
-                        $this->db = new \PDO(
-                            // sqlite:DBName.sqlite
-                            sprintf(
-                                // sqlite:DBName.sqlite
-                                'sqlite:%s',
-
-                                // Database Path
-                                $this->database['path']
-                            )
-                        );
-                    }
-                }
-                // Set the error mode
-                $this->db->setAttribute(
-                    // Set the error mode
-                    \PDO::ATTR_ERRMODE,
-
-                    // To Trow Exceptions.
-                    \PDO::ERRMODE_EXCEPTION
-                );
-            } catch (PDOException $e) {
-                // Handle the exception
-                return $this->handleException($e);
-            }
+        // return ()
+        if (!$fp) {
+            echo "ERROR: $errno - $errstr<br />\n";
         }
+
+        return (!$fp ? 'Offline' : 'Online');
     }
 
     /**
