@@ -1346,7 +1346,7 @@ class Server
                         "Error" => "Invalid request",
 
                         // Invalid action
-                        "Request" => $action,
+                        "ReqURI" => $action,
                     )
                 );
                 break;
@@ -1909,7 +1909,7 @@ class Server
                 "Table" => $table,
 
                 // Send request uri
-                "Request" => $_SERVER['REQUEST_URI'],
+                "ReqURI" => $_SERVER['REQUEST_URI'],
             );
         }
 
@@ -2153,7 +2153,7 @@ class Server
                 "Table" => $table,
 
                 // Request
-                "Request" => $_SERVER['REQUEST_URI'],
+                "ReqURI" => $_SERVER['REQUEST_URI'],
             );
         }
 

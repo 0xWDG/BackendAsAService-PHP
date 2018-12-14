@@ -62,7 +62,14 @@ open class BaaS {
      * Should we debug right now?
      */
     private let debug = true
-    
+
+    /**
+     * lastRowID
+     *
+     * Last row ID
+     */
+    private var lastRowID = 0
+
     /**
      * Shared (instance)
      *
@@ -166,10 +173,10 @@ open class BaaS {
     /**
      * BaaS database Field
      *
-     *     parameter name:         Field Name
-     *     parameter type:         Field Type
-     *     parameter defaultValue: Field Default Value
-     *     parameter canBeEmpty:   Field can be empty?
+     *     name:         Field Name
+     *     type:         Field Type
+     *     defaultValue: Field Default Value
+     *     canBeEmpty:   Field can be empty?
      */
     public struct BaaS_dbField: Codable {
         var name: String
@@ -225,14 +232,295 @@ open class BaaS {
     /**
      * BaaS expression Field
      *
-     *     parameter searchType:   Search type (see BaaS_SearchType)
-     *     parameter expression1:  Search expression1
-     *     parameter expression2:  Search expression2
+     *     searchType:   Search type (see BaaS_SearchType)
+     *     expression1:  Search expression1
+     *     expression2:  Search expression2
      */
     public struct BaaS_WhereExpression: Codable {
         var searchType: BaaS_SearchType.RawValue
         var expression1: String
         var expression2: String
+    }
+    
+    /**
+     * BaaS possible errors
+     *
+     *     parameter unableToDecodeJSON
+     */
+    public enum BaaS_Errors: Error {
+        case unableToDecodeJSON
+    }
+    
+    /**
+     * BaaS Response JSON Field
+     *
+     *     Status:    This is the Status of the BaaS Server call
+     *     Error:     This a Error thrown by the BaaS Server call
+     *     Fix:       This a how to fix the BaaS Server call
+     *     Exception: This a Exception thrown by the BaaS Server call
+     *     ReqURI:    This the requested URL which the BaaS Server has received
+     *     Table:     This the current table where the BaaS Server is working in
+     *     Data:      This a Data string returned by the BaaS Server call
+     *     Where:     This the Where cause where the BaaS Server searched on
+     *     Method:    This Method is not recognized by the BaaS Server
+     *     info:      This is extra information
+     *     rowID:     This the row ID of the (last) inserted row
+     *     Debug:     This a Debug message thrown by the BaaS Server call
+     *     FilePath:  The FilePath is not writeable error thrown by the BaaS Server call
+     */
+    public struct BaaS_Response: Codable {
+        /**
+         * BaaS Response: Status
+         *
+         * This is the Status of the BaaS Server call
+         */
+        var Status: String
+        
+        // MARK: General errors
+        /**
+         * BaaS Response: Error
+         *
+         * This a Message thrown by the BaaS Server call
+         */
+        var Error: String?
+        
+        /**
+         * BaaS Response: Fix
+         *
+         * This a how to fix the BaaS Server call
+         */
+        var Fix: String?
+        
+        /**
+         * BaaS Response: Exception
+         *
+         * This a Exception thrown by the BaaS Server call
+         */
+        var Exception: String?
+        
+        /**
+         * BaaS Response: ReqURI
+         *
+         * This the requested URL which the BaaS Server has received
+         */
+        var ReqURI: String?
+        
+        // MARK: Which table?
+        /**
+         * BaaS Response: Table
+         *
+         * This the current table where the BaaS Server is working in
+         */
+        var Table: String?
+        
+        /**
+         * BaaS Response: Data
+         *
+         * This a Data string returned by the BaaS Server call
+         */
+        var Data: String?
+        
+        /**
+         * BaaS Response: Where
+         *
+         * This the Where cause where the BaaS Server searched on
+         */
+        var Where: String?
+        
+        /**
+         * BaaS Response: Method
+         *
+         * This Method is not recognized by the BaaS Server
+         */
+        var Method: String?
+        
+        // MARK: Inserted row
+        /**
+         * BaaS Response: info
+         *
+         * This is extra information
+         */
+        var Info: String?
+        
+        /**
+         * BaaS Response: rowID
+         *
+         * This the row ID of the (last) inserted row
+         */
+        var RowID: String?
+        
+        // MARK: if in debug mode
+        /**
+         * BaaS Response: Debug
+         *
+         * This a Debug message thrown by the BaaS Server call
+         */
+        var Debug: String?
+        
+        // MARK: Error at IP-Blocking
+        /**
+         * BaaS Response: FilePath
+         *
+         * The FilePath is not writeable error thrown by the BaaS Server call
+         */
+        var FilePath: String?
+        
+        /**
+         * Initialize from a decoder.
+         *
+         * - parameter from: Decoder
+         * - returns: `BaaS_Response_JSON`
+         */
+        public init(from decoder: Decoder) throws {
+            // Decode CodingKeys
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            
+            do {
+                Status = try values.decode(String.self, forKey: .Status)
+            }
+            catch {
+                Status = "Error"
+            }
+            
+            do {
+                Error = try values.decodeIfPresent(String.self, forKey: .Error)
+            }
+            catch {
+                Error = "Unable to parse JSON"
+            }
+            
+            do {
+                Fix = try values.decodeIfPresent(String.self, forKey: .Fix)
+            }
+            catch {
+                Fix = "Please send valid JSON"
+            }
+            
+            do {
+                Exception = try values.decodeIfPresent(String.self, forKey: .Exception)
+            }
+            catch {
+                Exception = "N/A"
+            }
+            
+            do {
+                ReqURI = try values.decodeIfPresent(String.self, forKey: .ReqURI)
+            }
+            catch {
+                ReqURI = "N/A"
+            }
+            
+            do {
+                Table = try values.decodeIfPresent(String.self, forKey: .Table)
+            }
+            catch {
+                Table = "N/A"
+            }
+            
+            do {
+                Data = try values.decodeIfPresent(String.self, forKey: .Data)
+            }
+            catch {
+                Data = "N/A"
+            }
+            
+            do {
+                Where = try values.decodeIfPresent(String.self, forKey: .Where)
+            }
+            catch {
+                Where = "N/A"
+            }
+            
+            do {
+                Method = try values.decodeIfPresent(String.self, forKey: .Method)
+            }
+            catch {
+                Method = "N/A"
+            }
+            
+            do{
+                Info = try values.decodeIfPresent(String.self, forKey: .Info)
+            }
+            catch {
+                Info = "N/A"
+            }
+            
+            do{
+                RowID = try values.decodeIfPresent(String.self, forKey: .RowID)
+            }
+            catch{
+                RowID = "N/A"
+            }
+            
+            do {
+                Debug = try values.decodeIfPresent(String.self, forKey: .Debug)
+            }
+            catch{
+                Debug = "N/A"
+            }
+            
+            do{
+                FilePath = try values.decodeIfPresent(String.self, forKey: .FilePath)
+            }
+            catch {
+                FilePath = "N/A"
+            }
+            
+            // This looks like the weirdest if, which has ever lived.
+            if (
+                Status == "Error" &&
+                Error == "Unable to parse JSON" &&
+                Fix == "Please send valid JSON" &&
+                Exception == "N/A" &&
+                ReqURI == "N/A" &&
+                Table == "N/A" &&
+                Data == "N/A" &&
+                Where == "N/A" &&
+                Method == "N/A" &&
+                Info == "N/A" &&
+                RowID == "N/A" &&
+                Debug == "N/A" &&
+                FilePath == "N/A"
+            ) {
+                throw BaaS_Errors.unableToDecodeJSON
+            }
+        }
+
+        /**
+         * Initialize a error.
+         *
+         * - parameter Status: Response Status
+         * - parameter Error: Response Error
+         * - returns: `BaaS_Response_JSON`
+         */
+        public init(Status s_Status: String, Error s_Error: String) {
+            Status = s_Status
+            Error = s_Error
+        }
+    }
+    
+    /**
+     * Translate BaaS_Response_JSON to something understandable
+     *
+     * - parameter jsonData: JSON Data
+     * - returns: `BaaS_Response`
+     */
+    private func BaaS_Response_Decoder(jsonData: Data) -> BaaS_Response {
+        var decoded: BaaS_Response? = nil
+
+        do {
+            let decoder = JSONDecoder()
+            decoded = try decoder.decode(BaaS_Response.self, from: jsonData)
+        }
+        catch {
+            decoded = BaaS_Response.init(
+                Status: "Incorrect",
+                Error: "Incorrect BaaS Return String"
+            )
+        }
+        
+        self.log("Data=\(String.init(data: jsonData, encoding: .utf8)!)\nDecoded=\(decoded!)")
+        return decoded!
     }
     
     /**
@@ -360,9 +648,9 @@ open class BaaS {
      *
      * - parameter values: Which values?
      * - parameter inDatabase: Which database?
-     * - returns: Any
+     * - returns: BaaS.BaaS_Response_JSON
      */
-    public func insert(values: [String: String], inDatabase: String) -> Any {
+    public func insert(values: [String: String], inDatabase: String) -> Bool {
         let dbURL = "\(serverAddress)/row.insert/\(inDatabase)"
         let task = self.urlTask(
             dbURL,
@@ -371,20 +659,29 @@ open class BaaS {
                 "values": values
             ])
         
-        return String.init(data: task, encoding: .utf8)!
+        if let integer: Int = Int(BaaS_Response_Decoder(jsonData: task).RowID!) {
+            self.lastRowID = integer
+        }
+        
+        return BaaS_Response_Decoder(jsonData: task).Status == "Success"
+    }
+    
+    /**
+     * Get last Row ID
+     *
+     * - returns: Last row ID
+     */
+    public func getLastRowID() -> Int {
+        return self.lastRowID
     }
     
     public func fileUpload(data fileData: Data, saveWithFileID fileID: String) -> Any {
         let dbURL = "\(serverAddress)/file.upload/\(fileID)"
-
-        guard let postSafeFileData = String.init(
-            data: fileData.base64EncodedData(),
-            encoding: .utf8
-            ) else {
+        
+        guard let postSafeFileData = String.init(data: fileData.base64EncodedData(), encoding: .utf8) else {
                 return false
-                
         }
-
+        
         let task = self.urlTask(
             dbURL,
             [
@@ -405,7 +702,7 @@ open class BaaS {
             ]
         )
         
-//        return String.init(data: task, encoding: .utf8)!
+        //        return String.init(data: task, encoding: .utf8)!
         return false
     }
     
@@ -418,7 +715,7 @@ open class BaaS {
             ]
         )
         
-//        return String.init(data: task, encoding: .utf8)!
+        //        return String.init(data: task, encoding: .utf8)!
         return task
     }
     
