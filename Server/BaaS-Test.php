@@ -41,7 +41,9 @@ function run($url, $postData, $expect, $doEcho = false)
                         )
                     )
                 ),
+                // Maximum timeout of 5 seconds.
                 'timeout' => 5,
+                // Ignore http errors, such as 4xx and 5xx errors.
                 'ignore_errors' => true,
             ),
         );
@@ -102,6 +104,10 @@ if (php_sapi_name() == "cli") {
     exit;
 }
 
+/**
+Initialize server.
+With "Demo" database.
+ */
 include 'BaaS-Server.php';
 $server = BaaS\Server::shared();
 $server->setDatabase('SQLite', 'Data/test-database.sqlite');

@@ -135,6 +135,14 @@ class Server
     private $errorMessage = "";
 
     /**
+     * Save files to database?
+     *
+     * @since 1.0
+     * @var string $saveFilesToDatabase Save files to the database?
+     */
+    private $saveFilesToDatabase = true;
+
+    /**
      * Database Configuration
      *
      * @since 1.0

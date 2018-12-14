@@ -53,12 +53,12 @@ class FirstViewController: UIViewController, BaaSDelegate {
                     // Optional...
                     // "Lat,Lon", .location, "MaxDistance"
                     db.expression("0,0", .location, "10"),
-                ],
+                    ],
                 inDatabase: "x"
             )
         )
         
-//        db.log(db.test())
+        //        db.log(db.test())
         db.log(
             db.insert(
                 values: [
@@ -67,13 +67,10 @@ class FirstViewController: UIViewController, BaaSDelegate {
                 inDatabase: "x"
             )
         )
+    }
         
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-    
-    func testForReturn(withDataAs: String) {
-        db.log("Returned data=\(withDataAs)")
-    }
+        func testForReturn(withDataAs: String) {
+            db.log("Returned data=\(withDataAs)")
+        }
 }
 

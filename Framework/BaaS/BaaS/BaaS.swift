@@ -34,7 +34,7 @@ open class BaaS {
      * This is the delegate where it calls back to.
      */
     public weak var delegate: BaaSDelegate?
-
+    
     /**
      * The API Key which the user provides
      *
@@ -96,7 +96,10 @@ open class BaaS {
     @discardableResult
     open func log(_ message: Any, file: String = #file, line: Int = #line, function: String = #function) -> Bool {
         if (debug) {
-            let x: String = String((file.split(separator: "/").last)!.split(separator: ".").first!)
+            let x: String = String(
+                (file.split(separator: "/").last)!.split(separator: ".").first!
+            )
+            
             Swift.print("[BaaS] \(x):\(line) \(function):\n \(message)\n")
         }
         
@@ -115,7 +118,7 @@ open class BaaS {
             log("No delegate?")
         }
     }
-
+    
     /**
      * Set the API key
      *
@@ -174,7 +177,7 @@ open class BaaS {
         var defaultValue: String
         var canBeEmpty: Bool
     }
-
+    
     /**
      * BaaS database Field Type
      *
@@ -218,7 +221,7 @@ open class BaaS {
         case like = "LIKE"
         case location = "location"
     }
-
+    
     /**
      * BaaS expression Field
      *
@@ -246,7 +249,7 @@ open class BaaS {
         type: BaaS_dbFieldType,
         defaultValue: String,
         canBeEmpty: Bool
-    ) -> BaaS_dbField {
+        ) -> BaaS_dbField {
         return BaaS_dbField.init(
             name: createFieldWithName,
             type: type.rawValue,
@@ -266,22 +269,28 @@ open class BaaS {
         print(withFields)
         let dbURL = "\(serverAddress)/table.create/\(createWithName)"
         var data: [[String: String]] = []
-
+        
         for field in withFields {
-            data.append([
-                "name": field.name,
-                "type": field.type,
-                "defaultValue": field.defaultValue,
-                "canBeEmpty": field.canBeEmpty ? "yes" : "no"
-            ])
+            data.append(
+                [
+                    "name": field.name,
+                    "type": field.type,
+                    "defaultValue": field.defaultValue,
+                    "canBeEmpty": field.canBeEmpty ? "yes" : "no"
+                ]
+            )
         }
-
+        
         let JSON: [String: Any] = [
             "APIKey": self.apiKey,
             "Data": data
         ]
         
-        let task = self.urlTask(dbURL, JSON)
+        let task = self.urlTask(
+            dbURL,
+            JSON
+        )
+        
         log(String.init(data: task, encoding: .utf8)!)
         
         return false
@@ -295,11 +304,15 @@ open class BaaS {
      */
     public func database(existsWithName: String) -> Bool {
         let dbURL = "\(serverAddress)/table.exists/\(existsWithName)"
-        let task = self.urlTask(dbURL, [
-            "APIKey": self.apiKey
-        ])
+        let task = self.urlTask(
+            dbURL,
+            [
+                "APIKey": self.apiKey
+            ]
+        )
+        
         log(String.init(data: task, encoding: .utf8)!)
-
+        
         return false
     }
     
@@ -315,7 +328,7 @@ open class BaaS {
         _ expression1: String,
         _ searchType: BaaS_SearchType,
         _ expression2: String
-    ) -> BaaS_WhereExpression {
+        ) -> BaaS_WhereExpression {
         return BaaS_WhereExpression.init(
             searchType: searchType.rawValue,
             expression1: expression1.replacingOccurrences(of: "`", with: "\\`"),
@@ -327,11 +340,13 @@ open class BaaS {
         var flatArray: [[String]] = []
         
         for item in expression {
-            flatArray.append([
-                item.expression1,
-                item.searchType,
-                item.expression2
-            ])
+            flatArray.append(
+                [
+                    item.expression1,
+                    item.searchType,
+                    item.expression2
+                ]
+            )
         }
         
         return self.value(
@@ -339,7 +354,7 @@ open class BaaS {
             inDatabase: inDatabase
         )
     }
-
+    
     /**
      * Insert data
      *
@@ -349,20 +364,85 @@ open class BaaS {
      */
     public func insert(values: [String: String], inDatabase: String) -> Any {
         let dbURL = "\(serverAddress)/row.insert/\(inDatabase)"
-        let task = self.urlTask(dbURL, [
-            "APIKey": self.apiKey,
-            "values": values
-        ])
+        let task = self.urlTask(
+            dbURL,
+            [
+                "APIKey": self.apiKey,
+                "values": values
+            ])
+        
+        return String.init(data: task, encoding: .utf8)!
+    }
+    
+    public func fileUpload(data fileData: Data, saveWithFileID fileID: String) -> Any {
+        let dbURL = "\(serverAddress)/file.upload/\(fileID)"
+
+        guard let postSafeFileData = String.init(
+            data: fileData.base64EncodedData(),
+            encoding: .utf8
+            ) else {
+                return false
+                
+        }
+
+        let task = self.urlTask(
+            dbURL,
+            [
+                "APIKey": self.apiKey,
+                "fileData": postSafeFileData
+            ]
+        )
+        
+        return String.init(data: task, encoding: .utf8)!
+    }
+    
+    public func fileExists(withFileID fileID: String) -> Bool {
+        let dbURL = "\(serverAddress)/file.exists/\(fileID)"
+        let task = self.urlTask(
+            dbURL,
+            [
+                "APIKey": self.apiKey
+            ]
+        )
+        
+//        return String.init(data: task, encoding: .utf8)!
+        return false
+    }
+    
+    public func fileDownload(withFileID fileID: String) -> Data {
+        let dbURL = "\(serverAddress)/file.get/\(fileID)"
+        let task = self.urlTask(
+            dbURL,
+            [
+                "APIKey": self.apiKey
+            ]
+        )
+        
+//        return String.init(data: task, encoding: .utf8)!
+        return task
+    }
+    
+    public func fileDelete(withFileID fileID: String) -> Any {
+        let dbURL = "\(serverAddress)/file.delete/\(fileID)"
+        let task = self.urlTask(
+            dbURL,
+            [
+                "APIKey": self.apiKey
+            ]
+        )
         
         return String.init(data: task, encoding: .utf8)!
     }
     
     internal func value(where whereStr: [[String]], inDatabase: String) -> Any {
         let dbURL = "\(serverAddress)/row.get/\(inDatabase)"
-        let task = self.urlTask(dbURL, [
-            "APIKey": self.apiKey,
-            "where": whereStr
-        ])
+        let task = self.urlTask(
+            dbURL,
+            [
+                "APIKey": self.apiKey,
+                "where": whereStr
+            ]
+        )
         
         return String.init(data: task, encoding: .utf8)!
     }
