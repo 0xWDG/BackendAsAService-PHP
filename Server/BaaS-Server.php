@@ -927,7 +927,19 @@ class Server
         // Reset old attempts
         $this->resetOldAttempts();
 
-        if (preg_match_all("/db\.admin(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+        // Handle /db.admin/ methods
+        if (
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/db\.admin(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
             // Run "DBAdmin"
             return $this->DBAdmin(
                 // If no action then show index
@@ -936,7 +948,18 @@ class Server
         }
 
         // Handle /row.get/xxx methods
-        if (preg_match_all("/row\.get(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+        if (
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/row\.get(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
             // check the API KEY
             $this->checkAPIKey();
 
@@ -954,7 +977,18 @@ class Server
         }
 
         // Handle /row.set/xxx methods
-        if (preg_match_all("/row\.set(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+        if (
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/row\.set(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
             // check the API KEY
             $this->checkAPIKey();
 
@@ -972,7 +1006,18 @@ class Server
         }
 
         // Handle /row.delete/xxx methods
-        if (preg_match_all("/row\.delete(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+        if (
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/row\.delete(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
             // check the API KEY
             $this->checkAPIKey();
 
@@ -990,7 +1035,18 @@ class Server
         }
 
         // Handle /row.insert/xxx methods
-        if (preg_match_all("/row\.insert(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+        if (
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/row\.insert(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
             // check the API KEY
             $this->checkAPIKey();
 
@@ -1005,14 +1061,25 @@ class Server
         }
 
         // Handle /table.create/xxx methods
-        if (preg_match_all("/table\.create(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+        if (
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/table\.create(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
             // check the API KEY
             $this->checkAPIKey();
 
             // If /table.create/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Parse and echo
-                return $this->invalidRequest(
+                return $this->tableCreate(
                     // With value xxx
                     $action[2][0]
                 );
@@ -1020,14 +1087,25 @@ class Server
         }
 
         // Handle /table.append/xxx methods
-        if (preg_match_all("/table\.append(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+        if (
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/table\.append(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
             // check the API KEY
             $this->checkAPIKey();
 
             // If /table.append/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Parse and echo
-                return $this->invalidRequest(
+                return $this->tableAppend(
                     // With value xxx
                     $action[2][0]
                 );
@@ -1035,14 +1113,25 @@ class Server
         }
 
         // Handle /table.empty/xxx methods
-        if (preg_match_all("/table\.empty(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+        if (
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/table\.empty(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
             // check the API KEY
             $this->checkAPIKey();
 
             // If /table.empty/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Parse and echo
-                return $this->invalidRequest(
+                return $this->tableEmpty(
                     // With value xxx
                     $action[2][0]
                 );
@@ -1050,14 +1139,51 @@ class Server
         }
 
         // Handle /table.remove/xxx methods
-        if (preg_match_all("/table\.remove(\/?)(.*)/", $_SERVER['REQUEST_URI'], $action)) {
+        if (
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/table\.remove(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
             // check the API KEY
             $this->checkAPIKey();
 
             // If /table.remove/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Parse and echo
-                return $this->invalidRequest(
+                return $this->tableRemove(
+                    // With value xxx
+                    $action[2][0]
+                );
+            }
+        }
+
+        // Handle /table.rename/xxx methods
+        if (
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/table\.rename(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
+            // check the API KEY
+            $this->checkAPIKey();
+
+            // If /table.rename/MAYNOTBEEMPTY is nog empty
+            if (!empty($action[2][0])) {
+                // Parse and echo
+                return $this->tableRename(
                     // With value xxx
                     $action[2][0]
                 );
@@ -1117,14 +1243,94 @@ class Server
     private function tableCreate($tableName)
     {
         /*
-    CREATE TABLE `x` (
-    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `latitude` text DEFAULT NULL,
-    `longitude` text DEFAULT NULL,
-    `x` text DEFAULT NULL,
-    PRIMARY KEY (`id`)
-    ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1
-     */
+        CREATE TABLE `x` (
+        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+        `latitude` text DEFAULT NULL,
+        `longitude` text DEFAULT NULL,
+        `x` text DEFAULT NULL,
+        PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1
+         */
+        $sSql = sprintf(
+            // Create table.
+            "CREATE TABLE `%s` (\n",
+
+            // Escape the database
+            $this->escapeString(
+                // Replace insecure fields
+                preg_replace(
+                    // `
+                    "/`/",
+
+                    // to \\`
+                    "\\`",
+
+                    // in $databaseName
+                    $databaseName
+                )
+            )
+        );
+
+        // Append default fields.
+        // id (auto incrementing)
+        $sSql .= sprintf(
+            "`id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n"
+        );
+
+        // latitude
+        $sSql .= sprintf(
+            "`latitude` text DEFAULT NULL,\n"
+        );
+
+        // longitude
+        $sSql .= sprintf(
+            "`longitude` text DEFAULT NULL,\n"
+        );
+
+        //TODO: Real fields instead of fakes.
+        $fields = array(
+            'a',
+            'b',
+            'c',
+        );
+
+        // Loop trough the fields
+        foreach ($fields as $field) {
+            // Check if a field is not in the of pre-reserved fields.
+            if (!in_array($field, $this->defaultFields)) {
+                $sSql .= sprintf(
+                    // `field` text default nullable
+                    "`%s` text DEFAULT NULL,\n",
+
+                    // Replace insecure text
+                    preg_replace(
+                        // `
+                        "/`/",
+
+                        // to \\`
+                        "\\`",
+
+                        // in $field
+                        $field
+                    )
+                );
+            }
+        }
+
+        // set the primary key.
+        $sSql .= sprintf(
+            "PRIMARY KEY (`id`)"
+        );
+
+        // End the create query.
+        $sSql .= sprintf(
+            ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;"
+        );
+
+        // Exit with the sql command.
+        print_r($sSql);exit;
+
+        return $this->invalidRequest($tableName);
     }
 
     /**
@@ -1136,7 +1342,27 @@ class Server
      */
     private function tableAppend($tableName)
     {
+        $sSql = sprintf(
+            // Create table.
+            "ALTER TABLE `%s` APPEND (\n",
 
+            // Escape the database
+            $this->escapeString(
+                // Replace insecure fields
+                preg_replace(
+                    // `
+                    "/`/",
+
+                    // to \\`
+                    "\\`",
+
+                    // in $databaseName
+                    $databaseName
+                )
+            )
+        );
+
+        return $this->invalidRequest($tableName);
     }
 
     /**
@@ -1148,7 +1374,27 @@ class Server
      */
     private function tableEmpty($tableName)
     {
+        $sSql = sprintf(
+            // Create table.
+            "TRUNCATE TABLE `%s`;\n",
 
+            // Escape the database
+            $this->escapeString(
+                // Replace insecure fields
+                preg_replace(
+                    // `
+                    "/`/",
+
+                    // to \\`
+                    "\\`",
+
+                    // in $databaseName
+                    $databaseName
+                )
+            )
+        );
+
+        return $this->invalidRequest($tableName);
     }
 
     /**
@@ -1160,7 +1406,62 @@ class Server
      */
     private function tableRemove($tableName)
     {
+        $sSql = sprintf(
+            // Create table.
+            "DROP TABLE `%s`;\n",
 
+            // Escape the database
+            $this->escapeString(
+                // Replace insecure fields
+                preg_replace(
+                    // `
+                    "/`/",
+
+                    // to \\`
+                    "\\`",
+
+                    // in $databaseName
+                    $databaseName
+                )
+            )
+        );
+
+        return $this->invalidRequest($tableName);
+    }
+
+    /**
+     * Rename table
+     *
+     * @since 1.0
+     * @param string $tableName the table name
+     * @return mixed
+     */
+    private function tableRename($tableName)
+    {
+        $sSql = sprintf(
+            // Create table.
+            "RENAME TABLE `%s` TO `%s`;\n",
+
+            // Escape the database
+            $this->escapeString(
+                // Replace insecure fields
+                preg_replace(
+                    // `
+                    "/`/",
+
+                    // to \\`
+                    "\\`",
+
+                    // in $databaseName
+                    $databaseName
+                )
+            ),
+
+            // new Table Name
+            $newName = 'x'
+        );
+
+        return $this->invalidRequest($tableName);
     }
 
     /**
