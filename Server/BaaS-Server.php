@@ -2106,12 +2106,16 @@ class Server
         $replace = array(
             // strip whitespaces after tags, except space
             '>',
+
             // strip whitespaces before tags, except space
             '<',
+
             // shorten multiple whitespace sequences
             '\\1',
+
             // Remove HTML comments
             '',
+
             // Remove all spaces after and before elements
             '\\1',
         );
@@ -2860,120 +2864,161 @@ class Server
      */
     private function set_http_code($code = 200)
     {
+        // Set http code.
         switch ($code) {
             case 100:
+                // Set the HTTP Status text
                 $text = 'Continue';
                 break;
             case 101:
+                // Set the HTTP Status text
                 $text = 'Switching Protocols';
                 break;
             case 200:
+                // Set the HTTP Status text
                 $text = 'OK';
                 break;
             case 201:
+                // Set the HTTP Status text
                 $text = 'Created';
                 break;
             case 202:
+                // Set the HTTP Status text
                 $text = 'Accepted';
                 break;
             case 203:
+                // Set the HTTP Status text
                 $text = 'Non-Authoritative Information';
                 break;
             case 204:
+                // Set the HTTP Status text
                 $text = 'No Content';
                 break;
             case 205:
+                // Set the HTTP Status text
                 $text = 'Reset Content';
                 break;
             case 206:
+                // Set the HTTP Status text
                 $text = 'Partial Content';
                 break;
             case 300:
+                // Set the HTTP Status text
                 $text = 'Multiple Choices';
                 break;
             case 301:
+                // Set the HTTP Status text
                 $text = 'Moved Permanently';
                 break;
             case 302:
+                // Set the HTTP Status text
                 $text = 'Moved Temporarily';
                 break;
             case 303:
+                // Set the HTTP Status text
                 $text = 'See Other';
                 break;
             case 304:
+                // Set the HTTP Status text
                 $text = 'Not Modified';
                 break;
             case 305:
+                // Set the HTTP Status text
                 $text = 'Use Proxy';
                 break;
             case 400:
+                // Set the HTTP Status text
                 $text = 'Bad Request';
                 break;
             case 401:
+                // Set the HTTP Status text
                 $text = 'Unauthorized';
                 break;
             case 402:
+                // Set the HTTP Status text
                 $text = 'Payment Required';
                 break;
             case 403:
+                // Set the HTTP Status text
                 $text = 'Forbidden';
                 break;
             case 404:
+                // Set the HTTP Status text
                 $text = 'Not Found';
                 break;
             case 405:
+                // Set the HTTP Status text
                 $text = 'Method Not Allowed';
                 break;
             case 406:
+                // Set the HTTP Status text
                 $text = 'Not Acceptable';
                 break;
             case 407:
+                // Set the HTTP Status text
                 $text = 'Proxy Authentication Required';
                 break;
             case 408:
+                // Set the HTTP Status text
                 $text = 'Request Time-out';
                 break;
             case 409:
+                // Set the HTTP Status text
                 $text = 'Conflict';
                 break;
             case 410:
+                // Set the HTTP Status text
                 $text = 'Gone';
                 break;
             case 411:
+                // Set the HTTP Status text
                 $text = 'Length Required';
                 break;
             case 412:
+                // Set the HTTP Status text
                 $text = 'Precondition Failed';
                 break;
             case 413:
+                // Set the HTTP Status text
                 $text = 'Request Entity Too Large';
                 break;
             case 414:
+                // Set the HTTP Status text
                 $text = 'Request-URI Too Large';
                 break;
             case 415:
+                // Set the HTTP Status text
                 $text = 'Unsupported Media Type';
                 break;
             case 500:
+                // Set the HTTP Status text
                 $text = 'Internal Server Error';
                 break;
             case 501:
+                // Set the HTTP Status text
                 $text = 'Not Implemented';
                 break;
             case 502:
+                // Set the HTTP Status text
                 $text = 'Bad Gateway';
                 break;
             case 503:
+                // Set the HTTP Status text
                 $text = 'Service Unavailable';
                 break;
             case 504:
+                // Set the HTTP Status text
                 $text = 'Gateway Time-out';
                 break;
             case 505:
+                // Set the HTTP Status text
                 $text = 'HTTP Version not supported';
                 break;
             default:
+                // Set the HTTP Status code
                 $code = 200;
+
+                // Set the HTTP Status text
                 $text = 'OK';
                 break;
         }
