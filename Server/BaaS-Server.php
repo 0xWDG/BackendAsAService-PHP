@@ -1489,10 +1489,54 @@ class Server
         // Replace unsafe characters
         return str_replace(
             // Unsafe
-            array("\\", "\x00", "\n", "\r", "'", '"', "\x1a"),
+            array(
+                // Replace \
+                "\\",
+
+                // Replace \0
+                "\x00",
+
+                // Replace \n (newline)
+                "\n",
+
+                // Replace \r (newline)
+                "\r",
+
+                // Replace '
+                "'",
+
+                // Replace "
+                '"',
+
+                // Replace \Z
+                "\x1a",
+            ),
 
             // Sanitized
-            array("\\\\", "\\0", "\\n", "\\r", "\'", '\"', "\\Z"),
+            array(
+                // To (escaped (\)) \
+                "\\\\",
+
+                // To (escaped (\)) \0
+                "\\0",
+
+                // To (escaped (\)) \n (newline)
+                "\\n",
+
+                // To (escaped (\)) \r (newline)
+                "\\r",
+
+                // To (escaped (\)) \'
+                "\'",
+
+                // To (escaped (\)) \"
+                '\"',
+
+                // To (escaped (\)) \Z
+                "\\Z",
+
+                // Replace
+            ),
 
             // Original input
             $insecureInput
