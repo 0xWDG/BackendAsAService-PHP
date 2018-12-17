@@ -89,7 +89,7 @@ p.lead {
 }
 
 .text-primary {
-    color: #e38cb7 !important;
+    color: #00d4ff !important;
 }
 
 .light-font {
@@ -110,10 +110,15 @@ p.lead {
 
 .btn-primary {
     border-radius: 3px;
-    background-image: -moz-linear-gradient( 122deg, #e54595 0%, #fd378e 100%);
-    background-image: -webkit-linear-gradient( 122deg, #e54595 0%, #fd378e 100%);
-    background-image: -ms-linear-gradient( 122deg, #e54595 0%, #fd378e 100%);
-    background-image: linear-gradient( 122deg, #e54595 0%, #fd378e 100%);
+    /*    background-image: -moz-linear-gradient(122deg, #e54595 0%, #fd378e 100%);
+    background-image: -webkit-linear-gradient(122deg, #e54595 0%, #fd378e 100%);
+    background-image: -ms-linear-gradient(122deg, #e54595 0%, #fd378e 100%);
+    background-image: linear-gradient(122deg, #e54595 0%, #fd378e 100%);*/
+    background: rgb(0, 212, 255);
+    background: -moz-linear-gradient(0deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 32%);
+    background: -webkit-linear-gradient(0deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 32%);
+    background: linear-gradient(0deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 32%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00d4ff", endColorstr="#000000", GradientType=1);
     box-shadow: 0px 9px 32px 0px rgba(0, 0, 0, 0.2);
     font-weight: 500;
     padding: 0.6rem 2rem;
@@ -126,7 +131,11 @@ p.lead {
 .btn-primary:not([disabled]):not(.disabled).active,
 .btn-primary:not([disabled]):not(.disabled):active,
 .show>.btn-primary.dropdown-toggle {
-    background-image: linear-gradient( 122deg, #fd378e 0%, #e54595 100%);
+    background: rgb(0, 212, 255);
+    background: -moz-linear-gradient(0deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 93%);
+    background: -webkit-linear-gradient(0deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 93%);
+    background: linear-gradient(0deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 93%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00d4ff", endColorstr="#000000", GradientType=1);
     box-shadow: 0px 9px 32px 0px rgba(0, 0, 0, 0.3);
     color: #FFF;
 }
@@ -170,6 +179,7 @@ p.lead {
     h1 {
         font-size: 40px;
     }
+
     h2 {
         font-size: 30px;
     }
@@ -186,10 +196,16 @@ p.lead {
 
 .nav-menu.is-scrolling,
 .nav-menu.menu-is-open {
-    background-color: rgb(74, 13, 143);
+    /*    background-color: rgb(74, 13, 143);
     background: -moz-linear-gradient(135deg, rgb(74, 13, 143) 0%, rgb(250, 42, 143) 100%);
     background: -webkit-linear-gradient(135deg, rgb(74, 13, 143) 0%, rgb(250, 42, 143) 100%);
-    background: linear-gradient(135deg, rgb(74, 13, 143) 0%, rgb(250, 42, 143) 100%);
+    background: linear-gradient(135deg, rgb(74, 13, 143) 0%, rgb(250, 42, 143) 100%);*/
+    background: rgb(0, 212, 255);
+    background: -moz-linear-gradient(90deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 212, 255, 1) 100%);
+    background: -webkit-linear-gradient(90deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 212, 255, 1) 100%);
+    background: linear-gradient(90deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 212, 255, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00d4ff", endColorstr="#00d4ff", GradientType=1);
+
     -webkit-box-shadow: 0px 5px 23px 0px rgba(0, 0, 0, 0.1);
     -moz-box-shadow: 0px 5px 23px 0px rgba(0, 0, 0, 0.1);
     box-shadow: 0px 5px 23px 0px rgba(0, 0, 0, 0.1);
@@ -209,9 +225,10 @@ p.lead {
         padding-left: 1rem;
         font-size: 14px;
     }
+
     .navbar-nav>.nav-item>.nav-link.active:after {
         content: "";
-        border-bottom: 2px solid #cd99d4;
+        border-bottom: 2px solid #00d4ff;
         left: 1rem;
         right: 1rem;
         bottom: 5px;
@@ -224,6 +241,7 @@ p.lead {
     .navbar-nav.is-scrolling {
         padding-bottom: 1rem;
     }
+
     .navbar-nav .nav-item {
         text-align: center;
     }
@@ -240,16 +258,22 @@ header {
 }
 
 .bg-gradient {
-    background-image: -moz-linear-gradient( 135deg, rgba(60, 8, 118, 0.8) 0%, rgba(250, 0, 118, 0.8) 100%);
+    /*    background-image: -moz-linear-gradient( 135deg, rgba(60, 8, 118, 0.8) 0%, rgba(250, 0, 118, 0.8) 100%);
     background-image: -webkit-linear-gradient( 135deg, rgba(60, 8, 118, 0.8) 0%, rgba(250, 0, 118, 0.8) 100%);
     background-image: -ms-linear-gradient( 135deg, rgba(60, 8, 118, 0.8) 0%, rgba(250, 0, 118, 0.8) 100%);
     background-image: linear-gradient( 135deg, rgba(60, 8, 118, 0.8) 0%, rgba(250, 0, 118, 0.8) 100%);
+*/
+    background: rgb(0, 212, 255);
+    background: -moz-linear-gradient(90deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 212, 255, 1) 100%);
+    background: -webkit-linear-gradient(90deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 212, 255, 1) 100%);
+    background: linear-gradient(90deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 212, 255, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00d4ff", endColorstr="#00d4ff", GradientType=1);
 }
 
 .tagline {
     font-size: 23px;
     font-weight: 300;
-    color: #ffb8f6;
+    color: #00d4ff;
     max-width: 800px;
     margin: 0 auto;
 }
@@ -270,6 +294,7 @@ header {
     .tagline {
         font-size: 17px;
     }
+
     .img-holder {
         padding-bottom: 100%;
     }
@@ -300,6 +325,7 @@ header {
     .card.features {
         margin-bottom: 2rem;
     }
+
     [class^="col-"]:last-child .card.features {
         margin-bottom: 0;
     }
@@ -364,10 +390,7 @@ header {
 }
 
 .ui-steps li:hover .circle-icon {
-    background-image: -moz-linear-gradient( 122deg, #e6388e 0%, #fb378e 100%);
-    background-image: -webkit-linear-gradient( 122deg, #e6388e 0%, #fb378e 100%);
-    background-image: -ms-linear-gradient( 122deg, #e6388e 0%, #fb378e 100%);
-    background-image: linear-gradient( 122deg, #e6388e 0%, #fb378e 100%);
+    background: #00d4ff;
     box-shadow: 0px 9px 32px 0px rgba(0, 0, 0, 0.09);
     color: #FFF;
 }
@@ -434,7 +457,7 @@ header {
 .nav-tabs .nav-link.active {
     background: #FFF;
     border-top-width: 3px;
-    border-color: #ce75b4 #faf6fb #FFF;
+    border-color: #00d4ff #faf6fb #FFF;
     color: #633991;
 }
 
@@ -524,6 +547,7 @@ header {
         -ms-flex-direction: column;
         flex-direction: column;
     }
+
     .card-deck .card {
         margin-bottom: 15px;
     }
@@ -535,7 +559,7 @@ header {
 
 .card.pricing.popular {
     border-top-width: 3px;
-    border-color: #ce75b4 #faf6fb #FFF;
+    border-color: #00d4ff #faf6fb #FFF;
     box-shadow: 0px 12px 59px 0px rgba(36, 7, 31, 0.11);
     color: #633991;
 }
@@ -597,7 +621,7 @@ header {
 .call-to-action .tagline {
     font-size: 16px;
     font-weight: 300;
-    color: #ffb8f6;
+    color: #00d4ff;
     max-width: 650px;
     margin: 0 auto;
 }
