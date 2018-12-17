@@ -37,12 +37,12 @@ body {
 }
 
 a {
-    color: #e38cb7;
+    color: #00d4ff;
 }
 
 a:hover,
 a:focus {
-    color: #d6619c;
+    color: #00d4ff;
 }
 
 h1 {
@@ -55,13 +55,13 @@ h1 {
 h2 {
     font-size: 45px;
     font-weight: 300;
-    color: #633991;
+    color: #00d4ff;
     letter-spacing: -1px;
     margin-bottom: 1rem;
 }
 
 h3 {
-    color: #633991;
+    color: #00d4ff;
     font-size: 33px;
     font-weight: 500;
 }
@@ -69,13 +69,13 @@ h3 {
 h4 {
     font-size: 20px;
     font-weight: 500;
-    color: #633991;
+    color: #00d4ff;
 }
 
 h5 {
     font-size: 28px;
     font-weight: 300;
-    color: #633991;
+    color: #00d4ff;
     margin-bottom: 0.7rem;
 }
 
@@ -84,7 +84,7 @@ p {
 }
 
 p.lead {
-    color: #e38cb7;
+    color: #00d4ff;
     margin-bottom: 2rem;
 }
 
@@ -146,7 +146,7 @@ p.lead {
     box-shadow: 0px 9px 32px 0px rgba(0, 0, 0, 0.26);
     font-size: 14px;
     font-weight: 500;
-    color: #633991;
+    color: #00d4ff;
     margin: 0.5rem;
     padding: 0.7rem 1.6rem;
     line-height: 1.8;
@@ -273,7 +273,7 @@ header {
 .tagline {
     font-size: 23px;
     font-weight: 300;
-    color: #00d4ff;
+    color: #fff;
     max-width: 800px;
     margin: 0 auto;
 }
@@ -305,10 +305,11 @@ header {
 ----------------------*/
 
 .gradient-fill:before {
-    color: #fc73b4;
-    background: -moz-linear-gradient(top, #9477b4 0%, #fc73b4 100%);
-    background: -webkit-linear-gradient(top, #9477b4 0%, #fc73b4 100%);
-    background: linear-gradient(to bottom, #9477b4 0%, #fc73b4 100%);
+    background: rgb(0, 212, 255);
+    background: -moz-linear-gradient(0deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 93%);
+    background: -webkit-linear-gradient(0deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 93%);
+    background: linear-gradient(0deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 93%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00d4ff", endColorstr="#000000", GradientType=1);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -335,10 +336,11 @@ header {
     content: "";
     position: absolute;
     width: 3px;
-    color: #fc73b4;
-    background: -moz-linear-gradient(top, #9477b4 0%, #fc73b4 100%);
-    background: -webkit-linear-gradient(top, #9477b4 0%, #fc73b4 100%);
-    background: linear-gradient(to bottom, #9477b4 0%, #fc73b4 100%);
+    background: rgb(0, 212, 255);
+    background: -moz-linear-gradient(0deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 93%);
+    background: -webkit-linear-gradient(0deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 93%);
+    background: linear-gradient(0deg, rgba(0, 212, 255, 1) 0%, rgba(0, 0, 0, 1) 93%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00d4ff", endColorstr="#000000", GradientType=1);
     top: 0;
     bottom: 0;
     left: 0;
@@ -372,7 +374,7 @@ header {
     border-radius: 50%;
     margin-bottom: 1.5rem;
     background-color: #FFF;
-    color: #f5378e;
+    color: #00d4ff;
     font-size: 48px;
     text-align: center;
     line-height: 80px;
@@ -458,7 +460,7 @@ header {
     background: #FFF;
     border-top-width: 3px;
     border-color: #00d4ff #faf6fb #FFF;
-    color: #633991;
+    color: #00d4ff;
 }
 
 
@@ -561,7 +563,7 @@ header {
     border-top-width: 3px;
     border-color: #00d4ff #faf6fb #FFF;
     box-shadow: 0px 12px 59px 0px rgba(36, 7, 31, 0.11);
-    color: #633991;
+    color: #00d4ff;
 }
 
 .card.pricing .card-head {
@@ -573,7 +575,7 @@ header {
     display: block;
     font-size: 45px;
     font-weight: 300;
-    color: #633991;
+    color: #00d4ff;
 }
 
 .card.pricing .card-head .price sub {
@@ -621,7 +623,7 @@ header {
 .call-to-action .tagline {
     font-size: 16px;
     font-weight: 300;
-    color: #00d4ff;
+    color: #fff;
     max-width: 650px;
     margin: 0 auto;
 }
@@ -649,13 +651,14 @@ header {
     line-height: 50px;
     margin: 0 0.3rem;
     border-radius: 5px;
-    color: #f4c9e2;
+    color: #00d4ff;
     transition: all 0.3s ease;
 }
 
 .social-icons a:hover {
     text-decoration: none;
-    color: #e38cb7;
+    color: #fff;
+    background: #00d4ff;
 }
 
 @media (max-width:991px) {
