@@ -1,24 +1,31 @@
-# BaaS
+<h1><a style='text-decoration:none' href='https://wdg.github.io/BaaS/' target='_blank'>BaaS</a></h1>
 #### <ins>B</ins>ackend <ins>a</ins>s <ins>a</ins> <ins>S</ins>ervice
-See: https://wdg.github.io/BaaS/
 
-<h2><a target='_blank' href='https://wdg.github.io/BaaS/Framework'>Swift Documentation</a> | <a target='_blank' href='https://wdg.github.io/BaaS/Server'>PHP Server Documentation</a></h2>
+#####The one and only solution for any self hosted easy backend.
 
+[Section CI] -travis-, -swift-, ...
+<br />
+---
+See the progress of [v1.0](https://github.com/wdg/BaaS/projects/3), [Multi-Platform Client](https://github.com/wdg/BaaS/projects/1), [Multi-Platform Server](https://github.com/wdg/BaaS/projects/2) (sorted by priority)
 
+Documentation: <a target='_blank' href='https://wdg.github.io/BaaS/Framework'>Swift Client Documentation</a>, <a target='_blank' href='https://wdg.github.io/BaaS/Server'>PHP Server Documentation</a>
+<br />
+---
 ### Some example usages (internal):
 <table>
-<tr><td>Finished?</td><td>Action</td><td>Server Call</td></tr>
-<tr><td></td><td><b>Create table</b></td><td>http://127.0.0.1:8000/index.php/table.create/$TABLE$</td></tr>
-<tr><td></td><td><b>Append to table</b></td><td>http://127.0.0.1:8000/index.php/table.append/$TABLE$</td></tr>
-<tr><td></td><td><b>Empty table</b></td><td>http://127.0.0.1:8000/index.php/table.empty/$TABLE$</td></tr>
-<tr><td></td><td><b>Remove table</b></td><td>http://127.0.0.1:8000/index.php/table.remove/$TABLE$</td></tr>
-<tr><td>☑️</td><td><b>Insert row</b></td><td>http://127.0.0.1:8000/index.php/row.insert/$TABLE$</td></tr>
-<tr><td>☑️</td><td><b>Set row</b></td><td>http://127.0.0.1:8000/index.php/row.set/$TABLE$</td></tr>
-<tr><td>☑️</td><td><b>Get row</b></td><td>http://127.0.0.1:8000/index.php/row.get/$TABLE$</td></tr>
-<tr><td>☑️</td><td><b>Delete row</b></td><td>http://127.0.0.1:8000/index.php/row.del/$TABLE$</td></tr>
+<tr><td>Finished?</td><td>Tests written?</td><td>Action</td><td>Server Call</td></tr>
+<tr><td></td><td></td><td><b>Create table</b></td><td><a href='http://127.0.0.1:8000/index.php/table.create/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/table.create/$TABLE$</a></td></tr>
+<tr><td></td><td></td><td><b>Append to table</b></td><td><a href='http://127.0.0.1:8000/index.php/table.append/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/table.append/$TABLE$</a></td></tr>
+<tr><td></td><td></td><td><b>Empty table</b></td><td><a href='http://127.0.0.1:8000/index.php/table.empty/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/table.empty/$TABLE$</a></td></tr>
+<tr><td></td><td></td><td><b>Remove table</b></td><td><a href='http://127.0.0.1:8000/index.php/table.remove/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/table.remove/$TABLE$</a></td></tr>
+<tr><td></td><td></td><td><b>Rename table</b></td><td><a href='http://127.0.0.1:8000/index.php/table.rename/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/table.rename/$TABLE$</a></td></tr>
+<tr><td>☑️</td><td></td><td><b>Create row</b></td><td><a href='http://127.0.0.1:8000/index.php/row.create/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/row.create/$TABLE$</a></td></tr>
+<tr><td>☑️</td><td></td><td><b>Set row</b></td><td><a href='http://127.0.0.1:8000/index.php/row.set/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/row.set/$TABLE$</a></td></tr>
+<tr><td>☑️</td><td></td><td><b>Get row</b></td><td><a href='http://127.0.0.1:8000/index.php/row.get/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/row.get/$TABLE$</a></td></tr>
+<tr><td>☑️</td><td></td><td><b>Delete row</b></td><td><a href='http://127.0.0.1:8000/index.php/row.remove/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/row.remove/$TABLE$</a><ins>was del</ins></td></tr>
 </table>
 
-### Contributors:
+### Top 10 Contributors:
 <table width="100%">
     <tr>
         <td width="50%">Name</td>
@@ -38,4 +45,4 @@ See: https://wdg.github.io/BaaS/
 </table>
 
 ---
-Thanks to: [Jazzy](https://github.com/realm/jazzy) for generating Swift Documentation, [PHPDocumentor](https://github.com/realm/jazzy) for generating PHP Documentation, [You](#) For using `BaaS` and all our [Contributors](https://github.com/wdg/BaaS/blob/master/Contributors.md).
+Thanks to: [Jazzy](https://github.com/realm/jazzy) for generating Swift Documentation, [PHPDocumentor](https://github.com/realm/jazzy) for generating PHP Documentation, [You](#) For using `BaaS` and all our [Contributors](https://github.com/wdg/BaaS/blob/master/.github/Contributors.md).

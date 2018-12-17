@@ -1005,11 +1005,11 @@ class Server
             }
         }
 
-        // Handle /row.delete/xxx methods
+        // Handle /row.remove/xxx methods
         if (
             preg_match_all(
                 // escape "." and allow everything after "/"
-                "/row\.delete(\/?)(.*)/",
+                "/row\.remove(\/?)(.*)/",
 
                 // The current requested url
                 $_SERVER['REQUEST_URI'],
@@ -1021,24 +1021,24 @@ class Server
             // check the API KEY
             $this->checkAPIKey();
 
-            // If /row.delete/MAYNOTBEEMPTY is nog empty
+            // If /row.remove/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Parse and echo
                 return $this->rowAction(
                     // With value xxx
                     $action[2][0],
 
-                    // It's a delete action
-                    "delete"
+                    // It's a remove action
+                    "remove"
                 );
             }
         }
 
-        // Handle /row.insert/xxx methods
+        // Handle /row.create/xxx methods
         if (
             preg_match_all(
                 // escape "." and allow everything after "/"
-                "/row\.insert(\/?)(.*)/",
+                "/row\.create(\/?)(.*)/",
 
                 // The current requested url
                 $_SERVER['REQUEST_URI'],
@@ -1050,10 +1050,10 @@ class Server
             // check the API KEY
             $this->checkAPIKey();
 
-            // If /row.insert/MAYNOTBEEMPTY is nog empty
+            // If /row.create/MAYNOTBEEMPTY is nog empty
             if (!empty($action[2][0])) {
                 // Parse and echo
-                return $this->rowInsert(
+                return $this->rowCreate(
                     // With value xxx
                     $action[2][0]
                 );
@@ -1656,8 +1656,8 @@ class Server
                 break;
 
             // Delete something
-            // row.delete
-            case 'delete':
+            // row.remove
+            case 'remove':
                 $SQLcommand = sprintf(
                     // Select .. FROM `database`
                     "DELETE FROM `%s`",
@@ -2476,15 +2476,15 @@ class Server
     }
 
     /**
-     * Insert row
+     * Create row
      *
      * @parameter string $tableName the table name
      * @parameter bool $asJSON as JSON string?
      * @return array|string Fieldnames
      */
-    private function rowInsert($action)
+    private function rowCreate($action)
     {
-        // row.insert
+        // row.create
         // Check if the table exists
         if (!$this->tableExists($action)) {
             // Return a error, it does not exists.
