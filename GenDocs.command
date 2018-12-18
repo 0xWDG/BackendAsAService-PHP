@@ -1,32 +1,38 @@
-# Get the base directory
-BASEDIR=$(dirname $0)
+echo 'Change to script directory'
+cd $(dirname "$0")
 
-# Move to the base directory
-cd $BASEDIR
+# echo 'Change Server build number'
+# cat Server/BaaS-Server.php | sed -e 's/\$build = ".*"/$build = "'$(date "+%Y%m%d")'"/g' > Server/BaaS-Server.php
 
-# Move to "Framework"
+# echo 'Change Swift build number'
+# cat Framework/BaaS/BaaS/BaaS.swift | sed -e 's/build = ".*"/build = "'$(date "+%Y%m%d")'"/g' > Framework/BaaS/BaaS/BaaS.swift
+
+# echo 'Sleeping.'
+# sleep 1
+
+echo 'Move to "Framework"'
 cd Framework
 
-# Execute "Jazzy"
+echo 'Execute "Jazzy"'
 jazzy
 
-# Move to the base directory
+echo 'Move to the base directory'
 cd $BASEDIR
 
-# Move to "Server"
+echo 'Move to "Server"'
 cd Server
 
-# Execute "phpDocumentor"
+echo 'Execute "phpDocumentor"'
 phpDocumentor
 
-# Remove build files
+echo 'Remove build files'
 rm -rf build
 
-# Move to the base directory
+echo 'Move to the base directory'
 cd $BASEDIR
 
-# Remove build files
+echo 'Remove build files'
 rm -rf build
 
-# Bye!
+echo 'Bye!'
 exit &>/dev/null

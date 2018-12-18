@@ -210,6 +210,16 @@ class Server
     );
 
     /**
+     * Extensions
+     *
+     * We'll support extensions
+     *
+     * @since 1.0
+     * @var string|array $extensions Extensions array
+     */
+    private $extensions = array();
+
+    /**
      * Set database configuration
      *
      * @since 1.0
@@ -313,6 +323,50 @@ class Server
                     $type
                 );
                 break;
+        }
+    }
+
+    /**
+     * attach Extension
+     *
+     * @since 1.0
+     * @param string $extensionURL Extension url (in regex)
+     * @param string $extensionCall extensionClass::myFunction
+     * @return bool
+     */
+    public function attachExtension($extensionURL, $extensionCall)
+    {
+        // Check if the extension is callable
+        if (is_callable($extensionCall)) {
+            // Append to extensions
+            $this->extensions[] = array(
+                //Extension url (in regex)
+                $extensionURL,
+
+                //extensionClass::myFunction
+                $extensionCall,
+            );
+        } else {
+            header("Content-type: application/json");
+
+            // Show a error
+            echo json_encode(
+                array(
+                    // Warning
+                    "Warning" => "Extension not callable",
+
+                    // Possible Fix
+                    "Fix" => "Please check that the function exists, and is callable (not private)",
+
+                    // Extension
+                    "Extension" => array(
+                        "URL" => $extensionURL,
+                        "Call" => $extensionCall,
+                    ),
+                )
+            );
+
+            exit;
         }
     }
 
@@ -463,7 +517,7 @@ class Server
      * @param string $SQLString The SQL Query
      * @return string the table name
      */
-    private function tableFromSQLString($SQLString)
+    protected function tableFromSQLString($SQLString)
     {
         // Check if we can find the table, from the SQL Command
         // Supported:
@@ -501,7 +555,7 @@ class Server
      * @since 1.0
      * @param String $tableName table name
      */
-    private function tableExists($tableName)
+    protected function tableExists($tableName)
     {
         if (!isset($this->db)) {
             echo json_encode(
@@ -627,6 +681,18 @@ class Server
     {
         // Set Maximum tries (in time)
         $this->triesTime = $setTriesTime;
+    }
+
+    /**
+     * get Database Type
+     *
+     * @since 1.0
+     * @return string Database Type
+     */
+    public function databaseType()
+    {
+        // Return database type
+        return $this->dbConfig['type'];
     }
 
     /**
@@ -1190,6 +1256,52 @@ class Server
             }
         }
 
+        // Handle extensions
+        for ($i = 0; $i < sizeof($this->extensions); $i++) {
+            // Check if the custom URL matches the current URL
+            if (
+                // Create a match case
+                preg_match_all(
+                    // Get the custom URL
+                    $regex = sprintf(
+                        // Create a regex
+                        "/%s(\/?)(.*)/",
+
+                        // Secure . to \.
+                        preg_replace(
+                            // .
+                            "/\./",
+
+                            // to \.
+                            "\\.",
+
+                            // Custom URL
+                            $this->extensions[$i][0]
+                        )
+                    ),
+
+                    // The current requested url
+                    $_SERVER['REQUEST_URI'],
+
+                    // Save to $action
+                    $action
+                )
+            ) {
+                // Call and return the user function
+                return call_user_func_array(
+                    // User function (extension)
+                    $this->extensions[$i][1],
+
+                    // Always pass one array, with one value
+                    array(
+                        // Value after "/", if present
+                        !empty($action[2][0]) ? $action[2][0] : 'NoDatabase',
+                        $this,
+                    )
+                );
+            }
+        }
+
         // Oh, dear, that is a invalid request.
         return $this->invalidRequest();
     }
@@ -1201,7 +1313,7 @@ class Server
      * @param string $request the type/value
      * @return string JSON Error.
      */
-    private function invalidRequest($request = 'Unknown')
+    protected function invalidRequest($request = 'Unknown')
     {
         // Set HTTP status code
         $this->set_http_code($this->errorCode['invalidRequest']);
@@ -1471,7 +1583,7 @@ class Server
      * @param string $query the SQL Query
      * @return mixed
      */
-    private function query($query)
+    protected function query($query)
     {
         // Execute the query
         return $this->db->query($query);
@@ -1484,7 +1596,7 @@ class Server
      * @param string $insecureInput the unsecure SQL Query
      * @return string the (more)secure SQL Query
      */
-    private function escapeString($insecureInput)
+    protected function escapeString($insecureInput)
     {
         // Replace unsafe characters
         return str_replace(
@@ -2237,14 +2349,14 @@ class Server
      * @param array|string $parameters Query parameters
      * @return bool Query executed
      */
-    private function queryWithParameters($query, $parameters)
+    protected function queryWithParameters($query, $parameters)
     {
         // Get the table from the SQL Query.
         $table = $this->tableFromSQLString($query);
 
         // Check if table exists...
         if (!$this->tableExists($table)) {
-            return array(
+            return (object) array(
                 // Send Status
                 "Status" => "Failed",
 
@@ -2285,7 +2397,7 @@ class Server
             $stmt = $this->db->prepare($query);
         } catch (PDOException $e) {
             // Handle the exception
-            return $this->handleException($e);
+            return (object) $this->handleException($e, true);
         }
 
         /**
@@ -2312,17 +2424,30 @@ class Server
              * Executed statement
              * @var $stmt callable SQL Statement
              */
-            $stmt->execute();
+            @$stmt->execute();
+
+            /**
+             * fetched content
+             * @var [string]
+             */
+            if (preg_match("/select/", strtolower($query))) {
+                $fechedData = @$stmt->fetchAll();
+            } else {
+                return (object) array(
+                    // Send Status
+                    "Status" => "Ok",
+
+                    // :)
+                    "Executed" => $query,
+
+                    // RowID
+                    "RowID" => $this->db->lastInsertId(),
+                );
+            }
         } catch (PDOException $e) {
             // Handle the exception
-            return $this->handleException($e);
+            return (object) $this->handleException($e, true);
         }
-
-        /**
-         * fetched content
-         * @var [string]
-         */
-        $fechedData = $stmt->fetchAll();
 
         /**
          * data check, If less then 1
@@ -2332,7 +2457,13 @@ class Server
             /**
              * We've got values
              */
-            return $fechedData;
+            return (object) array(
+                // Send Status
+                "Status" => "Ok",
+
+                // Return values
+                "Data" => $fechedData,
+            );
         }
 
         /**
@@ -2391,7 +2522,7 @@ class Server
             $new = $this->db->prepare($newQuery);
         } catch (PDOException $e) {
             // Handle the exception
-            return $this->handleException($e);
+            return (object) $this->handleException($e, true);
         }
 
         /**
@@ -2404,25 +2535,23 @@ class Server
          * @var [string]
          */
         $fechedData = $new->fetch(\PDO::FETCH_BOTH);
-
-        /**
-         * data check, If less then 1
-         * then skip.
-         */
         if (sizeof($fechedData) > 1) {
-            /**
-             * We've got values
-             * hack it togheter.
-             */
-            return array(
-                0 => $fechedData,
+            return (object) array(
+                // Send Status
+                "Status" => "Ok",
+
+                // Return values
+                "Data" => $fechedData,
             );
         }
 
         /**
          * Failed, or no data found.
          */
-        return false;
+        return (object) array(
+            "Status" => "Failed",
+            "Warning" => "Failed to execute query",
+        );
     }
 
     /**
@@ -2679,7 +2808,7 @@ class Server
      * @parameter bool $asJSON as JSON string?
      * @return array|string Fieldnames
      */
-    private function getTableFields($tableName, $asJSON = false)
+    protected function getTableFields($tableName, $asJSON = false)
     {
         // Create a empty array
         $fields = array();
@@ -2700,7 +2829,8 @@ class Server
                     "\\`",
 
                     // in
-                    $tableName)
+                    $tableName
+                )
 
             )
         );
@@ -2823,6 +2953,15 @@ class Server
 
         // Checks isAdmin state
         $this->isAdmin = $this->isLoggedInAsAdmin();
+
+        // Load Extensions (if exists)
+        foreach (glob("Data/*_extension.php") as $extension) {
+            // Is the file readable?
+            if (is_readable($extension)) {
+                // Load the file
+                include_once $extension;
+            }
+        }
     }
 
     /**
@@ -2832,7 +2971,7 @@ class Server
      * @param string $serverAddr Server address
      * @return mixed|string Offline/Online
      */
-    private function isTheServerAvailable($serverAddr)
+    protected function isTheServerAvailable($serverAddr)
     {
         // Connect to the MySQL Server
         $fp = fsockopen($serverAddr, 3306, $errno, $errstr);
@@ -2848,7 +2987,7 @@ class Server
      * @param callable $exception throwed exception
      * @return mixed|string JSON String with error (if available)
      */
-    private function handleException($exception)
+    protected function handleException($exception)
     {
         // This is a PDO Exception
         if ($exception instanceof PDOException) {
@@ -2906,7 +3045,7 @@ class Server
      * @since 1.0
      * @param int $code HTTP Status Code
      */
-    private function set_http_code($code = 200)
+    protected function set_http_code($code = 200)
     {
         // Set http code.
         switch ($code) {

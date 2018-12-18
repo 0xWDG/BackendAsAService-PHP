@@ -13,7 +13,7 @@
     <a title="BaaS  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">BaaS Docs</a> (67% documented)</p>
+        <p><a href="index.html">BaaS Docs</a> (63% documented)</p>
         <p class="header-right"><a href="https://github.com/wdg/BaaS"><img src="img/gh.png"/>View on GitHub</a></p>
         <p class="header-right"><a href="dash-feed://https%3A%2F%2Fwdg%2Egithub%2Eio%2FBaaS%2FFramework%2Fdocsets%2FBaaS%2Edocset"><img src="img/dash.png"/>Install in Dash</a></p>
       </div>
@@ -46,6 +46,12 @@
               <li class="nav-group-task">
                 <a href="Classes/BaaS.html#/s:4BaaSAAC0A17S_WhereExpressionV">– BaaS_WhereExpression</a>
               </li>
+              <li class="nav-group-task">
+                <a href="Classes/BaaS/BaaS_Errors.html">– BaaS_Errors</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/BaaS/BaaS_Response.html">– BaaS_Response</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -62,26 +68,32 @@
         <section>
           <section class="section">
             
-            <h1 id='baas' class='heading'>BaaS</h1>
+            <h1><a style='text-decoration:none' href='https://wdg.github.io/BaaS/' target='_blank'>BaaS</a></h1>
 <h4 id='ins-b-ins-ackend-ins-a-ins-s-ins-a-ins-ins-s-ins-ervice' class='heading'><ins>B</ins>ackend <ins>a</ins>s <ins>a</ins> <ins>S</ins>ervice</h4>
+<h5 id='the-one-and-only-solution-for-any-self-hosted-easy-backend' class='heading'>The one and only solution for any self hosted easy backend.</h5>
 
-<p>See: <a href="https://wdg.github.io/BaaS/">https://wdg.github.io/BaaS/</a></p>
+<p>[Section CI] -travis-, -swift-, &hellip;</p>
+<h2 id='br' class='heading'><br /></h2>
 
-<h2><a target='_blank' href='https://wdg.github.io/BaaS/Framework'>Swift Documentation</a> | <a target='_blank' href='https://wdg.github.io/BaaS/Server'>PHP Server Documentation</a></h2>
+<p>See the progress of <a href="https://github.com/wdg/BaaS/projects/3">v1.0</a>, <a href="https://github.com/wdg/BaaS/projects/1">Multi-Platform Client</a>, <a href="https://github.com/wdg/BaaS/projects/2">Multi-Platform Server</a> (sorted by priority)</p>
+
+<p>Documentation: <a target='_blank' href='https://wdg.github.io/BaaS/Framework'>Swift Client Documentation</a>, <a target='_blank' href='https://wdg.github.io/BaaS/Server'>PHP Server Documentation</a></p>
+<h2 id='br' class='heading'><br /></h2>
 <h3 id='some-example-usages-internal' class='heading'>Some example usages (internal):</h3>
 
 <table>
-<tr><td>Finished?</td><td>Action</td><td>Server Call</td></tr>
-<tr><td></td><td><b>Create table</b></td><td>http://127.0.0.1:8000/index.php/table.create/$TABLE$</td></tr>
-<tr><td></td><td><b>Append to table</b></td><td>http://127.0.0.1:8000/index.php/table.append/$TABLE$</td></tr>
-<tr><td></td><td><b>Empty table</b></td><td>http://127.0.0.1:8000/index.php/table.empty/$TABLE$</td></tr>
-<tr><td></td><td><b>Remove table</b></td><td>http://127.0.0.1:8000/index.php/table.remove/$TABLE$</td></tr>
-<tr><td>☑️</td><td><b>Insert row</b></td><td>http://127.0.0.1:8000/index.php/row.insert/$TABLE$</td></tr>
-<tr><td>☑️</td><td><b>Set row</b></td><td>http://127.0.0.1:8000/index.php/row.set/$TABLE$</td></tr>
-<tr><td>☑️</td><td><b>Get row</b></td><td>http://127.0.0.1:8000/index.php/row.get/$TABLE$</td></tr>
-<tr><td>☑️</td><td><b>Delete row</b></td><td>http://127.0.0.1:8000/index.php/row.del/$TABLE$</td></tr>
+<tr><td>Finished?</td><td>Tests written?</td><td>Action</td><td>Server Call</td></tr>
+<tr><td></td><td></td><td><b>Create table</b></td><td><a href='http://127.0.0.1:8000/index.php/table.create/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/table.create/$TABLE$</a></td></tr>
+<tr><td></td><td></td><td><b>Append to table</b></td><td><a href='http://127.0.0.1:8000/index.php/table.append/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/table.append/$TABLE$</a></td></tr>
+<tr><td></td><td></td><td><b>Empty table</b></td><td><a href='http://127.0.0.1:8000/index.php/table.empty/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/table.empty/$TABLE$</a></td></tr>
+<tr><td></td><td></td><td><b>Remove table</b></td><td><a href='http://127.0.0.1:8000/index.php/table.remove/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/table.remove/$TABLE$</a></td></tr>
+<tr><td></td><td></td><td><b>Rename table</b></td><td><a href='http://127.0.0.1:8000/index.php/table.rename/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/table.rename/$TABLE$</a></td></tr>
+<tr><td>☑️</td><td></td><td><b>Create row</b></td><td><a href='http://127.0.0.1:8000/index.php/row.create/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/row.create/$TABLE$</a></td></tr>
+<tr><td>☑️</td><td></td><td><b>Set row</b></td><td><a href='http://127.0.0.1:8000/index.php/row.set/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/row.set/$TABLE$</a></td></tr>
+<tr><td>☑️</td><td></td><td><b>Get row</b></td><td><a href='http://127.0.0.1:8000/index.php/row.get/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/row.get/$TABLE$</a></td></tr>
+<tr><td>☑️</td><td></td><td><b>Delete row</b></td><td><a href='http://127.0.0.1:8000/index.php/row.remove/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/row.remove/$TABLE$</a><ins>was del</ins></td></tr>
 </table>
-<h3 id='contributors' class='heading'>Contributors:</h3>
+<h3 id='top-10-contributors' class='heading'>Top 10 Contributors:</h3>
 
 <table width="100%">
     <tr>
@@ -103,12 +115,12 @@
 
 <hr>
 
-<p>Thanks to: <a href="https://github.com/realm/jazzy">Jazzy</a> for generating Swift Documentation, <a href="https://github.com/realm/jazzy">PHPDocumentor</a> for generating PHP Documentation, <a href="#">You</a> For using <code><a href="Classes/BaaS.html">BaaS</a></code> and all our <a href="https://github.com/wdg/BaaS/blob/master/Contributors.md">Contributors</a>.</p>
+<p>Thanks to: <a href="https://github.com/realm/jazzy">Jazzy</a> for generating Swift Documentation, <a href="https://github.com/realm/jazzy">PHPDocumentor</a> for generating PHP Documentation, <a href="#">You</a> For using <code><a href="Classes/BaaS.html">BaaS</a></code> and all our <a href="https://github.com/wdg/BaaS/blob/master/.github/Contributors.md">Contributors</a>.</p>
 
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2018 <a class="link" href="https://wesleydegroot.nl" target="_blank" rel="external">Wesley de Groot</a>. All rights reserved. (Last updated: 2018-12-07)</p>
+          <p>&copy; 2018 <a class="link" href="https://wesleydegroot.nl" target="_blank" rel="external">Wesley de Groot</a>. All rights reserved. (Last updated: 2018-12-18)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

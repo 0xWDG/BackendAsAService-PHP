@@ -78,6 +78,20 @@ open class BaaS {
     public static var shared: BaaS = BaaS()
     
     /**
+     * Version number
+     *
+     * BaaS Version number
+     */
+    private let version = "1.0"
+
+    /**
+     * Build number
+     *
+     * BaaS Build number
+     */
+    private let build = "20181218"
+
+    /**
      * Init
      *
      * We're live.

@@ -44,6 +44,16 @@ $server->setDebugmode(true);
 // DO NEVER USE setAlwaysLoggedIn.
 $server->setAlwaysLoggedIn(true);
 
+// Attach and load Extension.
+$server->attachExtension(
+    // Extension URL
+    "test.extension",
+
+    // Callable extension function.
+    // See: Data/demo_extension.php
+    "myExtension::myFunction"
+);
+
 // Serve
 echo $server->serve();
 
