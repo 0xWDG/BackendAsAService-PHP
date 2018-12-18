@@ -366,7 +366,7 @@ class Server
                 )
             );
 
-            exit;
+            exit(0);
         }
     }
 
