@@ -5,6 +5,11 @@ class myExtension extends \BaaS\Server
     // Function
     public function myFunction($tableName, $BaaS)
     {
+        // Baas is our object
+        if (!is_object($BaaS)) {
+            return "BaaS is not an object, cannot continue test";
+        }
+
         // Best way.
         $sSql = sprintf(
             // Query

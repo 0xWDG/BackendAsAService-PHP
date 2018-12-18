@@ -2,19 +2,20 @@
 /*
 We're creating HTTP Calls right now, please be sure that PHP is running
  */
+$uniqueKey = uniqid();
 
 $tests = array(
     // Test for invalid request
     array(
         "http://127.0.0.1:8000/BaaS-Test.php",
         null,
-        '{"Error":"Method not implented.","Method":"Unknown","Data":"Unknown","ReqURI":"\/BaaS-Test.php"}',
+        '{"Status":"Failed","Error":"Method not implented.","Method":"Unknown","Data":"Unknown","ReqURI":"\/BaaS-Test.php"}',
     ),
     // Test.action
     array(
-        "http://127.0.0.1:8000/BaaS-Test.php/test.action",
-        array('my', 'data', 'is' => 'here'),
-        'JSON={"my", "data", "is": "here"}',
+        "http://127.0.0.1:8000/BaaS-Test.php/extension.test/{$uniqueKey}",
+        array('my', 'mixed', 'data', 'is' => 'here', 'key' => $uniqueKey),
+        sprintf('{"0":"my","1":"mixed","2":"data","is":"here","key":"%s"}', $uniqueKey),
     ),
     // Real stuff..
 );
@@ -112,4 +113,5 @@ include 'BaaS-Server.php';
 $server = BaaS\Server::shared();
 $server->setDatabase('SQLite', 'Data/test-database.sqlite');
 $server->setRegisteredAPIkey('test_key');
+$server->attachExtension("extension.test", "BaaS_ExtensionTest::testFunction", false);
 echo $server->serve();

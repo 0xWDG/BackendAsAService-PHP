@@ -400,7 +400,8 @@ class Server
                 } else {
                     // Check if not in debug mode
                     if (!$this->debugmode) {
-                        $this->set_http_code($this->errorCode['blocked']);
+                        // Set HTTP Status code
+                        $this->setHTTPStatusCode($this->errorCode['blocked']);
 
                         // Say wrong APIKey
                         header("API-Key: Invalid");
@@ -469,7 +470,7 @@ class Server
         $this->setAttempt($_SERVER['REMOTE_ADDR']);
 
         // Send new headers.
-        $this->set_http_code($this->errorCode['blocked']);
+        $this->setHTTPStatusCode($this->errorCode['blocked']);
 
         // Say wrong APIKey
         header("API-Key: Invalid");
@@ -1325,7 +1326,7 @@ class Server
     protected function invalidRequest($request = 'Unknown')
     {
         // Set HTTP status code
-        $this->set_http_code($this->errorCode['invalidRequest']);
+        $this->setHTTPStatusCode($this->errorCode['invalidRequest']);
 
         // Explode the "uri" split all /'es
         $requestedURI = explode("/", $_SERVER['REQUEST_URI']);
@@ -3054,7 +3055,7 @@ class Server
      * @since 1.0
      * @param int $code HTTP Status Code
      */
-    protected function set_http_code($code = 200)
+    protected function setHTTPStatusCode($code = 200)
     {
         // Set http code.
         switch ($code) {
