@@ -12,7 +12,7 @@ See the progress of [v1.0](https://github.com/wdg/BaaS/projects/3), [Multi-Platf
 Documentation: <a target='_blank' href='https://wdg.github.io/BaaS/Framework'>Swift Client Documentation</a>, <a target='_blank' href='https://wdg.github.io/BaaS/Server'>PHP Server Documentation</a>
 <br />
 <hr />
-### Some example usages (internal):
+<h4>Some example usages (internal):</h4>
 <table>
 <tr><td>Finished?</td><td>Tests written?</td><td>Action</td><td>Server Call</td></tr>
 <tr><td></td><td></td><td><b>Create table</b></td><td><a href='http://127.0.0.1:8000/index.php/table.create/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/table.create/$TABLE$</a></td></tr>
