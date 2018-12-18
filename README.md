@@ -6,12 +6,12 @@
 
 [Section CI] -travis-, -swift-, ...
 <br />
----
+<hr />
 See the progress of [v1.0](https://github.com/wdg/BaaS/projects/3), [Multi-Platform Client](https://github.com/wdg/BaaS/projects/1), [Multi-Platform Server](https://github.com/wdg/BaaS/projects/2) (sorted by priority)
 
 Documentation: <a target='_blank' href='https://wdg.github.io/BaaS/Framework'>Swift Client Documentation</a>, <a target='_blank' href='https://wdg.github.io/BaaS/Server'>PHP Server Documentation</a>
 <br />
----
+<hr />
 ### Some example usages (internal):
 <table>
 <tr><td>Finished?</td><td>Tests written?</td><td>Action</td><td>Server Call</td></tr>
