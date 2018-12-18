@@ -332,9 +332,10 @@ class Server
      * @since 1.0
      * @param string $extensionURL Extension url (in regex)
      * @param string $extensionCall extensionClass::myFunction
-     * @return bool
+     * @param bool $needsAPIKey Do we need a API Key to run this?
+     * @return mixed
      */
-    public function attachExtension($extensionURL, $extensionCall)
+    public function attachExtension($extensionURL, $extensionCall, $needsAPIKey = true)
     {
         // Check if the extension is callable
         if (is_callable($extensionCall)) {
@@ -345,6 +346,9 @@ class Server
 
                 //extensionClass::myFunction
                 $extensionCall,
+
+                // Needs API Key?
+                $needsAPIKey,
             );
         } else {
             header("Content-type: application/json");
@@ -377,7 +381,7 @@ class Server
      * @internal
      * @return bool
      */
-    private function checkAPIKey()
+    protected function checkAPIKey()
     {
         // First check if the key is not invalid.
         if ($this->APIKey == "invalid") {
@@ -1257,6 +1261,7 @@ class Server
         }
 
         // Handle extensions
+        // Below official calls, so that this cannot overwrite default functions.
         for ($i = 0; $i < sizeof($this->extensions); $i++) {
             // Check if the custom URL matches the current URL
             if (
@@ -1287,6 +1292,10 @@ class Server
                     $action
                 )
             ) {
+                if ($this->extensions[$i][2]) {
+                    $this->checkAPIKey();
+                }
+
                 // Call and return the user function
                 return call_user_func_array(
                     // User function (extension)

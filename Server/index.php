@@ -51,7 +51,10 @@ $server->attachExtension(
 
     // Callable extension function.
     // See: Data/demo_extension.php
-    "myExtension::myFunction"
+    "myExtension::myFunction",
+
+    // API Key Required? (optional parameter, defaults to true)
+    true
 );
 
 // Serve
