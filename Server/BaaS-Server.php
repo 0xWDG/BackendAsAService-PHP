@@ -1237,33 +1237,6 @@ class Server
             }
         }
 
-        // Handle /table.append/xxx methods
-        if (
-            // Check if it matches "/table.append/"
-            preg_match_all(
-                // escape "." and allow everything after "/"
-                "/table\.append(\/?)(.*)/",
-
-                // The current requested url
-                $_SERVER['REQUEST_URI'],
-
-                // Save to $action
-                $action
-            )
-        ) {
-            // check the API KEY
-            $this->checkAPIKey();
-
-            // If /table.append/MAYNOTBEEMPTY is nog empty
-            if (!empty($action[2][0])) {
-                // Parse and echo
-                return $this->tableAppend(
-                    // With value xxx
-                    $action[2][0]
-                );
-            }
-        }
-
         // Handle /table.empty/xxx methods
         if (
             // Check if it matches "/table.empty/"
@@ -1686,80 +1659,6 @@ class Server
 
                 // Information
                 "Info" => "Table not created",
-
-                // How-To-Fix
-                "Fix" => "Turn on debugging to see this",
-
-                // Debug?
-                "Debug" => (
-                    // Check if debugmode is on
-                    $this->debugmode
-
-                    // It's on so return SQL Query.
-                     ? $sSql
-
-                    // Debugmode disabled
-                     : 'Debugmode disabled'
-                ),
-            )
-        );
-    }
-
-    /**
-     * Append column to table
-     *
-     * @since 1.0
-     * @param string $tableName the table name
-     * @return mixed
-     */
-    private function tableAppend($tableName)
-    {
-        // SQL Command
-        $sSql = sprintf(
-            // Create table.
-            "ALTER TABLE `%s` APPEND (\n",
-
-            // Escape the database
-            $this->escapeString(
-                // Replace insecure fields
-                preg_replace(
-                    // `
-                    "/`/",
-
-                    // to \\`
-                    "\\`",
-
-                    // in $databaseName
-                    $databaseName
-                )
-            )
-        );
-
-        return $this->invalidRequest($tableName);
-        // Exit with the sql command.
-        if ($this->query($sSql)) {
-            // Return we'll did it
-            return json_encode(
-                // Array.
-                array(
-                    // Return status
-                    "Status" => "Ok",
-
-                    // Information
-                    "Info" => "Table altered",
-                )
-            );
-        }
-
-        // Unexpected error
-        return json_encode(
-            // Array
-            array(
-                // Return status
-                "Status" => "Failed",
-
-                // Information
-                "Info" => "Table not altered",
 
                 // How-To-Fix
                 "Fix" => "Turn on debugging to see this",
