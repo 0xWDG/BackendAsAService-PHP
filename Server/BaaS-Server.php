@@ -925,10 +925,10 @@ class Server
                             $this->dbConfig['type'] == 'mysql'
 
                             // Test if the server is available
-                            ? $this->isTheServerAvailable($this->dbConfig['host'])
+                             ? $this->isTheServerAvailable($this->dbConfig['host'])
 
                             // No error report.
-                            : 'N/A'
+                             : 'N/A'
                         ),
                     ),
                 )
@@ -951,10 +951,10 @@ class Server
                     "Error" => !empty($this->errorMessage)
 
                     // The error message
-                    ? $this->errorMessage
+                     ? $this->errorMessage
 
                     // No database type is selected
-                    : "No database type is selected",
+                     : "No database type is selected",
 
                     // Show a fix
                     "Fix" => "Check the documentation!",
@@ -1086,10 +1086,10 @@ class Server
                 empty($action[2][0])
 
                 // Set index
-                ? 'index' 
+                 ? 'index'
 
                 // Custom index
-                : $action[2][0]
+                 : $action[2][0]
             );
         }
 
@@ -1391,7 +1391,7 @@ class Server
                     // Always pass one array, with one value
                     array(
                         // Value after "/", if present
-                        $action[2][0]
+                        $action[2][0],
 
                         // Append $BaaS for extensions
                         $this,
@@ -1428,13 +1428,13 @@ class Server
         // Get current method
         $method = (
             // If the size of the request > 2
-            (sizeof($requestedURI) > 2) 
+            (sizeof($requestedURI) > 2)
 
             // Extracted method
-            ? $requestedURI[sizeof($requestedURI) - 2] 
+             ? $requestedURI[sizeof($requestedURI) - 2]
 
             // Unknown method
-            : 'Unknown'
+             : 'Unknown'
         );
 
         // Display error to the user
@@ -1517,15 +1517,71 @@ class Server
             "`longitude` text DEFAULT NULL,\n"
         );
 
-        //TODO: Real fields instead of fakes.
-        $fields = array(
-            'a',
-            'b',
-            'c',
+        // Do we have JSON Data
+        if (!isset($_POST['JSON'])) {
+            // ERROR
+            return json_encode(
+                // In Array
+                array(
+                    // Status
+                    "Status" => "Failed",
+
+                    // Warning
+                    "Warning" => "Missing JSON data",
+
+                    // Possible-how-to-fix
+                    "Fix" => "Add JSON data",
+                )
+            );
+        }
+
+        // Decode JSON Data
+        $d = json_decode(
+            // Get the JSON Data
+            $_POST['JSON'],
+
+            // As Array
+            true
         );
 
+        // Is it a array?
+        if (!is_array($d) && sizeof($d) < 1) {
+            // ERROR
+            return json_encode(
+                // In Array
+                array(
+                    // Status
+                    "Status" => "Failed",
+
+                    // Warning
+                    "Warning" => "Corrupt JSON data",
+
+                    // Possible-how-to-fix
+                    "Fix" => "Please provide valid JSON data",
+                )
+            );
+        }
+
+        // Do we have fields?
+        if (!isset($d['fields'])) {
+            // ERROR
+            return json_encode(
+                // In Array
+                array(
+                    // Status
+                    "Status" => "Failed",
+
+                    // Warning
+                    "Warning" => "Missing fields",
+
+                    // Possible-how-to-fix
+                    "Fix" => "Add fields",
+                )
+            );
+        }
+
         // Loop trough the fields
-        foreach ($fields as $field) {
+        foreach ($d['fields'] as $field) {
             // Check if a field is not in the of pre-reserved fields.
             if (!in_array($field, $this->defaultFields)) {
                 // Append to SQL Command
@@ -1803,7 +1859,7 @@ class Server
         // If the size of decoded JSON < 1 or not a array
         if (
             // Check if it is not a array
-            !is_array($decodedJSON) || 
+            !is_array($decodedJSON) ||
 
             // Or the size is less then 1
             sizeof($decodedJSON) < 1
@@ -2585,13 +2641,13 @@ class Server
                 // Type (Only text supported right now)
                 (
                     // Which TYPE
-                    $this->dbConfig['type'] == "sqlite" 
+                    $this->dbConfig['type'] == "sqlite"
 
                     // SQLite
-                    ? SQLITE3_TEXT 
+                     ? SQLITE3_TEXT
 
                     // MySQL
-                    : \PDO::PARAM_STR
+                     : \PDO::PARAM_STR
                 )
             );
         }
@@ -2742,7 +2798,6 @@ class Server
             );
         }
 
-        
         // Failed, or no data found.
         return (object) array(
             // Status failed
@@ -2774,10 +2829,10 @@ class Server
             // If it is SQLite and there is a $this->dbConfig['path']
             if (
                 // If the database type is SQLite
-                $this->dbConfig['type'] == "sqlite" 
+                $this->dbConfig['type'] == "sqlite"
 
                 // And the path is not empty
-                && !empty($this->dbConfig['path'])
+                 && !empty($this->dbConfig['path'])
             ) {
                 try {
                     // Try to create/load a SQLite database
@@ -2865,7 +2920,7 @@ class Server
         // Check if we have undecoded the JSON
         if (
             // Is not is an array
-            !is_array($decodedJSON) || 
+            !is_array($decodedJSON) ||
 
             // And size is less than 1
             sizeof($decodedJSON) < 1
@@ -3086,14 +3141,14 @@ class Server
         // Return the fields as json or array
         return (
             // As JSON?
-            $asJSON 
+            $asJSON
 
             // AS JSON
-            ? json_encode($fields) 
+             ? json_encode($fields)
 
             // AS Array
-            : $fields;
-        )
+             : $fields
+        );
     }
 
     /**
@@ -3131,10 +3186,10 @@ class Server
             isset($_SERVER['SERVER_PROTOCOL'])
 
             // Yes, return it
-            ? $_SERVER['SERVER_PROTOCOL'] 
+             ? $_SERVER['SERVER_PROTOCOL']
 
             // We'll make a common one
-            : 'HTTP/1.1'
+             : 'HTTP/1.1'
         );
 
         // Create a temporary array
