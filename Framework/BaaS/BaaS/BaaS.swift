@@ -548,9 +548,9 @@ open class BaaS {
      */
     public func database(
         createFieldWithName: String,
-        type: BaaS_dbFieldType,
-        defaultValue: String,
-        canBeEmpty: Bool
+        type: BaaS_dbFieldType = .text,
+        defaultValue: String = "",
+        canBeEmpty: Bool = true
         ) -> BaaS_dbField {
         return BaaS_dbField.init(
             name: createFieldWithName,
@@ -585,7 +585,7 @@ open class BaaS {
         
         let JSON: [String: Any] = [
             "APIKey": self.apiKey,
-            "Data": data
+            "Fields": data
         ]
         
         let task = self.urlTask(
@@ -658,14 +658,14 @@ open class BaaS {
     }
     
     /**
-     * Insert data
+     * Create data
      *
      * - parameter values: Which values?
      * - parameter inDatabase: Which database?
      * - returns: BaaS.BaaS_Response_JSON
      */
-    public func insert(values: [String: String], inDatabase: String) -> Bool {
-        let dbURL = "\(serverAddress)/row.insert/\(inDatabase)"
+    public func create(values: [String: String], inDatabase: String) -> Bool {
+        let dbURL = "\(serverAddress)/row.create/\(inDatabase)"
         let task = self.urlTask(
             dbURL,
             [
@@ -673,7 +673,7 @@ open class BaaS {
                 "values": values
             ])
         
-        if let integer: Int = Int(BaaS_Response_Decoder(jsonData: task).RowID!) {
+        if let integer: Int = Int(BaaS_Response_Decoder(jsonData: task).RowID ?? "0") {
             self.lastRowID = integer
         }
         
@@ -757,4 +757,8 @@ open class BaaS {
         
         return String.init(data: task, encoding: .utf8)!
     }
+    
+    @available(*, deprecated)
+    internal func deprecated_placeholder() { }
+
 }

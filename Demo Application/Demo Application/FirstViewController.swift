@@ -20,7 +20,10 @@ class FirstViewController: UIViewController, BaaSDelegate {
         let dbLayout = [
             db.database(createFieldWithName: "name", type: .text, defaultValue: "", canBeEmpty: false),
             db.database(createFieldWithName: "password", type: .text, defaultValue: "", canBeEmpty: false),
-            db.database(createFieldWithName: "email", type: .text, defaultValue: "", canBeEmpty: false)
+            db.database(createFieldWithName: "email", type: .text, defaultValue: "", canBeEmpty: false),
+            db.database(createFieldWithName: "emailz", type: .text, defaultValue: "Pre\"tested'Filled", canBeEmpty: true),
+            db.database(createFieldWithName: "emailx", type: .number, defaultValue: "1", canBeEmpty: true)
+
         ]
         
         if db.database(createWithName: "testDatabase", withFields: dbLayout) {
@@ -29,38 +32,38 @@ class FirstViewController: UIViewController, BaaSDelegate {
             db.log("Database not created.")
         }
         
-        if db.database(existsWithName: "testDatabase") {
-            db.log("Database exists")
-        } else {
-            db.log("Database doesn't exists")
-        }
-        
-        db.noop()
-        
+//        if db.database(existsWithName: "testDatabase") {
+//            db.log("Database exists")
+//        } else {
+//            db.log("Database doesn't exists")
+//        }
+//
+//        db.noop()
+//
+//        db.log(
+//            db.value(
+//                expression: [db.expression("x", .eq, "x")],
+//                inDatabase: "testDatabase"
+//            )
+//        )
+//
+//        db.log(
+//            db.value(
+//                expression: [
+//                    db.expression("x", .eq, "x"),
+//                    db.expression("x", .neq, "q"),
+//                    db.expression("x", .like, "x"),
+//                    // Optional...
+//                    // "Lat,Lon", .location, "MaxDistance"
+//                    db.expression("0,0", .location, "10"),
+//                    ],
+//                inDatabase: "x"
+//            )
+//        )
+//
+//        //        db.log(db.test())
         db.log(
-            db.value(
-                expression: [db.expression("x", .eq, "x")],
-                inDatabase: "testDatabase"
-            )
-        )
-        
-        db.log(
-            db.value(
-                expression: [
-                    db.expression("x", .eq, "x"),
-                    db.expression("x", .neq, "q"),
-                    db.expression("x", .like, "x"),
-                    // Optional...
-                    // "Lat,Lon", .location, "MaxDistance"
-                    db.expression("0,0", .location, "10"),
-                    ],
-                inDatabase: "x"
-            )
-        )
-        
-        //        db.log(db.test())
-        db.log(
-            db.insert(
+            db.create(
                 values: [
                     "x": "Hello from Swift"
                 ],

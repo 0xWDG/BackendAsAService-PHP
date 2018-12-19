@@ -1468,15 +1468,7 @@ class Server
      */
     private function tableCreate($tableName)
     {
-        /*
-        CREATE TABLE `x` (
-        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-        `latitude` text DEFAULT NULL,
-        `longitude` text DEFAULT NULL,
-        `x` text DEFAULT NULL,
-        PRIMARY KEY (`id`)
-        ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1
-         */
+        // table.create
         // Create the SQL Command
         $sSql = sprintf(
             // Create table.
@@ -1492,8 +1484,8 @@ class Server
                     // to \\`
                     "\\`",
 
-                    // in $databaseName
-                    $databaseName
+                    // in $tableName
+                    $tableName
                 )
             )
         );
@@ -1502,19 +1494,19 @@ class Server
         // id (auto incrementing)
         $sSql .= sprintf(
             // Required default field
-            "`id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n"
+            "\t`id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n"
         );
 
         // latitude
         $sSql .= sprintf(
             // Required default field
-            "`latitude` text DEFAULT NULL,\n"
+            "\t`latitude` text DEFAULT NULL,\n"
         );
 
         // longitude
         $sSql .= sprintf(
             // Required default field
-            "`longitude` text DEFAULT NULL,\n"
+            "\t`longitude` text DEFAULT NULL,\n"
         );
 
         // Do we have JSON Data
@@ -1563,7 +1555,7 @@ class Server
         }
 
         // Do we have fields?
-        if (!isset($d['fields'])) {
+        if (!isset($d['Fields'])) {
             // ERROR
             return json_encode(
                 // In Array
@@ -1581,13 +1573,13 @@ class Server
         }
 
         // Loop trough the fields
-        foreach ($d['fields'] as $field) {
+        foreach ($d['Fields'] as $field) {
             // Check if a field is not in the of pre-reserved fields.
-            if (!in_array($field, $this->defaultFields)) {
+            if (!in_array($field['name'], $this->defaultFields)) {
                 // Append to SQL Command
                 $sSql .= sprintf(
-                    // `field` text default nullable
-                    "`%s` text DEFAULT NULL,\n",
+                    // `fieldname` fieldtype canbeempty value/null
+                    "\t`%s` %s %s %s,\n",
 
                     // Replace insecure text
                     preg_replace(
@@ -1598,7 +1590,61 @@ class Server
                         "\\`",
 
                         // in $field
-                        $field
+                        $field['name']
+                    ),
+
+                    // Check if our field is a number
+                    (
+                        // Check if our field is a number
+                        $field['type'] == 'number'
+
+                        // It's text
+                         ? "text"
+
+                        // It's a Integer
+                         : "int(11)"
+                    ),
+
+                    // Can the field be empty?
+                    (
+                        // Can the field be empty?
+                        $field['canBeEmpty'] == 'yes'
+
+                        // DEFAULT (can be empty!)
+                         ? "DEFAULT"
+
+                        // Can not be empty
+                         : "NOT"
+                    ),
+
+                    // Can the field be empty?
+                    (
+                        // Can the field be empty?
+                        $field['canBeEmpty'] == 'no'
+
+                        // Nope, so ignore.
+                         ? ''
+
+                        // Yes, do the math.
+                         : (
+                            // Is the default value not empty?
+                            !empty($field['defaultValue'])
+
+                            // Nope, not empty
+                             ? sprintf(
+                                // '...'
+                                "'%s'",
+
+                                // Escape the default Value
+                                $this->escapeString(
+                                    // Get the default value
+                                    $field['defaultValue']
+                                )
+                            )
+
+                            // No default value, so NULL
+                             : "NULL"
+                        )
                     )
                 );
             }
@@ -1607,7 +1653,7 @@ class Server
         // set the primary key.
         $sSql .= sprintf(
             // Required default field
-            "PRIMARY KEY (`id`)"
+            "\tPRIMARY KEY (`id`)\n"
         );
 
         // End the create query.
@@ -1617,9 +1663,46 @@ class Server
         );
 
         // Exit with the sql command.
-        print_r($sSql);exit;
+        if ($this->query($sSql)) {
+            // Return we'll did it
+            return json_encode(
+                // Array.
+                array(
+                    // Return status
+                    "Status" => "Ok",
 
-        return $this->invalidRequest($tableName);
+                    // Information
+                    "Info" => "Table created",
+                )
+            );
+        }
+
+        // Unexpected error
+        return json_encode(
+            // Array
+            array(
+                // Return status
+                "Status" => "Failed",
+
+                // Information
+                "Info" => "Table not created",
+
+                // How-To-Fix
+                "Fix" => "Turn on debugging to see this",
+
+                // Debug?
+                "Debug" => (
+                    // Check if debugmode is on
+                    $this->debugmode
+
+                    // It's on so return SQL Query.
+                     ? $sSql
+
+                    // Debugmode disabled
+                     : 'Debugmode disabled'
+                ),
+            )
+        );
     }
 
     /**
@@ -1798,7 +1881,7 @@ class Server
                 "'",
 
                 // Replace "
-                '"',
+                // '"',
 
                 // Replace \Z
                 "\x1a",
@@ -1822,7 +1905,7 @@ class Server
                 "\'",
 
                 // To (escaped (\)) \"
-                '\"',
+                // '\"',
 
                 // To (escaped (\)) \Z
                 "\\Z",
@@ -3019,7 +3102,19 @@ class Server
                     // Append to value string
                     $SQLValues .= sprintf(
                         // '...'
-                        "'%s', ",
+                        "%s%s%s, ",
+
+                        // Check if the value is numeric
+                        (
+                            // Is it numeric?
+                            is_numeric($decodedJSON['values'][$tableFields[$i]])
+
+                            // It's numeric
+                             ? ''
+
+                            // It's a value, so we must escape it
+                             : '\''
+                        ),
 
                         // Value
                         $this->escapeString(
@@ -3034,6 +3129,18 @@ class Server
                                 // In JSONData[values][field]
                                 $decodedJSON['values'][$tableFields[$i]]
                             )
+                        ),
+
+                        // Check if the value is numeric
+                        (
+                            // Is it numeric?
+                            is_numeric($decodedJSON['values'][$tableFields[$i]])
+
+                            // It's numeric
+                             ? ''
+
+                            // It's a value, so we must escape it
+                             : '\''
                         )
                     );
                 }
