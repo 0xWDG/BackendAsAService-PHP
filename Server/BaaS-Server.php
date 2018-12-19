@@ -254,9 +254,12 @@ class Server
                     } else {
                         // Error
                         $this->error = true;
+
                         // Path is not writeable
                         $this->errorMessage = sprintf(
                             "Path \"%s\" is not writeable",
+
+                            // FilePath
                             $hostOrPath
                         );
                     }
@@ -271,6 +274,7 @@ class Server
                 if (empty($hostOrPath)) {
                     // Error
                     $this->error = true;
+
                     // Missing hostname and username!
                     $this->errorMessage = "Missing hostname";
                 }
@@ -279,6 +283,7 @@ class Server
                 if (empty($username)) {
                     // Error
                     $this->error = true;
+
                     // Missing hostname and username!
                     $this->errorMessage = "Missing username";
                 }
@@ -287,6 +292,7 @@ class Server
                 if (empty($databaseName)) {
                     // Error
                     $this->error = true;
+
                     // Missing hostname and username!
                     $this->errorMessage = "Missing database name.";
                 }
@@ -320,6 +326,8 @@ class Server
                 // Set the error message
                 $this->errorMessage = sprintf(
                     "Database type %s does not exists",
+
+                    // Database Type.
                     $type
                 );
                 break;
@@ -355,6 +363,7 @@ class Server
 
             // Show a error
             echo json_encode(
+                // Array of errors
                 array(
                     // Warning
                     "Warning" => "Extension not callable",
@@ -364,12 +373,17 @@ class Server
 
                     // Extension
                     "Extension" => array(
+                        // URL
                         "URL" => $extensionURL,
+
+                        // Call
                         "Call" => $extensionCall,
                     ),
                 )
             );
 
+            // Exit
+            // 0 means no error, since we'll want to output the error.
             exit($this->$isCLI ? 1 : 0);
         }
     }
@@ -418,6 +432,7 @@ class Server
 
                                     // Send some details
                                     'Details' => sprintf(
+                                        // BaaS/...
                                         "BaaS/%s, Connection: Close, IP-Address: %s",
 
                                         // BaaS API Version
@@ -429,13 +444,23 @@ class Server
 
                                     // Return the API Key
                                     'APIKey' => (
+                                        // Does the APIKey exists?
                                         isset($_POST['APIKey'])
-                                        ? $_POST['APIKey']
-                                        :
+
+                                        // Use the POST
+                                         ? $_POST['APIKey']
+
+                                        // Else
+                                         :
                                         (
+                                            // If there is a APIKey?
                                             json_decode($_POST['JSON'])->APIKey
-                                            ? json_decode($_POST['JSON'])->APIKey
-                                            : 'None prodived'
+
+                                            // Show the JSON APIKey
+                                             ? json_decode($_POST['JSON'])->APIKey
+
+                                            // No API Key
+                                             : 'None prodived'
                                         )
                                     ),
                                 )
@@ -762,6 +787,7 @@ class Server
             sprintf(
                 // BFDir/%s.txt
                 $this->BFfile,
+
                 // %s = *
                 "*"
             )
@@ -793,11 +819,18 @@ class Server
                 if ($this->dbConfig['type'] == "mysql") {
                     // If defined $this->dbConfig['host'], $this->dbConfig['name'],
                     // $this->dbConfig['user']
-                    if (!empty($this->dbConfig['host']) &&
+                    if (
+                        // Is the Host empty?
+                        !empty($this->dbConfig['host']) &&
+
+                        // Is the Name empty?
                         !empty($this->dbConfig['name']) &&
+
+                        // Is the User empty?
                         !empty($this->dbConfig['user'])) {
                         // Then let's try to connect!
                         $this->db = new \PDO(
+                            // Sprintf mysql:...
                             sprintf(
                                 // mysql:host=$this->dbConfig['host'];
                                 // dbname=$this->dbConfig['name'];charset=UTF8
@@ -860,14 +893,23 @@ class Server
             );
         }
 
+        // Does the database resource exists?
         if (!isset($this->db)) {
+            // Create error report
             echo json_encode(
+                // Make a array
                 array(
                     // Send Status
                     "Status" => "Failed",
 
                     // Send Error message
-                    "Error" => sprintf("Failed to connect to the %s database", $this->dbConfig['type']),
+                    "Error" => sprintf(
+                        // Failed to connect to the TYPE database
+                        "Failed to connect to the %s database",
+
+                        // Database Type
+                        $this->dbConfig['type']
+                    ),
 
                     // Send how-to-fix
                     "Fix" => "Please review your configuration settings",
@@ -879,27 +921,39 @@ class Server
 
                         // Send server status
                         "Status" => (
+                            // Is it a SQL Server?
                             $this->dbConfig['type'] == 'mysql'
+
+                            // Test if the server is available
                             ? $this->isTheServerAvailable($this->dbConfig['host'])
+
+                            // No error report.
                             : 'N/A'
                         ),
                     ),
                 )
             );
-
+            // Error
+            // Exit with 0 so that we don't get http 500 errors.
             exit($this->$isCLI ? 1 : 0);
         }
 
         // Check if there is a DATABASE_TYPE defined.
         if ($this->error) {
+            // JSON Error
             return json_encode(
+                // Array
                 array(
                     // Send Status
                     "Status" => "Failed",
 
                     // Database type is missing
                     "Error" => !empty($this->errorMessage)
+
+                    // The error message
                     ? $this->errorMessage
+
+                    // No database type is selected
                     : "No database type is selected",
 
                     // Show a fix
@@ -908,8 +962,11 @@ class Server
             );
         }
 
+        // If the type is empty.
         if (empty($this->dbConfig['type'])) {
+            // JSONify Error
             return json_encode(
+                // Array
                 array(
                     // Send Status
                     "Status" => "Failed",
@@ -926,11 +983,13 @@ class Server
             );
         }
 
+        // Check if the TYPE = MySQL
         if ($this->dbConfig['type'] == "mysql") {
             // Check if there is a $this->dbConfig['host'] defined.
             if (empty($this->dbConfig['host'])) {
                 // Missing, so return a error.
                 return json_encode(
+                    // Array
                     array(
                         // Send Status
                         "Status" => "Failed",
@@ -947,6 +1006,7 @@ class Server
             if (empty($this->dbConfig['name'])) {
                 // Missing, so return a error.
                 return json_encode(
+                    // Array
                     array(
                         // Send Status
                         "Status" => "Failed",
@@ -959,10 +1019,12 @@ class Server
                     )
                 );
             }
+
             // Check if there is a $this->dbConfig['user'] defined.
             if (empty($this->dbConfig['user'])) {
                 // Missing, so return a error.
                 return json_encode(
+                    // Array
                     array(
                         // Send Status
                         "Status" => "Failed",
@@ -987,6 +1049,7 @@ class Server
         if (!is_writeable($this->blockFilePath)) {
             // error, we cannot continue now.
             return json_encode(
+                // Array
                 array(
                     // Send Status
                     "Status" => "Failed",
@@ -1005,6 +1068,7 @@ class Server
 
         // Handle /db.admin/ methods
         if (
+            // Check if it matches "/db.admin/"
             preg_match_all(
                 // escape "." and allow everything after "/"
                 "/db\.admin(\/?)(.*)/",
@@ -1019,12 +1083,19 @@ class Server
             // Run "DBAdmin"
             return $this->DBAdmin(
                 // If no action then show index
-                empty($action[2][0]) ? 'index' : $action[2][0]
+                empty($action[2][0])
+
+                // Set index
+                ? 'index' 
+
+                // Custom index
+                : $action[2][0]
             );
         }
 
         // Handle /row.get/xxx methods
         if (
+            // Check if it matches "/row.get/"
             preg_match_all(
                 // escape "." and allow everything after "/"
                 "/row\.get(\/?)(.*)/",
@@ -1054,6 +1125,7 @@ class Server
 
         // Handle /row.set/xxx methods
         if (
+            // Check if it matches "/row.set/"
             preg_match_all(
                 // escape "." and allow everything after "/"
                 "/row\.set(\/?)(.*)/",
@@ -1083,6 +1155,7 @@ class Server
 
         // Handle /row.remove/xxx methods
         if (
+            // Check if it matches "/row.remove/"
             preg_match_all(
                 // escape "." and allow everything after "/"
                 "/row\.remove(\/?)(.*)/",
@@ -1112,6 +1185,7 @@ class Server
 
         // Handle /row.create/xxx methods
         if (
+            // Check if it matches "/row.create/"
             preg_match_all(
                 // escape "." and allow everything after "/"
                 "/row\.create(\/?)(.*)/",
@@ -1138,6 +1212,7 @@ class Server
 
         // Handle /table.create/xxx methods
         if (
+            // Check if it matches "/table.create/"
             preg_match_all(
                 // escape "." and allow everything after "/"
                 "/table\.create(\/?)(.*)/",
@@ -1164,6 +1239,7 @@ class Server
 
         // Handle /table.append/xxx methods
         if (
+            // Check if it matches "/table.append/"
             preg_match_all(
                 // escape "." and allow everything after "/"
                 "/table\.append(\/?)(.*)/",
@@ -1190,6 +1266,7 @@ class Server
 
         // Handle /table.empty/xxx methods
         if (
+            // Check if it matches "/table.empty/"
             preg_match_all(
                 // escape "." and allow everything after "/"
                 "/table\.empty(\/?)(.*)/",
@@ -1216,6 +1293,7 @@ class Server
 
         // Handle /table.remove/xxx methods
         if (
+            // Check if it matches "/table.remove/"
             preg_match_all(
                 // escape "." and allow everything after "/"
                 "/table\.remove(\/?)(.*)/",
@@ -1242,6 +1320,7 @@ class Server
 
         // Handle /table.rename/xxx methods
         if (
+            // Check if it matches "/table.rename/"
             preg_match_all(
                 // escape "." and allow everything after "/"
                 "/table\.rename(\/?)(.*)/",
@@ -1298,7 +1377,9 @@ class Server
                     $action
                 )
             ) {
+                // Check if we need a API Key
                 if ($this->extensions[$i][2]) {
+                    // Check if we have valid API Key
                     $this->checkAPIKey();
                 }
 
@@ -1310,7 +1391,9 @@ class Server
                     // Always pass one array, with one value
                     array(
                         // Value after "/", if present
-                        !empty($action[2][0]) ? $action[2][0] : 'NoDatabase',
+                        $action[2][0]
+
+                        // Append $BaaS for extensions
                         $this,
                     )
                 );
@@ -1334,13 +1417,29 @@ class Server
         $this->setHTTPStatusCode($this->errorCode['invalidRequest']);
 
         // Explode the "uri" split all /'es
-        $requestedURI = explode("/", $_SERVER['REQUEST_URI']);
+        $requestedURI = explode(
+            // Split "/".
+            "/",
+
+            // Get the current url request.
+            $_SERVER['REQUEST_URI']
+        );
 
         // Get current method
-        $method = (sizeof($requestedURI) > 2) ? $requestedURI[sizeof($requestedURI) - 2] : 'Unknown';
+        $method = (
+            // If the size of the request > 2
+            (sizeof($requestedURI) > 2) 
+
+            // Extracted method
+            ? $requestedURI[sizeof($requestedURI) - 2] 
+
+            // Unknown method
+            : 'Unknown'
+        );
 
         // Display error to the user
         return json_encode(
+            // Array
             array(
                 // Send Status
                 "Status" => "Failed",
@@ -1378,6 +1477,7 @@ class Server
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1
          */
+        // Create the SQL Command
         $sSql = sprintf(
             // Create table.
             "CREATE TABLE `%s` (\n",
@@ -1401,16 +1501,19 @@ class Server
         // Append default fields.
         // id (auto incrementing)
         $sSql .= sprintf(
+            // Required default field
             "`id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n"
         );
 
         // latitude
         $sSql .= sprintf(
+            // Required default field
             "`latitude` text DEFAULT NULL,\n"
         );
 
         // longitude
         $sSql .= sprintf(
+            // Required default field
             "`longitude` text DEFAULT NULL,\n"
         );
 
@@ -1425,6 +1528,7 @@ class Server
         foreach ($fields as $field) {
             // Check if a field is not in the of pre-reserved fields.
             if (!in_array($field, $this->defaultFields)) {
+                // Append to SQL Command
                 $sSql .= sprintf(
                     // `field` text default nullable
                     "`%s` text DEFAULT NULL,\n",
@@ -1446,11 +1550,13 @@ class Server
 
         // set the primary key.
         $sSql .= sprintf(
+            // Required default field
             "PRIMARY KEY (`id`)"
         );
 
         // End the create query.
         $sSql .= sprintf(
+            // Required default engine
             ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;"
         );
 
@@ -1469,6 +1575,7 @@ class Server
      */
     private function tableAppend($tableName)
     {
+        // SQL Command
         $sSql = sprintf(
             // Create table.
             "ALTER TABLE `%s` APPEND (\n",
@@ -1533,6 +1640,7 @@ class Server
      */
     private function tableRemove($tableName)
     {
+        // SQL Command
         $sSql = sprintf(
             // Create table.
             "DROP TABLE `%s`;\n",
@@ -1565,6 +1673,7 @@ class Server
      */
     private function tableRename($tableName)
     {
+        // SQL Command
         $sSql = sprintf(
             // Create table.
             "RENAME TABLE `%s` TO `%s`;\n",
@@ -1692,7 +1801,13 @@ class Server
         );
 
         // If the size of decoded JSON < 1 or not a array
-        if (!is_array($decodedJSON) || sizeof($decodedJSON) < 1) {
+        if (
+            // Check if it is not a array
+            !is_array($decodedJSON) || 
+
+            // Or the size is less then 1
+            sizeof($decodedJSON) < 1
+        ) {
             // return error
             return array(
                 // Send Status
@@ -1716,7 +1831,8 @@ class Server
         switch ($action) {
             // Get something
             // row.get
-            case 'get' :
+            case 'get':
+                // SQL Command
                 $SQLcommand = sprintf(
                     // Select .. FROM `database`
                     "SELECT %s FROM `%s`",
@@ -1761,6 +1877,7 @@ class Server
                     );
                 }
 
+                // SQL Command
                 $SQLcommand = sprintf(
                     // Select .. FROM `database`
                     "UPDATE `%s` SET ",
@@ -1785,9 +1902,11 @@ class Server
             // Delete something
             // row.remove
             case 'remove':
+                // SQL Command
                 $SQLcommand = sprintf(
                     // Select .. FROM `database`
                     "DELETE FROM `%s`",
+
                     // Escape the database
                     $this->escapeString(
                         // Replace insecure fields
@@ -1870,6 +1989,7 @@ class Server
                     } else {
                         // Show error
                         return json_encode(
+                            // Array
                             array(
                                 // Send Status
                                 "Status" => "Failed",
@@ -1905,6 +2025,8 @@ class Server
 
                 // Loop trough all "where" statements
                 for ($i = 0; $i < sizeof($decodedJSON['where']); $i++) {
+                    // Check if we have the 'where' field.
+                    // With 3 parameters.
                     if (sizeof($decodedJSON['where'][$i]) == 3) {
                         // Create for every statement a Parameter ID.
                         $paramID = "x" . uniqid();
@@ -1922,7 +2044,9 @@ class Server
                             case '=':
                                 // First parameter cleanup.
                                 $firstParameter = trim(
+                                    // Strip html tags
                                     strip_tags(
+                                        // JSON Value
                                         $decodedJSON['where'][$i][0]
                                     )
                                 );
@@ -1941,11 +2065,15 @@ class Server
                                         // in
                                         $firstParameter
                                     ),
+
+                                    // Parameter ID
                                     $paramID
                                 );
 
                                 // Append paramID with value to our array
                                 $bindings[$paramID] = $decodedJSON['where'][$i][2];
+
+                                // End
                                 break;
 
                             // Not equals to
@@ -1953,7 +2081,9 @@ class Server
                             case '!=':
                                 // First parameter cleanup.
                                 $firstParameter = trim(
+                                    // Strip tags
                                     strip_tags(
+                                        // Decoded Parameter
                                         $decodedJSON['where'][$i][0]
                                     )
                                 );
@@ -1972,18 +2102,24 @@ class Server
                                         // in
                                         $firstParameter
                                     ),
+
+                                    // Parameter ID
                                     $paramID
                                 );
 
                                 // Append paramID with value to our array
                                 $bindings[$paramID] = $decodedJSON['where'][$i][2];
+
+                                // End
                                 break;
 
                             // Like
                             case 'like':
                                 // First parameter cleanup.
                                 $firstParameter = trim(
+                                    // Strip (html) tags
                                     strip_tags(
+                                        // JSON Value
                                         $decodedJSON['where'][$i][0]
                                     )
                                 );
@@ -2002,6 +2138,8 @@ class Server
                                         // in
                                         $firstParameter
                                     ),
+
+                                    // Parameter ID
                                     $paramID
                                 );
 
@@ -2013,7 +2151,13 @@ class Server
                             case 'loc':
                             case 'location':
                                 // Explode "lat,lon" seperator = ,
-                                $locationData = explode(",", $decodedJSON['where'][$i][0]);
+                                $locationData = explode(
+                                    // Explode the ','
+                                    ",",
+
+                                    // From JSON
+                                    $decodedJSON['where'][$i][0]
+                                );
 
                                 // Create a unique Parameter ID for lat
                                 $latParamID = "x" . uniqid();
@@ -2063,6 +2207,8 @@ class Server
 
                                 // Append distance Parameter ID to our array
                                 $bindings[$disParamID] = $decodedJSON['where'][$i][2];
+
+                                // End
                                 break;
 
                             // We did not regonize this command
@@ -2075,11 +2221,14 @@ class Server
                                     // Ok, let's remove it.
                                     $SQLcommand = substr($SQLcommand, 0, -5);
                                 }
+
+                                // End
                                 break;
                         }
                     } else {
                         // Show error
                         return json_encode(
+                            // Array
                             array(
                                 // Send Status
                                 "Status" => "Failed",
@@ -2371,13 +2520,17 @@ class Server
 
         // Check if table exists...
         if (!$this->tableExists($table)) {
+            // Return the object
             return (object) array(
                 // Send Status
                 "Status" => "Failed",
 
                 // Send error
                 "Error" => sprintf(
+                    // Table ... does not exists
                     "Table \"%s\" does not exists",
+
+                    // tableName
                     $table
                 ),
 
@@ -2430,7 +2583,16 @@ class Server
                 $bindValue,
 
                 // Type (Only text supported right now)
-                ($this->dbConfig['type'] == "sqlite" ? SQLITE3_TEXT : \PDO::PARAM_STR)
+                (
+                    // Which TYPE
+                    $this->dbConfig['type'] == "sqlite" 
+
+                    // SQLite
+                    ? SQLITE3_TEXT 
+
+                    // MySQL
+                    : \PDO::PARAM_STR
+                )
             );
         }
 
@@ -2445,9 +2607,24 @@ class Server
              * fetched content
              * @var [string]
              */
-            if (preg_match("/select/", strtolower($query))) {
+            // Check if we have a 'select' query.
+            if (
+                // Are we 'select'-ing
+                preg_match(
+                    // match 'select'
+                    "/select/",
+
+                    // String to lowercase
+                    strtolower(
+                        // the SQL Query
+                        $query
+                    )
+                )
+            ) {
+                // Return the data
                 $fechedData = @$stmt->fetchAll();
             } else {
+                // Return the Object.
                 return (object) array(
                     // Send Status
                     "Status" => "Ok",
@@ -2472,6 +2649,7 @@ class Server
             /**
              * We've got values
              */
+            // Return the array
             return (object) array(
                 // Send Status
                 "Status" => "Ok",
@@ -2506,6 +2684,7 @@ class Server
              * Replace parameter bindings :parameter to ?
              * @var string
              */
+            // Create a new Query
             $newQuery = preg_replace(
                 // :bindKey
                 '/:' . $bindKey . '/',
@@ -2523,9 +2702,7 @@ class Server
                 $count
             );
 
-            /**
-             * Append parameter values!
-             */
+            // Append parameter values!
             $values[] = $bindValue;
         }
 
@@ -2534,6 +2711,7 @@ class Server
          * @var [type]
          */
         try {
+            // Prepare statements
             $new = $this->db->prepare($newQuery);
         } catch (PDOException $e) {
             // Handle the exception
@@ -2549,8 +2727,12 @@ class Server
          * Fetch contents
          * @var [string]
          */
+        // Fetch data
         $fechedData = $new->fetch(\PDO::FETCH_BOTH);
+
+        // If size is more then 0
         if (sizeof($fechedData) > 1) {
+            // Objectify
             return (object) array(
                 // Send Status
                 "Status" => "Ok",
@@ -2560,11 +2742,13 @@ class Server
             );
         }
 
-        /**
-         * Failed, or no data found.
-         */
+        
+        // Failed, or no data found.
         return (object) array(
+            // Status failed
             "Status" => "Failed",
+
+            // Warning
             "Warning" => "Failed to execute query",
         );
     }
@@ -2575,7 +2759,7 @@ class Server
      */
     public function __sleep()
     {
-        /* FIX TRAVIS */
+        // FIX TRAVIS
         return array();
     }
 
@@ -2588,8 +2772,13 @@ class Server
         // If there is defined a DATABASE_TYPE
         if (!empty($this->dbConfig['type'])) {
             // If it is SQLite and there is a $this->dbConfig['path']
-            if ($this->dbConfig['type'] == "sqlite" &&
-                !empty($this->dbConfig['path'])) {
+            if (
+                // If the database type is SQLite
+                $this->dbConfig['type'] == "sqlite" 
+
+                // And the path is not empty
+                && !empty($this->dbConfig['path'])
+            ) {
                 try {
                     // Try to create/load a SQLite database
                     $this->db = new \PDO(
@@ -2638,7 +2827,10 @@ class Server
 
                 // Table ... does not exists
                 "Error" => sprintf(
+                    // Table ... does not exists
                     "Table \"%s\" does not exists",
+
+                    // Table name
                     $table
                 ),
 
@@ -2671,7 +2863,13 @@ class Server
         $decodedJSON = json_decode($_POST['JSON'], true);
 
         // Check if we have undecoded the JSON
-        if (!is_array($decodedJSON) || sizeof($decodedJSON) < 1) {
+        if (
+            // Is not is an array
+            !is_array($decodedJSON) || 
+
+            // And size is less than 1
+            sizeof($decodedJSON) < 1
+        ) {
             // Could not decode
             return array(
                 // Send Status
@@ -2687,7 +2885,9 @@ class Server
 
         // Insert info ..
         $SQLcommand = sprintf(
+            // Insert into
             "INSERT INTO `%s` (",
+
             // Escape the database
             $this->escapeString(
                 // Replace insecure fields
@@ -2713,10 +2913,22 @@ class Server
         // Comparing fields.
         for ($i = 0; $i < sizeof($tableFields); $i++) {
             // If not exists field, and may not be ignored
-            if (!isset($decodedJSON['values'][$tableFields[$i]]) &&
-                !in_array($tableFields[$i], $this->defaultFields)) {
+            if (
+                // If the field does not exists
+                !isset($decodedJSON['values'][$tableFields[$i]]) &&
+
+                // And not in the default fields array.
+                !in_array(
+                    // Fieldname
+                    $tableFields[$i],
+
+                    // Default fields
+                    $this->defaultFields
+                )
+            ) {
                 // Return the error
                 return json_encode(
+                    // Array
                     array(
                         // Send Status
                         "Status" => "Failed",
@@ -2729,7 +2941,10 @@ class Server
 
                         // Send how to fix
                         "Fix" => sprintf(
+                            // Provide parameter ...
                             "Provide parameter \"%s\".",
+
+                            // Missing parameter name
                             $tableFields[$i]
                         ),
                     )
@@ -2739,14 +2954,21 @@ class Server
                 if ($tableFields[$i] != 'id') {
                     // Append to SQL command string
                     $SQLcommand .= sprintf(
+                        // `...`
                         "`%s`, ",
+
+                        // Fieldname
                         $tableFields[$i]
                     );
 
                     // Append to value string
                     $SQLValues .= sprintf(
+                        // '...'
                         "'%s', ",
+
+                        // Value
                         $this->escapeString(
+                            // Replace possible dangerous strings
                             preg_replace(
                                 // Replace '
                                 "/'/",
@@ -2785,6 +3007,7 @@ class Server
         if ($action) {
             // Return
             return json_encode(
+                // Array
                 array(
                     // Send Status
                     "Status" => "Success",
@@ -2800,6 +3023,7 @@ class Server
 
         // Failed...
         return json_encode(
+            // Array
             array(
                 // Send Status
                 "Status" => "Failed",
@@ -2860,7 +3084,16 @@ class Server
         }
 
         // Return the fields as json or array
-        return $asJSON ? json_encode($fields) : $fields;
+        return (
+            // As JSON?
+            $asJSON 
+
+            // AS JSON
+            ? json_encode($fields) 
+
+            // AS Array
+            : $fields;
+        )
     }
 
     /**
@@ -2875,6 +3108,7 @@ class Server
          */
         static $inst = null;
 
+        // Check if we don't have a instance already
         if ($inst === null) {
             // Create the instance
             $inst = new \BaaS\Server();
@@ -2893,11 +3127,24 @@ class Server
     {
         // Get the HTTP Protocol
         $this->protocol = (
-            isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1'
+            // Did we got the protocol?
+            isset($_SERVER['SERVER_PROTOCOL'])
+
+            // Yes, return it
+            ? $_SERVER['SERVER_PROTOCOL'] 
+
+            // We'll make a common one
+            : 'HTTP/1.1'
         );
 
         // Create a temporary array
-        $checkWritePermissions = explode("/", $this->BFfile);
+        $checkWritePermissions = explode(
+            // "/"
+            "/",
+
+            // The file.
+            $this->BFfile
+        );
 
         // Create a empty string
         $this->blockFilePath = "";
@@ -2905,19 +3152,32 @@ class Server
         // Loop trough the temporary array -1
         for ($i = 0; $i < (sizeof($checkWritePermissions) - 1); $i++) {
             // Append to the this->blockFilePath.
-            $this->blockFilePath .= sprintf("%s/", $checkWritePermissions[$i]);
+            $this->blockFilePath .= sprintf(
+                // ".../"
+                "%s/",
+
+                // Block file path
+                $checkWritePermissions[$i]
+            );
         }
 
         // If there is a / in the begin, place it back.
         if (substr($this->BFfile, 0, 1) == "/") {
             // Append / in the beginning, and overwrite path
-            $this->blockFilePath = sprintf("/%s", $blockFilePath);
+            $this->blockFilePath = sprintf(
+                // "/..."
+                "/%s",
+
+                // Block file path
+                $blockFilePath
+            );
         }
 
         // X-Powered-By: BaaS/version
         // Overwrite PHP
         header(
             sprintf(
+                // X-Powered-By: BaaS/...
                 "X-Powered-By: BaaS/%s (https://github.com/wdg/BaaS)",
 
                 // API Version
@@ -2947,7 +3207,13 @@ class Server
                 "Expires: %s",
 
                 // %s = current time + 10 seconds
-                gmdate('D, d M Y H:i:s \G\M\T', time() + 10)
+                gmdate(
+                    // ISO Time
+                    'D, d M Y H:i:s \G\M\T',
+
+                    // Time + 10 seconds
+                    time() + 10
+                )
             )
         );
 
@@ -3008,6 +3274,7 @@ class Server
         if ($exception instanceof PDOException) {
             // Return the error in JSON
             return json_encode(
+                // Array
                 array(
                     // Send Status
                     "Status" => "Failed",
@@ -3025,6 +3292,7 @@ class Server
         if ($exception instanceof Exception) {
             // Return the error in JSON
             return json_encode(
+                // Array
                 array(
                     // Send Status
                     "Status" => "Failed",
