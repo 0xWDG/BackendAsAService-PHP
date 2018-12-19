@@ -65,10 +65,16 @@ class FirstViewController: UIViewController, BaaSDelegate {
         db.log(
             db.create(
                 values: [
-                    "x": "Hello from Swift"
+                    "x": "Hello from Swift",
+                    "latitude": "123",
+                    "longitude": "321"
                 ],
                 inDatabase: "x"
             )
+        )
+        
+        db.log(
+            db.rename(from: "x", to: "y")
         )
     }
         

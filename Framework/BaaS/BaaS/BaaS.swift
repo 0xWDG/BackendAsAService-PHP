@@ -62,14 +62,14 @@ open class BaaS {
      * Should we debug right now?
      */
     private let debug = true
-
+    
     /**
      * lastRowID
      *
      * Last row ID
      */
     private var lastRowID = 0
-
+    
     /**
      * Shared (instance)
      *
@@ -83,14 +83,14 @@ open class BaaS {
      * BaaS Version number
      */
     private let version = "1.0"
-
+    
     /**
      * Build number
      *
      * BaaS Build number
      */
     private let build = "20181218"
-
+    
     /**
      * Init
      *
@@ -483,23 +483,23 @@ open class BaaS {
             // This looks like the weirdest if, which has ever lived.
             if (
                 Status == "Error" &&
-                Error == "Unable to parse JSON" &&
-                Fix == "Please send valid JSON" &&
-                Exception == "N/A" &&
-                ReqURI == "N/A" &&
-                Table == "N/A" &&
-                Data == "N/A" &&
-                Where == "N/A" &&
-                Method == "N/A" &&
-                Info == "N/A" &&
-                RowID == "N/A" &&
-                Debug == "N/A" &&
-                FilePath == "N/A"
-            ) {
+                    Error == "Unable to parse JSON" &&
+                    Fix == "Please send valid JSON" &&
+                    Exception == "N/A" &&
+                    ReqURI == "N/A" &&
+                    Table == "N/A" &&
+                    Data == "N/A" &&
+                    Where == "N/A" &&
+                    Method == "N/A" &&
+                    Info == "N/A" &&
+                    RowID == "N/A" &&
+                    Debug == "N/A" &&
+                    FilePath == "N/A"
+                ) {
                 throw BaaS_Errors.unableToDecodeJSON
             }
         }
-
+        
         /**
          * Initialize a error.
          *
@@ -521,7 +521,7 @@ open class BaaS {
      */
     private func BaaS_Response_Decoder(jsonData: Data) -> BaaS_Response {
         var decoded: BaaS_Response? = nil
-
+        
         do {
             let decoder = JSONDecoder()
             decoded = try decoder.decode(BaaS_Response.self, from: jsonData)
@@ -681,6 +681,61 @@ open class BaaS {
     }
     
     /**
+     * Rename table
+     *
+     * - parameter from: Old name
+     * - parameter to: New name
+     * - returns: Bool
+     */
+    public func rename(from: String, to: String) -> Bool {
+        let dbURL = "\(serverAddress)/table.rename/\(from)/\(to)"
+        let task = self.urlTask(
+            dbURL,
+            [
+                "APIKey": self.apiKey,
+                ]
+        )
+        
+        return BaaS_Response_Decoder(jsonData: task).Status == "Success"
+    }
+    
+    /**
+     * Empty table
+     *
+     * - parameter table: The table
+     * - returns: Bool
+     */
+    public func empty(table: String) -> Bool {
+        let dbURL = "\(serverAddress)/table.empty/\(table)"
+        let task = self.urlTask(
+            dbURL,
+            [
+                "APIKey": self.apiKey,
+                ]
+        )
+        
+        return BaaS_Response_Decoder(jsonData: task).Status == "Success"
+    }
+    
+    /**
+     * Remove table
+     *
+     * - parameter table: The table
+     * - returns: Bool
+     */
+    public func remove(table: String) -> Bool {
+        let dbURL = "\(serverAddress)/table.remove/\(table)"
+        let task = self.urlTask(
+            dbURL,
+            [
+                "APIKey": self.apiKey,
+                ]
+        )
+        
+        return BaaS_Response_Decoder(jsonData: task).Status == "Success"
+    }
+    
+    /**
      * Get last Row ID
      *
      * - returns: Last row ID
@@ -693,7 +748,7 @@ open class BaaS {
         let dbURL = "\(serverAddress)/file.upload/\(fileID)"
         
         guard let postSafeFileData = String.init(data: fileData.base64EncodedData(), encoding: .utf8) else {
-                return false
+            return false
         }
         
         let task = self.urlTask(
@@ -760,5 +815,5 @@ open class BaaS {
     
     @available(*, deprecated)
     internal func deprecated_placeholder() { }
-
+    
 }

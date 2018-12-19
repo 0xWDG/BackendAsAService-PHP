@@ -1736,6 +1736,47 @@ class Server
         );
 
         return $this->invalidRequest($tableName);
+        // Exit with the sql command.
+        if ($this->query($sSql)) {
+            // Return we'll did it
+            return json_encode(
+                // Array.
+                array(
+                    // Return status
+                    "Status" => "Ok",
+
+                    // Information
+                    "Info" => "Table altered",
+                )
+            );
+        }
+
+        // Unexpected error
+        return json_encode(
+            // Array
+            array(
+                // Return status
+                "Status" => "Failed",
+
+                // Information
+                "Info" => "Table not altered",
+
+                // How-To-Fix
+                "Fix" => "Turn on debugging to see this",
+
+                // Debug?
+                "Debug" => (
+                    // Check if debugmode is on
+                    $this->debugmode
+
+                    // It's on so return SQL Query.
+                     ? $sSql
+
+                    // Debugmode disabled
+                     : 'Debugmode disabled'
+                ),
+            )
+        );
     }
 
     /**
@@ -1762,12 +1803,52 @@ class Server
                     "\\`",
 
                     // in $databaseName
-                    $databaseName
+                    $tableName
                 )
             )
         );
 
-        return $this->invalidRequest($tableName);
+        // Exit with the sql command.
+        if ($this->query($sSql)) {
+            // Return we'll did it
+            return json_encode(
+                // Array.
+                array(
+                    // Return status
+                    "Status" => "Ok",
+
+                    // Information
+                    "Info" => "Table emptied",
+                )
+            );
+        }
+
+        // Unexpected error
+        return json_encode(
+            // Array
+            array(
+                // Return status
+                "Status" => "Failed",
+
+                // Information
+                "Info" => "Table not emptied",
+
+                // How-To-Fix
+                "Fix" => "Turn on debugging to see this",
+
+                // Debug?
+                "Debug" => (
+                    // Check if debugmode is on
+                    $this->debugmode
+
+                    // It's on so return SQL Query.
+                     ? $sSql
+
+                    // Debugmode disabled
+                     : 'Debugmode disabled'
+                ),
+            )
+        );
     }
 
     /**
@@ -1795,12 +1876,52 @@ class Server
                     "\\`",
 
                     // in $databaseName
-                    $databaseName
+                    $tableName
                 )
             )
         );
 
-        return $this->invalidRequest($tableName);
+        // Exit with the sql command.
+        if ($this->query($sSql)) {
+            // Return we'll did it
+            return json_encode(
+                // Array.
+                array(
+                    // Return status
+                    "Status" => "Ok",
+
+                    // Information
+                    "Info" => "Table removed",
+                )
+            );
+        }
+
+        // Unexpected error
+        return json_encode(
+            // Array
+            array(
+                // Return status
+                "Status" => "Failed",
+
+                // Information
+                "Info" => "Table not removed",
+
+                // How-To-Fix
+                "Fix" => "Turn on debugging to see this",
+
+                // Debug?
+                "Debug" => (
+                    // Check if debugmode is on
+                    $this->debugmode
+
+                    // It's on so return SQL Query.
+                     ? $sSql
+
+                    // Debugmode disabled
+                     : 'Debugmode disabled'
+                ),
+            )
+        );
     }
 
     /**
@@ -1812,12 +1933,39 @@ class Server
      */
     private function tableRename($tableName)
     {
+        // Extract data
+        $tables = explode(
+            // Split "/"
+            "/",
+
+            // From
+            $tableName
+        );
+
+        // If size is less then 1 then it's a missmatch
+        if (sizeof($tables) < 1) {
+            // As JSON
+            return json_encode(
+                // Array
+                array(
+                    // Status
+                    "Status" => "Failed",
+
+                    // Warning
+                    "Warning" => "Missing new table name",
+
+                    // Possible-How-To-Fix
+                    "Fix" => "Provide table name",
+                )
+            );
+        }
+
         // SQL Command
         $sSql = sprintf(
             // Create table.
             "RENAME TABLE `%s` TO `%s`;\n",
 
-            // Escape the database
+            // Escape the tables
             $this->escapeString(
                 // Replace insecure fields
                 preg_replace(
@@ -1827,16 +1975,68 @@ class Server
                     // to \\`
                     "\\`",
 
-                    // in $databaseName
-                    $databaseName
+                    // in $tables[0]
+                    $tables[0]
                 )
             ),
 
-            // new Table Name
-            $newName = 'x'
+            // Escape the tables
+            $this->escapeString(
+                // Replace insecure fields
+                preg_replace(
+                    // `
+                    "/`/",
+
+                    // to \\`
+                    "\\`",
+
+                    // in $tables[1]
+                    $tables[1]
+                )
+            )
         );
 
-        return $this->invalidRequest($tableName);
+        // Exit with the sql command.
+        if ($this->query($sSql)) {
+            // Return we'll did it
+            return json_encode(
+                // Array.
+                array(
+                    // Return status
+                    "Status" => "Ok",
+
+                    // Information
+                    "Info" => "Table renamed",
+                )
+            );
+        }
+
+        // Unexpected error
+        return json_encode(
+            // Array
+            array(
+                // Return status
+                "Status" => "Failed",
+
+                // Information
+                "Info" => "Table not renamed",
+
+                // How-To-Fix
+                "Fix" => "Turn on debugging to see this",
+
+                // Debug?
+                "Debug" => (
+                    // Check if debugmode is on
+                    $this->debugmode
+
+                    // It's on so return SQL Query.
+                     ? $sSql
+
+                    // Debugmode disabled
+                     : 'Debugmode disabled'
+                ),
+            )
+        );
     }
 
     /**
@@ -1880,9 +2080,6 @@ class Server
                 // Replace '
                 "'",
 
-                // Replace "
-                // '"',
-
                 // Replace \Z
                 "\x1a",
             ),
@@ -1903,9 +2100,6 @@ class Server
 
                 // To (escaped (\)) \'
                 "\'",
-
-                // To (escaped (\)) \"
-                // '\"',
 
                 // To (escaped (\)) \Z
                 "\\Z",
