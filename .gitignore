@@ -3,6 +3,8 @@ Server/BFlog/*.txt
 
 # Hide temporary files
 *.tmp
+*.tmp.*
+*.*-e
 
 # Temporaru files for documentation
 Framework/build/BaaS.build
