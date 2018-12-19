@@ -370,7 +370,7 @@ class Server
                 )
             );
 
-            exit(0);
+            exit($this->$isCLI ? 1 : 0);
         }
     }
 
@@ -419,7 +419,12 @@ class Server
                                     // Send some details
                                     'Details' => sprintf(
                                         "BaaS/%s, Connection: Close, IP-Address: %s",
-                                        $this->APIVer, $_SERVER['REMOTE_ADDR']
+
+                                        // BaaS API Version
+                                        $this->APIVer,
+
+                                        // IP-Address
+                                        $_SERVER['REMOTE_ADDR']
                                     ),
 
                                     // Return the API Key
