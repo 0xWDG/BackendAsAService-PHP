@@ -3,11 +3,11 @@ cd $(dirname "$0")
 
 echo 'Change Server build number'
 cp Server/BaaS-Server.php Server/BaaS-Server.php.bak
-cat Server/BaaS-Server.php | sed -e 's/build = ".*"/build = "'$(date "+%Y%m%d")'"/g' > Server/BaaS-Server.php
+sed -i -e 's/build = ".*"/build = "'$(date "+%Y%m%d")'"/g' Server/BaaS-Server.php
 
 echo 'Change Swift build number'
 cp Framework/BaaS/BaaS/BaaS.swift Framework/BaaS/BaaS/BaaS.swift.bak
-cat Framework/BaaS/BaaS/BaaS.swift | sed -e 's/build = ".*"/build = "'$(date "+%Y%m%d")'"/g' > Framework/BaaS/BaaS/BaaS.swift
+sed -i -e 's/build = ".*"/build = "'$(date "+%Y%m%d")'"/g' Framework/BaaS/BaaS/BaaS.swift
 
 # echo 'Sleeping.'
 # sleep 1

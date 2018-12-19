@@ -14,7 +14,7 @@
     <a title="BaaS Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">BaaS Docs</a> (63% documented)</p>
+        <p><a href="../index.html">BaaS Docs</a> (65% documented)</p>
         <p class="header-right"><a href="https://github.com/wdg/BaaS"><img src="../img/gh.png"/>View on GitHub</a></p>
         <p class="header-right"><a href="dash-feed://https%3A%2F%2Fwdg%2Egithub%2Eio%2FBaaS%2FFramework%2Fdocsets%2FBaaS%2Edocset"><img src="../img/dash.png"/>Install in Dash</a></p>
       </div>
@@ -770,9 +770,9 @@
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">database</span><span class="p">(</span>
     <span class="nv">createFieldWithName</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-    <span class="nv">type</span><span class="p">:</span> <span class="kt"><a href="../Classes/BaaS/BaaS_dbFieldType.html">BaaS_dbFieldType</a></span><span class="p">,</span>
-    <span class="n">defaultValue</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
-    <span class="nv">canBeEmpty</span><span class="p">:</span> <span class="kt">Bool</span>
+    <span class="nv">type</span><span class="p">:</span> <span class="kt"><a href="../Classes/BaaS/BaaS_dbFieldType.html">BaaS_dbFieldType</a></span> <span class="o">=</span> <span class="o">.</span><span class="n">text</span><span class="p">,</span>
+    <span class="n">defaultValue</span><span class="p">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="s">""</span><span class="p">,</span>
+    <span class="nv">canBeEmpty</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/BaaS.html#/s:4BaaSAAC0A9S_dbFieldV">BaaS_dbField</a></span></code></pre>
 
                         </div>
@@ -1074,9 +1074,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:4BaaSAAC6insert6values10inDatabaseSbSDyS2SG_SStF"></a>
-                    <a name="//apple_ref/swift/Method/insert(values:inDatabase:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:4BaaSAAC6insert6values10inDatabaseSbSDyS2SG_SStF">insert(values:inDatabase:)</a>
+                    <a name="/s:4BaaSAAC6create6values10inDatabaseSbSDyS2SG_SStF"></a>
+                    <a name="//apple_ref/swift/Method/create(values:inDatabase:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:4BaaSAAC6create6values10inDatabaseSbSDyS2SG_SStF">create(values:inDatabase:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1084,14 +1084,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Insert data</p>
+                        <p>Create data</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">insert</span><span class="p">(</span><span class="nv">values</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">String</span><span class="p">],</span> <span class="nv">inDatabase</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">create</span><span class="p">(</span><span class="nv">values</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">String</span><span class="p">],</span> <span class="nv">inDatabase</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
 
                         </div>
                       </div>
@@ -1139,6 +1139,177 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:4BaaSAAC6rename4from2toSbSS_SStF"></a>
+                    <a name="//apple_ref/swift/Method/rename(from:to:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:4BaaSAAC6rename4from2toSbSS_SStF">rename(from:to:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Rename table</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rename</span><span class="p">(</span><span class="nv">from</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>from</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Old name</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>to</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>New name</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>Bool</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L690-L700">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:4BaaSAAC5empty5tableSbSS_tF"></a>
+                    <a name="//apple_ref/swift/Method/empty(table:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:4BaaSAAC5empty5tableSbSS_tF">empty(table:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Empty table</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">empty</span><span class="p">(</span><span class="nv">table</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>table</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The table</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>Bool</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L708-L718">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:4BaaSAAC6remove5tableSbSS_tF"></a>
+                    <a name="//apple_ref/swift/Method/remove(table:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:4BaaSAAC6remove5tableSbSS_tF">remove(table:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Remove table</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="nv">table</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>table</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The table</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>Bool</p>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L726-L736">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:4BaaSAAC12getLastRowIDSiyF"></a>
                     <a name="//apple_ref/swift/Method/getLastRowID()" class="dashAnchor"></a>
                     <a class="token" href="#/s:4BaaSAAC12getLastRowIDSiyF">getLastRowID()</a>
@@ -1165,7 +1336,7 @@
                         <p>Last row ID</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L688-L690">Show on GitHub</a>
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L743-L745">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1195,7 +1366,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L692-L708">Show on GitHub</a>
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L747-L763">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1225,7 +1396,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L710-L721">Show on GitHub</a>
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L765-L776">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1255,7 +1426,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L723-L734">Show on GitHub</a>
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L778-L789">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1285,7 +1456,7 @@
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L736-L746">Show on GitHub</a>
+                        <a href="https://github.com/wdg/BaaS/blob/master/Framework/BaaS/BaaS/BaaS.swift#L791-L801">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -1355,7 +1526,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2018 <a class="link" href="https://wesleydegroot.nl" target="_blank" rel="external">Wesley de Groot</a>. All rights reserved. (Last updated: 2018-12-18)</p>
+          <p>&copy; 2018 <a class="link" href="https://wesleydegroot.nl" target="_blank" rel="external">Wesley de Groot</a>. All rights reserved. (Last updated: 2018-12-19)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
