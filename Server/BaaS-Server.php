@@ -1318,6 +1318,28 @@ class Server
             }
         }
 
+        // Handle "/diag", "/diagnose", "/diagnostics" methods
+        if (
+            // Check if it matches "/diag", "/diagnose", "/diagnostics"
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/diag(nos)?(e|tics)?(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
+            // Run "Diagnosis"
+            return $this->diagnosis(
+                urldecode(
+                    $action[4][0]
+                )
+            );
+        }
+
         // Handle extensions
         // Below official calls, so that this cannot overwrite default functions.
         for ($i = 0; $i < sizeof($this->extensions); $i++) {
@@ -3765,5 +3787,271 @@ class Server
                 $text
             );
         }
+    }
+
+    /**
+     * Diagnosis for problems
+     *
+     * @since 1.0
+     */
+    private function diagnosis($key)
+    {
+        //"/diag", "/diagnose", "/diagnostics"
+
+        // If the URL matches the API-Key
+        if ($this->APIKey === $key) {
+            // Create a information array (and yes it contains a lot of information)
+            $information = (
+                // Create the array
+                array(
+                    // Section: Server Information
+                    "Server Information" => array(
+                        // Get the version of the PHP instance which is running
+                        "PHP Version" => phpversion(),
+
+                        // Get Webserver details
+                        "Webserver" => $_SERVER['SERVER_SOFTWARE'],
+
+                        // Get Gateway interface
+                        "Gateway Interface" => $_SERVER['GATEWAY_INTERFACE'],
+
+                        // Get the server's IP-Address
+                        "Server IP" => $_SERVER['SERVER_ADDR'],
+
+                        // Get the server's name
+                        "Server name" => $_SERVER['SERVER_NAME'],
+
+                        // Get the document root.
+                        "Document Root" => $_SERVER['DOCUMENT_ROOT'],
+                    ),
+
+                    // Section: BaaS Information
+                    "BaaS Information" => array(
+                        // Get Baas version information
+                        "Version" => array(
+                            // BaaS Version number
+                            "Version" => $this->version,
+
+                            // BaaS Build number
+                            "Build" => $this->build,
+
+                            // BaaS API Version
+                            "API Version" => $this->APIVer,
+                        ),
+
+                        // Get Database configuration (without passwords!)
+                        "Database Configuration" => array(
+                            // Which server type we are using?
+                            "Server Type" => $this->dbConfig['type'],
+
+                            // Which path are we using
+                            "Server Path" => $this->dbConfig['path'],
+
+                            // Which host we are connecting to
+                            "Server Host" => $this->dbConfig['host'],
+
+                            // Hi, database, what's your name?
+                            "Server Database name" => $this->dbConfig['name'],
+
+                            // Hi, i'm ...
+                            "Server Username" => $this->dbConfig['user'],
+
+                            // Do we have a connection?
+                            "Server Available" => (
+                                // Does the database resource path exixists?
+                                isset($this->db)
+
+                                // Yes, we have a super special connection
+                                 ? 'Yes'
+
+                                // Nope, I miss you!
+                                 : 'No'
+                            ),
+                        ),
+
+                        // Get some other configuration
+                        // BaaS Parameters
+                        "BaaS Configuration" => array(
+                            // Are we in debugmode right now?
+                            'debugmode' => $this->debugmode,
+
+                            // Is autotranslation on?
+                            'translate' => $this->translate,
+
+                            // What is the API Key?
+                            'APIKey' => $this->APIKey,
+
+                            // How many times i can try?
+                            'triesMaximum' => $this->triesMaximum,
+
+                            // And how long i will be blocked?
+                            'tiesTime' => $this->tiesTime,
+
+                            // And where are you saving that information?
+                            'BFfile' => $this->BFfile,
+
+                            // And where is that?
+                            'blockFilePath' => $this->blockFilePath,
+
+                            // Am i a administrator?
+                            'isAdmin' => $this->isAdmin,
+
+                            // Are we on a commandline interface (CLI)?
+                            'isCLI' => $this->$isCLI,
+
+                            // Did i make a error?
+                            'error' => $this->error,
+
+                            // Oh, and what was wrong?
+                            'errorMessage' => $this->errorMessage,
+
+                            // Do you save files to your database?
+                            'saveFilesToDatabase' => $this->saveFilesToDatabase,
+
+                            // And what is your default protocol for talking with me?
+                            'protocol' => $this->protocol,
+
+                            // What are the default http status/error codes?
+                            'errorCode' => $this->errorCode,
+
+                            // What defaults field are you using in your database?
+                            'defaultFields' => $this->defaultFields,
+
+                            // Which extensions are loaded, and which you have found?
+                            'extensions' => array(
+                                // Loaded extensions (they are handled below)
+                                "loaded" => array(),
+
+                                // Found extensions (they are handled below)
+                                "found" => array(),
+                            ),
+                        ),
+                    ),
+
+                    // Section: Client Information
+                    "Client Information" => array(
+                        // What is the IP-Address of the client?
+                        "IP-Address" => $_SERVER['REMOTE_ADDR'],
+
+                        // What is their name?
+                        "Hostname" => (
+                            // Is REMOTE_HOST defined?
+                            isset($_SERVER['REMOTE_HOST'])
+
+                            // Yes, but is it empty?
+                             ? (!empty($_SERVER['REMOTE_HOST'])
+
+                                // Not empty, so we can use it
+                                 ? $_SERVER['REMOTE_HOST']
+
+                                // Get the hostname by the REMOTE_ADDR
+                                 : gethostbyaddr($_SERVER['REMOTE_ADDR'])
+                            )
+
+                            // Get the hostname by the REMOTE_ADDR
+                             : gethostbyaddr($_SERVER['REMOTE_ADDR'])
+                        ),
+
+                        // Which protocol is used to talk?
+                        "HTTP Protocol" => $_SERVER['SERVER_PROTOCOL'],
+
+                        // Which method is used?
+                        "HTTP Method" => $_SERVER['REQUEST_METHOD'],
+
+                        // At what time?
+                        "Request Time" => $_SERVER['REQUEST_TIME'],
+
+                        // And what is requested?
+                        "Requested URL" => $_SERVER['REQUEST_URI'],
+
+                        // Do you have Cookies?
+                        "Cookies" => $_COOKIE,
+
+                        // And are you already in a session?
+                        "Session" => $_SESSION,
+
+                        // What answers does the client accept?
+                        "HTTP Accept" => $_SERVER['HTTP_ACCEPT'],
+
+                        // And which character sets are supported?
+                        "HTTP Accept Charset" => $_SERVER['HTTP_ACCEPT_CHARSET'],
+
+                        // Ok, and about the encoding?, i'll preffer utf8
+                        "HTTP Accept Encoding" => $_SERVER['HTTP_ACCEPT_ENCODING'],
+
+                        // And what language does the client speak?
+                        "HTTP Accept Language" => $_SERVER['HTTP_ACCEPT_LANGUAGE'],
+
+                        // HTTP Connection?
+                        "HTTP Connection" => $_SERVER['HTTP_CONNECTION'],
+
+                        // Which name you called me (the server)
+                        "HTTP Host" => $_SERVER['HTTP_HOST'],
+
+                        // Where are you from?
+                        "HTTP Referer" => $_SERVER['HTTP_REFERER'],
+
+                        // What's your user agent?
+                        "HTTP User Agent" => $_SERVER['HTTP_USER_AGENT'],
+
+                        // Are you using HTTPS?
+                        "HTTPS" => $_SERVER['HTTPS'],
+                    ),
+                )
+            );
+
+            // Walk trough the loaded extensions
+            for ($i = 0; $i < sizeof($this->extensions); $i++) {
+                // Append information to 'BaaS Information' -> 'BaaS Configuration' -> 'extensions' -> 'loaded'
+                $information['BaaS Information']['BaaS Configuration']['extensions']['loaded'][] = array(
+                    // Extension url name/call
+                    "Extension URL" => $this->extensions[$i][0],
+
+                    // Which underlaying function
+                    "Function Call" => $this->extensions[$i][1],
+
+                    // Do you require a valid API-key?
+                    "APIKey Required?" => $this->extensions[$i][2],
+                );
+            }
+
+            // Get possible extensions
+            foreach (glob("Data/*_extension.php") as $extension) {
+                // Is the file readable?
+                if (is_readable($extension)) {
+                    // Append information to 'BaaS Information' -> 'BaaS Configuration' -> 'extensions' -> 'found'
+                    $information['BaaS Information']['BaaS Configuration']['extensions']['found'][] = array(
+                        // Extension filename
+                        "file" => $extension,
+
+                        // Extension filesize
+                        "size" => filesize($extension) . ' bytes',
+
+                        // md5 hash of the file
+                        "md5" => md5(
+                            // Get file contents
+                            file_get_contents(
+                                // Extension filename
+                                $extension
+                            )
+                        ),
+                    );
+                }
+            }
+
+            // Return all the information as JSON
+            return json_encode(
+                // Information array
+                $information
+            );
+        }
+
+        // Count up invalid attempts
+        // If there are to many attempts, this user will be blocked.
+        $this->setAttempt();
+
+        // Invalid API-Key,
+        // Throw a exception
+        return $this->handleException('Invalid APIKey');
     }
 }

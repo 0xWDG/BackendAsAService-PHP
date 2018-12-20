@@ -24,6 +24,7 @@ Documentation: <a target='_blank' href='https://wdg.github.io/BaaS/Framework'>Sw
 <tr><td>☑️</td><td></td><td><b>Set row</b></td><td><a href='http://127.0.0.1:8000/index.php/row.set/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/row.set/$TABLE$</a></td></tr>
 <tr><td>☑️</td><td></td><td><b>Get row</b></td><td><a href='http://127.0.0.1:8000/index.php/row.get/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/row.get/$TABLE$</a></td></tr>
 <tr><td>☑️</td><td></td><td><b>Delete row</b></td><td><a href='http://127.0.0.1:8000/index.php/row.remove/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/row.remove/$TABLE$</a><ins>was del</ins></td></tr>
+<tr><td>☑️</td><td></td><td><b>Debug/Diagnostics</b></td>N/A<td><a href='http://127.0.0.1:8000/index.php/row.remove/$TABLE$' target='_blank'>http://127.0.0.1:8000/index.php/diagnosis/$APIKEY$</a><ins>was del</ins></td></tr>
 </table>
 
 ### Top 10 Contributors:
