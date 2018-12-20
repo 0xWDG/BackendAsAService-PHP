@@ -5,6 +5,7 @@ Server/BFlog/*.txt
 *.tmp
 *.tmp.*
 *.*-e
+*.bak
 
 # Temporaru files for documentation
 Framework/build/BaaS.build
