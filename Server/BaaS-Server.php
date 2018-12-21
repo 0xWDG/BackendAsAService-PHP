@@ -34,7 +34,7 @@ class Server
      * @since 1.0
      * @var string $build BaaS build number
      */
-    private $build = "20181219";
+    private $build = "20181221";
 
     /**
      * Set API Version

@@ -89,7 +89,7 @@ open class BaaS {
      *
      * BaaS Build number
      */
-    private let build = "20181219"
+    private let build = "20181221"
     
     /**
      * Init
