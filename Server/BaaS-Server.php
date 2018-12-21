@@ -1300,6 +1300,116 @@ class Server
             }
         }
 
+        // Handle "/user.create" methods
+        if (
+            // Check if it matches "/user.create"
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/user\.create(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
+            // Run "User create"
+            return $this->userCreate(
+                urldecode(
+                    $action[2][0]
+                )
+            );
+        }
+
+        // Handle "/user.remove" methods
+        if (
+            // Check if it matches "/user.remove"
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/user\.remove(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
+            // Run "User Remove"
+            return $this->userRemove(
+                urldecode(
+                    $action[2][0]
+                )
+            );
+        }
+
+        // Handle "/user.login" methods
+        if (
+            // Check if it matches "/user.login"
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/user\.login(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
+            // Run "User Login"
+            return $this->userLogin(
+                urldecode(
+                    $action[2][0]
+                )
+            );
+        }
+
+        // Handle "/user.reset" methods
+        if (
+            // Check if it matches "/user.reset"
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/user\.reset(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
+            // Run "User reset"
+            return $this->userReset(
+                urldecode(
+                    $action[2][0]
+                )
+            );
+        }
+
+        // Handle "/user.activate" methods
+        if (
+            // Check if it matches "/user.activate"
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/user\.activate(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
+            // Run "User activate"
+            return $this->userActivate(
+                urldecode(
+                    $action[2][0]
+                )
+            );
+        }
+
         // Handle "/diag", "/diagnose", "/diagnostics" methods
         if (
             // Check if it matches "/diag", "/diagnose", "/diagnostics"
