@@ -1604,6 +1604,59 @@ class Server
     }
 
     /**
+     * Setup user database
+     *
+     * @since 1.0
+     * @return void
+     */
+    private function userDatabaseSetup()
+    {
+        // The creation SQL
+        $sSql = sprintf(
+            // String for appending
+            '%s%s%s%s%s%s%s%s%s%s%s%s',
+
+            // Create table
+            "CREATE TABLE `BaaS_UserDB` (\n",
+
+            // id (auto incrementing)
+            "\t`id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n",
+
+            // latitude
+            "\t`latitude` text DEFAULT NULL,\n",
+
+            // longitude
+            "\t`longitude` text DEFAULT NULL,\n",
+
+            // username
+            "\t`username` text DEFAULT NULL,\n",
+
+            // password
+            "\t`password` text DEFAULT NULL,\n",
+
+            // email
+            "\t`email` text DEFAULT NULL,\n",
+
+            // status
+            "\t`status` text DEFAULT NULL,\n",
+
+            // activationToken
+            "\t`activationToken` text DEFAULT NULL,\n",
+
+            // recoveryToken
+            "\t`recoveryToken` text DEFAULT NULL,\n",
+
+            // set the primary key.
+            "\tPRIMARY KEY (`id`)\n",
+
+            // End the create query.
+            ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;",
+        );
+
+        return $this->invalidRequest();
+    }
+
+    /**
      * Invalid request
      *
      * @since 1.0
