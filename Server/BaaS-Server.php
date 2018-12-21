@@ -758,24 +758,6 @@ class Server
     }
 
     /**
-     * Set always logged in
-     *
-     * @since 1.0
-     * @param bool $onOff On or Off
-     */
-    public function setAlwaysLoggedIn($onOff)
-    {
-        // Check if debugmode = on, and $onOff = true
-        if ($this->debugmode && $onOff) {
-            // Say's i'm logged in
-            $this->isAdmin = true;
-
-            // Create fake adminUserLoggedToken
-            $_SESSION['adminUserLoggedToken'] = uniqid();
-        }
-    }
-
-    /**
      * Reset old login attempts
      * @since 1.0
      */

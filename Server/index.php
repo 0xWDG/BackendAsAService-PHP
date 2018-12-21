@@ -41,9 +41,6 @@ $server->setTriesTime("+24 hours");
 // Default: off
 $server->setDebugmode(true);
 
-// DO NEVER USE setAlwaysLoggedIn.
-$server->setAlwaysLoggedIn(true);
-
 // Attach and load Extension.
 $server->attachExtension(
     // Extension URL
