@@ -2,11 +2,9 @@ echo 'Change to script directory'
 cd $(dirname "$0")
 
 echo 'Change Server build number'
-cp Server/BaaS-Server.php Server/BaaS-Server.php.bak
 sed -i -e 's/build = ".*"/build = "'$(date "+%Y%m%d")'"/g' Server/BaaS-Server.php
 
 echo 'Change Swift build number'
-cp Framework/BaaS/BaaS/BaaS.swift Framework/BaaS/BaaS/BaaS.swift.bak
 sed -i -e 's/build = ".*"/build = "'$(date "+%Y%m%d")'"/g' Framework/BaaS/BaaS/BaaS.swift
 
 # echo 'Sleeping.'
