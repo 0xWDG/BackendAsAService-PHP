@@ -1325,6 +1325,31 @@ class Server
             );
         }
 
+        // Handle "/user.exists" methods
+        if (
+            // Check if it matches "/user.exists"
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/user\.exists(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
+            // check the API KEY
+            $this->checkAPIKey();
+
+            // Run "User exists"
+            return $this->userExists(
+                urldecode(
+                    $action[2][0]
+                )
+            );
+        }
+
         // Handle "/user.remove" methods
         if (
             // Check if it matches "/user.remove"
@@ -1514,6 +1539,18 @@ class Server
      * @return string JSON Data.
      */
     private function userCreate($userID)
+    {
+        return $this->invalidRequest();
+    }
+
+    /**
+     * Does the user exists?
+     *
+     * @since 1.0
+     * @param string $userID The user's id
+     * @return string JSON Data.
+     */
+    private function userExists($userID)
     {
         return $this->invalidRequest();
     }
