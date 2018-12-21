@@ -1314,6 +1314,9 @@ class Server
                 $action
             )
         ) {
+            // check the API KEY
+            $this->checkAPIKey();
+
             // Run "User create"
             return $this->userCreate(
                 urldecode(
@@ -1336,6 +1339,9 @@ class Server
                 $action
             )
         ) {
+            // check the API KEY
+            $this->checkAPIKey();
+
             // Run "User Remove"
             return $this->userRemove(
                 urldecode(
@@ -1358,6 +1364,9 @@ class Server
                 $action
             )
         ) {
+            // check the API KEY
+            $this->checkAPIKey();
+
             // Run "User Login"
             return $this->userLogin(
                 urldecode(
@@ -1380,6 +1389,9 @@ class Server
                 $action
             )
         ) {
+            // check the API KEY
+            $this->checkAPIKey();
+
             // Run "User reset"
             return $this->userReset(
                 urldecode(
@@ -1402,6 +1414,9 @@ class Server
                 $action
             )
         ) {
+            // check the API KEY
+            $this->checkAPIKey();
+
             // Run "User activate"
             return $this->userActivate(
                 urldecode(
@@ -1488,6 +1503,66 @@ class Server
         }
 
         // Oh, dear, that is a invalid request.
+        return $this->invalidRequest();
+    }
+
+    /**
+     * Create user
+     *
+     * @since 1.0
+     * @param string $userID The user's id
+     * @return string JSON Data.
+     */
+    private function userCreate($userID)
+    {
+        return $this->invalidRequest();
+    }
+
+    /**
+     * Remove user
+     *
+     * @since 1.0
+     * @param string $userID The user's id
+     * @return string JSON Data.
+     */
+    private function userRemove($userID)
+    {
+        return $this->invalidRequest();
+    }
+
+    /**
+     * Login user
+     *
+     * @since 1.0
+     * @param string $userID The user's id
+     * @return string JSON Data.
+     */
+    private function userLogin($userID)
+    {
+        return $this->invalidRequest();
+    }
+
+    /**
+     * Reset userpassword
+     *
+     * @since 1.0
+     * @param string $userID The user's id
+     * @return string JSON Data.
+     */
+    private function userReset($userID)
+    {
+        return $this->invalidRequest();
+    }
+
+    /**
+     * Activate user
+     *
+     * @since 1.0
+     * @param string $userID The user's id
+     * @return string JSON Data.
+     */
+    private function userActivate($userID)
+    {
         return $this->invalidRequest();
     }
 
