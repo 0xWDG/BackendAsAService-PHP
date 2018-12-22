@@ -776,7 +776,7 @@ open class BaaS {
     }
     
     public func fileDownload(withFileID fileID: String) -> Data {
-        let dbURL = "\(serverAddress)/file.get/\(fileID)"
+        let dbURL = "\(serverAddress)/file.download/\(fileID)"
         let task = self.urlTask(
             dbURL,
             [
