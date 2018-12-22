@@ -1450,6 +1450,106 @@ class Server
             );
         }
 
+        // Handle "/file.exists" methods
+        if (
+            // Check if it matches "/file.exists"
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/file\.exists(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
+            // check the API KEY
+            $this->checkAPIKey();
+
+            // Run "file exists"
+            return $this->fileExists(
+                urldecode(
+                    $action[2][0]
+                )
+            );
+        }
+
+        // Handle "/file.download" methods
+        if (
+            // Check if it matches "/file.download"
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/file\.download(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
+            // check the API KEY
+            $this->checkAPIKey();
+
+            // Run "file download"
+            return $this->fileDownload(
+                urldecode(
+                    $action[2][0]
+                )
+            );
+        }
+
+        // Handle "/file.remove" methods
+        if (
+            // Check if it matches "/file.remove"
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/file\.remove(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
+            // check the API KEY
+            $this->checkAPIKey();
+
+            // Run "file remove"
+            return $this->fileRemove(
+                urldecode(
+                    $action[2][0]
+                )
+            );
+        }
+
+        // Handle "/file.upload" methods
+        if (
+            // Check if it matches "/file.upload"
+            preg_match_all(
+                // escape "." and allow everything after "/"
+                "/file\.upload(\/?)(.*)/",
+
+                // The current requested url
+                $_SERVER['REQUEST_URI'],
+
+                // Save to $action
+                $action
+            )
+        ) {
+            // check the API KEY
+            $this->checkAPIKey();
+
+            // Run "file upload"
+            return $this->fileUpload(
+                urldecode(
+                    $action[2][0]
+                )
+            );
+        }
+
         // Handle "/diag", "/diagnose", "/diagnostics" methods
         if (
             // Check if it matches "/diag", "/diagnose", "/diagnostics"
@@ -1604,6 +1704,54 @@ class Server
     }
 
     /**
+     * File Exists
+     *
+     * @since 1.0
+     * @param string $fileID File identifier
+     * @return string JSON Data.
+     */
+    private function fileExists($fileID)
+    {
+        return $this->invalidRequest();
+    }
+
+    /**
+     * File Download
+     *
+     * @since 1.0
+     * @param string $fileID File identifier
+     * @return string JSON Data.
+     */
+    private function fileDownload($fileID)
+    {
+        return $this->invalidRequest();
+    }
+
+    /**
+     * File Remove
+     *
+     * @since 1.0
+     * @param string $fileID File identifier
+     * @return string JSON Data.
+     */
+    private function fileRemove($fileID)
+    {
+        return $this->invalidRequest();
+    }
+
+    /**
+     * File Upload
+     *
+     * @since 1.0
+     * @param string $fileID File identifier
+     * @return string JSON Data.
+     */
+    private function fileUpload($fileID)
+    {
+        return $this->invalidRequest();
+    }
+
+    /**
      * Setup user database
      *
      * @since 1.0
@@ -1650,7 +1798,7 @@ class Server
             "\tPRIMARY KEY (`id`)\n",
 
             // End the create query.
-            ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;",
+            ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;"
         );
 
         return $this->invalidRequest();
