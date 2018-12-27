@@ -4,7 +4,8 @@
 
 <h4>The one and only solution for any self hosted easy backend.</h4>
 
-[Section CI] -travis-, -swift-, ...
+![https://travis-ci.org/BackendasaService](https://travis-ci.org/BackendasaService/BaaS.svg?branch=master)
+
 <br />
 <hr />
 
