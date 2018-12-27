@@ -14,7 +14,7 @@
         <visibility></visibility>
     </parser>
     <transformer>
-        <target>../docs/Server/</target>
+        <target>../../BackendasaService.github.io/Server/</target>
     </transformer>
     <logging>
         <level>warn</level>

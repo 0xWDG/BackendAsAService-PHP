@@ -13,19 +13,19 @@ module: BaaS
 module_version: 1.0
 
 # Set github URL
-github_url: https://github.com/wdg/BaaS
+github_url: https://github.com/BackendasaService/BaaS
 
 # Set github direct file url
-github_file_prefix: https://github.com/wdg/BaaS/blob/master/Framework
+github_file_prefix: https://github.com/BackendasaService/BaaS/blob/master/Framework
 
 # Set Output path
-output: ../docs/Framework
+output: ../../BackendasaService.github.io/Framework
 
 # Set readme path
 readme: ../README.md
 
 # Set dash URL
-dash_url: https://wdg.github.io/BaaS/Framework/docsets/BaaS.docset
+dash_url: https://BackendasaService.github.io/Framework/docsets/BaaS.docset
 
 # Set a nice text for undocumented.
 undocumented_text: Undocumented, Help us document it!
