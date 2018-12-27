@@ -15,4 +15,4 @@ Documentation: <a target='_blank' href='https://BackendasaService.github.io/Fram
 <br />
 
 ---
-Thanks to: [Jazzy](https://github.com/realm/jazzy) for generating Swift Documentation, [PHPDocumentor](https://phpdoc.org) for generating PHP Documentation, [Travis CI](https://travis-ci.org) for running our PHP Tests, [You](#) For using `BaaS` and all our [Contributors](https://github.com/BackendasaService/BaaS/blob/master/.github/Contributors.md).
+Thanks to: [Jazzy](https://github.com/realm/jazzy) for generating Swift Documentation, [PHPDocumentor](https://phpdoc.org) for generating PHP Documentation, [Travis CI](https://travis-ci.org) for running our Tests, [You](#) For using `BaaS` and all our [Contributors](https://github.com/BackendasaService/BaaS/blob/master/.github/Contributors.md).
