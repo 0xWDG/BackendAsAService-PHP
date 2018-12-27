@@ -8,6 +8,25 @@
 
 import Foundation
 
+#if os(iOS)
+extension UIColor
+{
+    public class var BaaS: UIColor
+    {
+        return UIColor(red: 0, green: 212/255, blue: 255/255, alpha: 1.0)
+    }
+}
+#endif
+#if os(macOS)
+extension NSColor
+{
+    private class var BaaS: NSColor
+    {
+        return NSColor(red: 0, green: 212/255, blue: 255/255, alpha: 1.0)
+    }
+}
+#endif
+
 /**
  * **B**ackend **a**s **a** **S**ervice (_BaaS_)
  *
@@ -91,6 +110,24 @@ open class BaaS {
      */
     private let build = "20181221"
     
+    /**
+     * BaaS Color
+     *
+     * BaaS Color (hex, rgb, hsv, cmyk)
+     */
+    public enum BaaS_Color: String {
+        case hex = "#00d4ff"
+        case rgb = "0,212,255"
+        case r, y, k = "0"
+        case g = "212"
+        case b = "255"
+        case hsv = "190,100,100"
+        case h = "190"
+        case s, v, c = "100"
+        case cmyk = "100,17,0,0"
+        case m = "17"
+    }
+
     /**
      * Init
      *

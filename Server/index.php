@@ -26,7 +26,7 @@ $server->setDatabase(
 // );
 
 // always send this key in your post requests, otherwise it will not answer your request at all. (no error, b/c of bruteforcing)
-$server->setRegisteredAPIkey('§§DEVELOPMENT_UNSAFE_KEY§§');
+$server->setRegisteredAPIkey('DEVELOPMENT_UNSAFE_KEY');
 
 // Set maximum invalid tries (invalid API key)
 // Default: 3, probally high enough.

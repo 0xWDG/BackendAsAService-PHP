@@ -2,7 +2,7 @@ matrix:
   include:
     - language: objective-c
       script:
-        - xcodebuild test -project Framework/BaaS.xcodeproj -scheme BaaSTests CODE_SIGNING_ALLOWED=NO
+        - xcodebuild test -project Framework/BaaS.xcodeproj -scheme BaaSTests -destination 'platform=iOS Simulator,name=iPhone XS Max' CODE_SIGNING_ALLOWED=NO
 
     - language: php
       php:

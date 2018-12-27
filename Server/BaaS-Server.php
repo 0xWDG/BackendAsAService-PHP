@@ -210,6 +210,22 @@ class Server
     );
 
     /**
+     * Defaults tables
+     *
+     * The default tables for running BaaS
+     *
+     * @since 1.0
+     * @var string|array $defaultTables Default tables
+     */
+    private $defaultTables = array(
+        // User database name
+        'users' => 'BaaS_UserDB',
+
+        // File database name
+        'files' => 'BaaS_FileDB',
+    );
+
+    /**
      * Extensions
      *
      * We'll support extensions
@@ -384,7 +400,7 @@ class Server
 
             // Exit
             // 0 means no error, since we'll want to output the error.
-            exit($this->$isCLI ? 1 : 0);
+            exit($this->isCLI ? 1 : 0);
         }
     }
 
@@ -469,7 +485,7 @@ class Server
 
                         // Exit
                         // 0 means no error, since we'll want to output the error.
-                        exit($this->$isCLI ? 1 : 0);
+                        exit($this->isCLI ? 1 : 0);
 
                         // You're still blocked
                         return false;
@@ -532,7 +548,7 @@ class Server
 
         // Exit
         // 0 means no error, since we'll want to output the error.
-        exit($this->$isCLI ? 1 : 0);
+        exit($this->isCLI ? 1 : 0);
 
         return false;
     }
@@ -609,7 +625,7 @@ class Server
                 )
             );
 
-            exit($this->$isCLI ? 1 : 0);
+            exit($this->isCLI ? 1 : 0);
         }
 
         // Check database type
@@ -917,7 +933,7 @@ class Server
             );
             // Error
             // Exit with 0 so that we don't get http 500 errors.
-            exit($this->$isCLI ? 1 : 0);
+            exit($this->isCLI ? 1 : 0);
         }
 
         // Check if there is a DATABASE_TYPE defined.
@@ -1640,6 +1656,10 @@ class Server
      */
     private function userCreate($userID)
     {
+        if (!$this->tableExists($this->defaultTables['users'])) {
+            $this->userDatabaseSetup();
+        }
+
         return $this->invalidRequest();
     }
 
@@ -1652,6 +1672,10 @@ class Server
      */
     private function userExists($userID)
     {
+        if (!$this->tableExists($this->defaultTables['users'])) {
+            $this->userDatabaseSetup();
+        }
+
         return $this->invalidRequest();
     }
 
@@ -1664,6 +1688,10 @@ class Server
      */
     private function userRemove($userID)
     {
+        if (!$this->tableExists($this->defaultTables['users'])) {
+            $this->userDatabaseSetup();
+        }
+
         return $this->invalidRequest();
     }
 
@@ -1676,6 +1704,10 @@ class Server
      */
     private function userLogin($userID)
     {
+        if (!$this->tableExists($this->defaultTables['users'])) {
+            $this->userDatabaseSetup();
+        }
+
         return $this->invalidRequest();
     }
 
@@ -1688,6 +1720,10 @@ class Server
      */
     private function userReset($userID)
     {
+        if (!$this->tableExists($this->defaultTables['users'])) {
+            $this->userDatabaseSetup();
+        }
+
         return $this->invalidRequest();
     }
 
@@ -1700,6 +1736,10 @@ class Server
      */
     private function userActivate($userID)
     {
+        if (!$this->tableExists($this->defaultTables['users'])) {
+            $this->userDatabaseSetup();
+        }
+
         return $this->invalidRequest();
     }
 
@@ -1712,6 +1752,10 @@ class Server
      */
     private function fileExists($fileID)
     {
+        if (!$this->tableExists($this->defaultTables['files'])) {
+            $this->fileDatabaseSetup();
+        }
+
         return $this->invalidRequest();
     }
 
@@ -1724,6 +1768,10 @@ class Server
      */
     private function fileDownload($fileID)
     {
+        if (!$this->tableExists($this->defaultTables['files'])) {
+            $this->fileDatabaseSetup();
+        }
+
         return $this->invalidRequest();
     }
 
@@ -1736,6 +1784,10 @@ class Server
      */
     private function fileRemove($fileID)
     {
+        if (!$this->tableExists($this->defaultTables['files'])) {
+            $this->fileDatabaseSetup();
+        }
+
         return $this->invalidRequest();
     }
 
@@ -1748,6 +1800,10 @@ class Server
      */
     private function fileUpload($fileID)
     {
+        if (!$this->tableExists($this->defaultTables['files'])) {
+            $this->fileDatabaseSetup();
+        }
+
         return $this->invalidRequest();
     }
 
@@ -1765,7 +1821,10 @@ class Server
             '%s%s%s%s%s%s%s%s%s%s%s%s',
 
             // Create table
-            "CREATE TABLE `BaaS_UserDB` (\n",
+            sprintf(
+                "CREATE TABLE `%s` (\n",
+                $this->defaultTables['users']
+            ),
 
             // id (auto incrementing)
             "\t`id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n",
@@ -1802,6 +1861,17 @@ class Server
         );
 
         return $this->invalidRequest();
+    }
+
+    /**
+     * Setup file database
+     *
+     * @since 1.0
+     * @return void
+     */
+    private function fileDatabaseSetup()
+    {
+        //....
     }
 
     /**
@@ -4302,7 +4372,7 @@ class Server
                             'isAdmin' => $this->isAdmin,
 
                             // Are we on a commandline interface (CLI)?
-                            'isCLI' => $this->$isCLI,
+                            'isCLI' => $this->isCLI,
 
                             // Did i make a error?
                             'error' => $this->error,
@@ -4321,6 +4391,9 @@ class Server
 
                             // What defaults field are you using in your database?
                             'defaultFields' => $this->defaultFields,
+
+                            // What defaults tables are you using in your database?
+                            'defaultTables' => $this->defaultTables,
 
                             // Which extensions are loaded, and which you have found?
                             'extensions' => array(
@@ -4416,7 +4489,7 @@ class Server
                     "Function Call" => $this->extensions[$i][1],
 
                     // Do you require a valid API-key?
-                    "APIKey Required?" => $this->extensions[$i][2],
+                    "APIKey Required" => $this->extensions[$i][2],
                 );
             }
 
@@ -4453,7 +4526,7 @@ class Server
 
         // Count up invalid attempts
         // If there are to many attempts, this user will be blocked.
-        $this->setAttempt();
+        $this->setAttempt($_SERVER['REMOTE_ADDR']);
 
         // Invalid API-Key,
         // Throw a exception
