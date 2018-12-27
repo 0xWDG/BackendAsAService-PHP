@@ -4,7 +4,7 @@
 
 <h4>The one and only solution for any self hosted easy backend.</h4>
 
-![https://travis-ci.org/BackendasaService](https://travis-ci.org/BackendasaService/BaaS.svg?branch=master)
+[![](https://travis-ci.org/BackendasaService/BaaS.svg?branch=master)](https://travis-ci.org/BackendasaService/BaaS)
 
 <br />
 <hr />
