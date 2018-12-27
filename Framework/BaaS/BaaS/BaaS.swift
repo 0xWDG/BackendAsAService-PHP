@@ -108,7 +108,7 @@ open class BaaS {
      *
      * BaaS Build number
      */
-    private let build = "20181221"
+    private let build = "20181227"
     
     /**
      * BaaS Color
