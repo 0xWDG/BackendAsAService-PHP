@@ -784,7 +784,11 @@ open class BaaS {
     public func fileUpload(data fileData: Data, saveWithFileID fileID: String) -> Any {
         let dbURL = "\(serverAddress)/file.upload/\(fileID)"
         
-        guard let postSafeFileData = String.init(data: fileData.base64EncodedData(), encoding: .utf8) else {
+        guard let compressedData = fileData.deflate() else {
+            return false
+        }
+
+        guard let postSafeFileData = String.init(data: compressedData.base64EncodedData(), encoding: .utf8) else {
             return false
         }
         
@@ -808,6 +812,8 @@ open class BaaS {
             ]
         )
         
+        // deflate
+
         //        return String.init(data: task, encoding: .utf8)!
         return false
     }

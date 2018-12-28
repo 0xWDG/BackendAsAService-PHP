@@ -13,6 +13,7 @@
 		DEA032A821A8387100599F48 /* BaaS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA032A721A8387100599F48 /* BaaS.swift */; };
 		DEA032AA21A8389100599F48 /* Baas_Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA032A921A8389100599F48 /* Baas_Delegate.swift */; };
 		DEA032B621A83E7600599F48 /* BaaS_Webhelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA032B521A83E7600599F48 /* BaaS_Webhelper.swift */; };
+		DEF2ED1121D64ECC00B41BDF /* Data+Compression.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF2ED1021D64ECC00B41BDF /* Data+Compression.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +36,7 @@
 		DEA032A721A8387100599F48 /* BaaS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BaaS.swift; path = BaaS/BaaS.swift; sourceTree = "<group>"; };
 		DEA032A921A8389100599F48 /* Baas_Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Baas_Delegate.swift; path = BaaS/Baas_Delegate.swift; sourceTree = "<group>"; };
 		DEA032B521A83E7600599F48 /* BaaS_Webhelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaaS_Webhelper.swift; sourceTree = "<group>"; };
+		DEF2ED1021D64ECC00B41BDF /* Data+Compression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Data+Compression.swift"; path = "BaaS/Data+Compression.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +82,7 @@
 				DEA0328721A8383100599F48 /* BaaS.h */,
 				DEA0328821A8383100599F48 /* Info.plist */,
 				DEA032A721A8387100599F48 /* BaaS.swift */,
+				DEF2ED1021D64ECC00B41BDF /* Data+Compression.swift */,
 				DEA032B521A83E7600599F48 /* BaaS_Webhelper.swift */,
 				DEA032A921A8389100599F48 /* Baas_Delegate.swift */,
 			);
@@ -204,6 +207,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEF2ED1121D64ECC00B41BDF /* Data+Compression.swift in Sources */,
 				DEA032A821A8387100599F48 /* BaaS.swift in Sources */,
 				DEA032AA21A8389100599F48 /* Baas_Delegate.swift in Sources */,
 				DEA032B621A83E7600599F48 /* BaaS_Webhelper.swift in Sources */,

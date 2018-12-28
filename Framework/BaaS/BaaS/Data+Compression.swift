@@ -1,0 +1,115 @@
+//
+//  Data+Compression.swift
+//  BaaS
+//
+//  Created by Wesley de Groot on 28/12/2018.
+//  Copyright © 2018 Wesley de Groot. All rights reserved.
+//
+
+import Foundation
+import Compression
+
+public extension Data
+{
+    fileprivate typealias Config = (
+        operation: compression_stream_operation,
+        algorithm: compression_algorithm
+    )
+    
+    fileprivate func perform(
+        config: Config,
+        source: UnsafePointer<UInt8>,
+        sourceSize: Int,
+        preload: Data = Data()
+        ) -> Data?
+    {
+        guard config.operation == COMPRESSION_STREAM_ENCODE || sourceSize > 0 else { return nil }
+        
+        let streamBase = UnsafeMutablePointer<compression_stream>.allocate(capacity: 1)
+        defer {
+            streamBase.deallocate()
+        }
+        
+        var stream = streamBase.pointee
+        let status = compression_stream_init(
+            &stream,
+            config.operation,
+            config.algorithm
+        )
+
+        guard status != COMPRESSION_STATUS_ERROR else { return nil }
+        defer {
+            compression_stream_destroy(&stream)
+        }
+        
+        let bufferSize = Swift.max(Swift.min(sourceSize, 64 * 1024), 64)
+        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)
+        defer {
+            buffer.deallocate()
+        }
+
+        stream.dst_ptr  = buffer
+        stream.dst_size = bufferSize
+        stream.src_ptr  = source
+        stream.src_size = sourceSize
+        var resource = preload
+        let flags: Int32 = Int32(COMPRESSION_STREAM_FINALIZE.rawValue)
+
+        while true {
+            switch compression_stream_process(&stream, flags) {
+            case COMPRESSION_STATUS_OK:
+                guard stream.dst_size == 0 else {
+                    return nil
+                }
+                resource.append(buffer, count: stream.dst_ptr - buffer)
+                stream.dst_ptr = buffer
+                stream.dst_size = bufferSize
+            case COMPRESSION_STATUS_END:
+                resource.append(buffer, count: stream.dst_ptr - buffer)
+                return resource
+            default:
+                return nil
+            }
+        }
+    }
+
+    /*
+     * Compresses the data using the zlib deflate algorithm.
+     * - returns: raw deflated data according to [RFC-1951](https://tools.ietf.org/html/rfc1951).
+     * - note: Fixed at compression level 5 (best trade off between speed and time)
+     */
+    public func deflate() -> Data?
+    {
+        return self.withUnsafeBytes { (sourcePtr: UnsafePointer<UInt8>) -> Data? in
+            let configuration = (
+                operation: COMPRESSION_STREAM_ENCODE,
+                algorithm: COMPRESSION_ZLIB
+            )
+
+            return perform(
+                config: configuration,
+                source: sourcePtr,
+                sourceSize: count
+            )
+        }
+    }
+    /// Decompresses the data using the zlib deflate algorithm.
+    /// Self is expected to be a raw deflate
+    /// stream according to [RFC-1951](https://tools.ietf.org/html/rfc1951).
+    /// - returns: uncompressed data
+    public func inflate() -> Data?
+    {
+        return self.withUnsafeBytes { (sourcePtr: UnsafePointer<UInt8>) -> Data? in
+            let configuration = (
+                operation: COMPRESSION_STREAM_DECODE,
+                algorithm: COMPRESSION_ZLIB
+            )
+
+            return perform(
+                config: configuration,
+                source: sourcePtr,
+                sourceSize: count
+            )
+        }
+    }
+}

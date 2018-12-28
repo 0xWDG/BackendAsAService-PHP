@@ -15,7 +15,7 @@ class FirstViewController: UIViewController, BaaSDelegate {
     override func viewDidLoad() {
         db.delegate = self
         db.set(server: "http://127.0.0.1:8000/index.php")
-        db.set(apiKey: "§§DEVELOPMENT_UNSAFE_KEY§§")
+        db.set(apiKey: "DEVELOPMENT_UNSAFE_KEY")
         
         let dbLayout = [
             db.database(createFieldWithName: "name", type: .text, defaultValue: "", canBeEmpty: false),
