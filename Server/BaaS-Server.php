@@ -1752,11 +1752,41 @@ class Server
      */
     private function fileExists($fileID)
     {
+        // Check if file database exists
         if (!$this->tableExists($this->defaultTables['files'])) {
+            // No, Setup.
             $this->fileDatabaseSetup();
+
+            // File not found.
+            return json_encode(
+                array(
+                    "Status" => "Failed",
+                    "File" => "Not found",
+                    "Warning" => "Database didn't exists",
+                    "Database" => (
+                        $this->tableExists($this->defaultTables['files'])
+                        ? "Exists"
+                        : "Does not exists!"
+                    ),
+                )
+            );
         }
 
-        return $this->invalidRequest();
+        // Ask
+        $sSql = sprintf(
+            "SELECT `id` FROM `%s` WHERE `id`='%s' LIMIT 1;",
+            $this->defaultTables['files'],
+            $this->escapeString($fileID)
+        );
+
+        $fileFound = ($this->db->query($sSql)->rowCount() > 0);
+
+        return json_encode(
+            array(
+                "Status" => "Ok",
+                "File" => $fileFound ? "Found" : "Not Found",
+            )
+        );
     }
 
     /**
@@ -1860,7 +1890,7 @@ class Server
             ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;"
         );
 
-        return $this->invalidRequest();
+        $this->db->query($sSql);
     }
 
     /**
@@ -1871,7 +1901,37 @@ class Server
      */
     private function fileDatabaseSetup()
     {
-        //....
+        // The creation SQL
+        $sSql = sprintf(
+            // String for appending
+            '%s%s%s%s%s%s%s',
+
+            // Create table
+            sprintf(
+                "CREATE TABLE `%s` (\n",
+                $this->defaultTables['files']
+            ),
+
+            // id (auto incrementing)
+            "\t`id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n",
+
+            // latitude
+            "\t`filename` text DEFAULT NULL,\n",
+
+            // longitude
+            "\t`filedata` text DEFAULT NULL,\n",
+
+            // username
+            "\t`username` text DEFAULT NULL,\n",
+
+            // set the primary key.
+            "\tPRIMARY KEY (`id`)\n",
+
+            // End the create query.
+            ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;"
+        );
+
+        $this->db->query($sSql);
     }
 
     /**
