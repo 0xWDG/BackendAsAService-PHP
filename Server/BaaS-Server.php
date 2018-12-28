@@ -2268,6 +2268,24 @@ class Server
      */
     private function tableEmpty($tableName)
     {
+        // Check if table exists
+        if (!$this->tableExists($tableName)) {
+            // Error
+            return json_encode(
+                // Array
+                array(
+                    // Status
+                    "Status" => "Failed",
+
+                    // Warning
+                    "Warning" => "Table does not exists",
+
+                    // Possible-How-To-Fix
+                    "Fix" => "Provide table name",
+                )
+            );
+        }
+
         $sSql = sprintf(
             // Create table.
             "TRUNCATE TABLE `%s`;\n",
@@ -2340,6 +2358,24 @@ class Server
      */
     private function tableRemove($tableName)
     {
+        // Check if table exists
+        if (!$this->tableExists($tableName)) {
+            // Error
+            return json_encode(
+                // Array
+                array(
+                    // Status
+                    "Status" => "Failed",
+
+                    // Warning
+                    "Warning" => "Table does not exists",
+
+                    // Possible-How-To-Fix
+                    "Fix" => "Provide table name",
+                )
+            );
+        }
+
         // SQL Command
         $sSql = sprintf(
             // Create table.
