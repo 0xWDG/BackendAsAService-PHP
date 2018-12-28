@@ -108,7 +108,7 @@ open class BaaS {
      *
      * BaaS Build number
      */
-    private let build = "20181227"
+    private let build = "20181228"
     
     /**
      * Server's public key hash
