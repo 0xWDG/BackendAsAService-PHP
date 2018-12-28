@@ -11,9 +11,10 @@
 		DEA0329321A8383200599F48 /* BaaSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0329221A8383200599F48 /* BaaSTests.swift */; };
 		DEA0329521A8383200599F48 /* BaaS.h in Headers */ = {isa = PBXBuildFile; fileRef = DEA0328721A8383100599F48 /* BaaS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DEA032A821A8387100599F48 /* BaaS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA032A721A8387100599F48 /* BaaS.swift */; };
-		DEA032AA21A8389100599F48 /* Baas_Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA032A921A8389100599F48 /* Baas_Delegate.swift */; };
-		DEA032B621A83E7600599F48 /* BaaS_Webhelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA032B521A83E7600599F48 /* BaaS_Webhelper.swift */; };
-		DEF2ED1121D64ECC00B41BDF /* Data+Compression.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF2ED1021D64ECC00B41BDF /* Data+Compression.swift */; };
+		DEA032AA21A8389100599F48 /* BaaS-Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA032A921A8389100599F48 /* BaaS-Delegate.swift */; };
+		DEF2ED1121D64ECC00B41BDF /* BaaS-Compression.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF2ED1021D64ECC00B41BDF /* BaaS-Compression.swift */; };
+		DEF2ED1321D6525F00B41BDF /* BaaS-NetworkRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF2ED1221D6525F00B41BDF /* BaaS-NetworkRequests.swift */; };
+		DEF2ED2421D6573800B41BDF /* CommonCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEF2ED1E21D6572B00B41BDF /* CommonCrypto.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,6 +24,34 @@
 			proxyType = 1;
 			remoteGlobalIDString = DEA0328321A8383100599F48;
 			remoteInfo = BaaS;
+		};
+		DEF2ED1B21D6572B00B41BDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DEF2ED1421D6572A00B41BDF /* CommonCrypto.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 211216831AE68D26004E1CE6;
+			remoteInfo = "CommonCrypto-macOS";
+		};
+		DEF2ED1D21D6572B00B41BDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DEF2ED1421D6572A00B41BDF /* CommonCrypto.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 216CAE341AE6B273009A69EF;
+			remoteInfo = "CommonCrypto-iOS";
+		};
+		DEF2ED1F21D6572B00B41BDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DEF2ED1421D6572A00B41BDF /* CommonCrypto.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 804503281BA209F6002A5470;
+			remoteInfo = "CommonCrypto-watchOS";
+		};
+		DEF2ED2121D6572B00B41BDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DEF2ED1421D6572A00B41BDF /* CommonCrypto.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 80098A511C12E5890029C530;
+			remoteInfo = "CommonCrypto-tvOS";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -34,9 +63,10 @@
 		DEA0329221A8383200599F48 /* BaaSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaaSTests.swift; sourceTree = "<group>"; };
 		DEA0329421A8383200599F48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DEA032A721A8387100599F48 /* BaaS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BaaS.swift; path = BaaS/BaaS.swift; sourceTree = "<group>"; };
-		DEA032A921A8389100599F48 /* Baas_Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Baas_Delegate.swift; path = BaaS/Baas_Delegate.swift; sourceTree = "<group>"; };
-		DEA032B521A83E7600599F48 /* BaaS_Webhelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaaS_Webhelper.swift; sourceTree = "<group>"; };
-		DEF2ED1021D64ECC00B41BDF /* Data+Compression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Data+Compression.swift"; path = "BaaS/Data+Compression.swift"; sourceTree = "<group>"; };
+		DEA032A921A8389100599F48 /* BaaS-Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BaaS-Delegate.swift"; path = "BaaS/BaaS-Delegate.swift"; sourceTree = "<group>"; };
+		DEF2ED1021D64ECC00B41BDF /* BaaS-Compression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BaaS-Compression.swift"; path = "BaaS/BaaS-Compression.swift"; sourceTree = "<group>"; };
+		DEF2ED1221D6525F00B41BDF /* BaaS-NetworkRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BaaS-NetworkRequests.swift"; path = "BaaS/BaaS-NetworkRequests.swift"; sourceTree = "<group>"; };
+		DEF2ED1421D6572A00B41BDF /* CommonCrypto.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CommonCrypto.xcodeproj; path = "BaaS/BaaS/External Frameworks/CommonCrypto.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEF2ED2421D6573800B41BDF /* CommonCrypto.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,9 +92,11 @@
 		DEA0327A21A8383100599F48 = {
 			isa = PBXGroup;
 			children = (
+				DEF2ED1421D6572A00B41BDF /* CommonCrypto.xcodeproj */,
 				DEA0328621A8383100599F48 /* BaaS */,
 				DEA0329121A8383200599F48 /* BaaSTests */,
 				DEA0328521A8383100599F48 /* Products */,
+				DEF2ED2321D6573800B41BDF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -82,9 +115,9 @@
 				DEA0328721A8383100599F48 /* BaaS.h */,
 				DEA0328821A8383100599F48 /* Info.plist */,
 				DEA032A721A8387100599F48 /* BaaS.swift */,
-				DEF2ED1021D64ECC00B41BDF /* Data+Compression.swift */,
-				DEA032B521A83E7600599F48 /* BaaS_Webhelper.swift */,
-				DEA032A921A8389100599F48 /* Baas_Delegate.swift */,
+				DEF2ED1021D64ECC00B41BDF /* BaaS-Compression.swift */,
+				DEF2ED1221D6525F00B41BDF /* BaaS-NetworkRequests.swift */,
+				DEA032A921A8389100599F48 /* BaaS-Delegate.swift */,
 			);
 			path = BaaS;
 			sourceTree = "<group>";
@@ -96,6 +129,24 @@
 				DEA0329421A8383200599F48 /* Info.plist */,
 			);
 			path = BaaSTests;
+			sourceTree = "<group>";
+		};
+		DEF2ED1521D6572A00B41BDF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DEF2ED1C21D6572B00B41BDF /* CommonCrypto.framework */,
+				DEF2ED1E21D6572B00B41BDF /* CommonCrypto.framework */,
+				DEF2ED2021D6572B00B41BDF /* CommonCrypto.framework */,
+				DEF2ED2221D6572B00B41BDF /* CommonCrypto.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DEF2ED2321D6573800B41BDF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -177,6 +228,12 @@
 			mainGroup = DEA0327A21A8383100599F48;
 			productRefGroup = DEA0328521A8383100599F48 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = DEF2ED1521D6572A00B41BDF /* Products */;
+					ProjectRef = DEF2ED1421D6572A00B41BDF /* CommonCrypto.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				DEA0328321A8383100599F48 /* BaaS */,
@@ -184,6 +241,37 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		DEF2ED1C21D6572B00B41BDF /* CommonCrypto.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CommonCrypto.framework;
+			remoteRef = DEF2ED1B21D6572B00B41BDF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DEF2ED1E21D6572B00B41BDF /* CommonCrypto.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CommonCrypto.framework;
+			remoteRef = DEF2ED1D21D6572B00B41BDF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DEF2ED2021D6572B00B41BDF /* CommonCrypto.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CommonCrypto.framework;
+			remoteRef = DEF2ED1F21D6572B00B41BDF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DEF2ED2221D6572B00B41BDF /* CommonCrypto.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CommonCrypto.framework;
+			remoteRef = DEF2ED2121D6572B00B41BDF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		DEA0328221A8383100599F48 /* Resources */ = {
@@ -207,10 +295,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DEF2ED1121D64ECC00B41BDF /* Data+Compression.swift in Sources */,
+				DEF2ED1121D64ECC00B41BDF /* BaaS-Compression.swift in Sources */,
+				DEF2ED1321D6525F00B41BDF /* BaaS-NetworkRequests.swift in Sources */,
 				DEA032A821A8387100599F48 /* BaaS.swift in Sources */,
-				DEA032AA21A8389100599F48 /* Baas_Delegate.swift in Sources */,
-				DEA032B621A83E7600599F48 /* BaaS_Webhelper.swift in Sources */,
+				DEA032AA21A8389100599F48 /* BaaS-Delegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

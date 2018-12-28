@@ -9,13 +9,43 @@
 import Foundation
 import Compression
 
+extension BaaS {
+    /**
+     *
+     */
+    func compress(data: Data) -> Data {
+        guard let compressed = data.deflate() else {
+            return "".data(using: .utf8)!
+        }
+
+        return compressed
+    }
+
+    /**
+     *
+     */
+    func decompress(data: Data) -> Data {
+        guard let decompressed = data.inflate() else {
+            return "".data(using: .utf8)!
+        }
+        
+        return decompressed
+    }
+}
+
 public extension Data
 {
+    /**
+     *
+     */
     fileprivate typealias Config = (
         operation: compression_stream_operation,
         algorithm: compression_algorithm
     )
-    
+
+    /**
+     *
+     */
     fileprivate func perform(
         config: Config,
         source: UnsafePointer<UInt8>,
@@ -73,7 +103,7 @@ public extension Data
         }
     }
 
-    /*
+    /**
      * Compresses the data using the zlib deflate algorithm.
      * - returns: raw deflated data according to [RFC-1951](https://tools.ietf.org/html/rfc1951).
      * - note: Fixed at compression level 5 (best trade off between speed and time)
@@ -93,10 +123,13 @@ public extension Data
             )
         }
     }
-    /// Decompresses the data using the zlib deflate algorithm.
-    /// Self is expected to be a raw deflate
-    /// stream according to [RFC-1951](https://tools.ietf.org/html/rfc1951).
-    /// - returns: uncompressed data
+    
+    /**
+     * Decompresses the data using the zlib deflate algorithm.
+     * Self is expected to be a raw deflate
+     * stream according to [RFC-1951](https://tools.ietf.org/html/rfc1951).
+     * - returns: uncompressed data
+     */
     public func inflate() -> Data?
     {
         return self.withUnsafeBytes { (sourcePtr: UnsafePointer<UInt8>) -> Data? in

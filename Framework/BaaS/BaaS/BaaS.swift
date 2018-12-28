@@ -80,7 +80,7 @@ open class BaaS {
      *
      * Should we debug right now?
      */
-    private let debug = true
+    private let debug = _isDebugAssertConfiguration()
     
     /**
      * lastRowID
@@ -109,6 +109,20 @@ open class BaaS {
      * BaaS Build number
      */
     private let build = "20181227"
+    
+    /**
+     * Server's public key hash
+     *
+     * Server's public key hash
+     */
+    var publicKeyHash = ""
+    
+    /**
+     * Server's certificate hash
+     *
+     * Server's certificate hash
+     */
+    var certificateHash = ""
     
     /**
      * BaaS Color
@@ -188,6 +202,50 @@ open class BaaS {
         self.apiKey = apiKey
     }
     
+    /**
+     * Set hash of the server's certificate
+     *
+     * This saves the hash of the server's certificate
+     *
+     * - parameter certificateHash: Server's certificate hash
+     */
+    public func set(certificateHash: String) -> Void {
+        self.certificateHash = certificateHash
+    }
+
+    /**
+     * Set hash of the server's public key
+     *
+     * This saves the hash of the server's public key
+     *
+     * - parameter publicKeyHash: Server's public key hash
+     */
+    public func set(publicKeyHash: String) -> Void {
+        self.publicKeyHash = publicKeyHash
+    }
+
+    /**
+     * Get hash of the server's certificate
+     *
+     * This gets the hash of the server's certificate
+     *
+     * - returns Server's certificate hash
+     */
+    public func getCertificateHash() -> String {
+        return self.certificateHash
+    }
+
+    /**
+     * Get hash of the server's public key
+     *
+     * This gets the hash of the server's public key
+     *
+     * - returns Server's public key hash
+     */
+    public func getPublicKeyHash() -> String {
+        return self.publicKeyHash
+    }
+
     /**
      * Set server URL
      *
@@ -625,7 +683,7 @@ open class BaaS {
             "Fields": data
         ]
         
-        let task = self.urlTask(
+        let task = self.networkRequest(
             dbURL,
             JSON
         )
@@ -643,7 +701,7 @@ open class BaaS {
      */
     public func database(existsWithName: String) -> Bool {
         let dbURL = "\(serverAddress)/table.exists/\(existsWithName)"
-        let task = self.urlTask(
+        let task = self.networkRequest(
             dbURL,
             [
                 "APIKey": self.apiKey
@@ -703,7 +761,7 @@ open class BaaS {
      */
     public func create(values: [String: String], inDatabase: String) -> Bool {
         let dbURL = "\(serverAddress)/row.create/\(inDatabase)"
-        let task = self.urlTask(
+        let task = self.networkRequest(
             dbURL,
             [
                 "APIKey": self.apiKey,
@@ -726,7 +784,7 @@ open class BaaS {
      */
     public func rename(from: String, to: String) -> Bool {
         let dbURL = "\(serverAddress)/table.rename/\(from)/\(to)"
-        let task = self.urlTask(
+        let task = self.networkRequest(
             dbURL,
             [
                 "APIKey": self.apiKey,
@@ -744,7 +802,7 @@ open class BaaS {
      */
     public func empty(table: String) -> Bool {
         let dbURL = "\(serverAddress)/table.empty/\(table)"
-        let task = self.urlTask(
+        let task = self.networkRequest(
             dbURL,
             [
                 "APIKey": self.apiKey,
@@ -762,7 +820,7 @@ open class BaaS {
      */
     public func remove(table: String) -> Bool {
         let dbURL = "\(serverAddress)/table.remove/\(table)"
-        let task = self.urlTask(
+        let task = self.networkRequest(
             dbURL,
             [
                 "APIKey": self.apiKey,
@@ -792,7 +850,7 @@ open class BaaS {
             return false
         }
         
-        let task = self.urlTask(
+        let task = self.networkRequest(
             dbURL,
             [
                 "APIKey": self.apiKey,
@@ -805,7 +863,7 @@ open class BaaS {
     
     public func fileExists(withFileID fileID: String) -> Bool {
         let dbURL = "\(serverAddress)/file.exists/\(fileID)"
-        let task = self.urlTask(
+        let task = self.networkRequest(
             dbURL,
             [
                 "APIKey": self.apiKey
@@ -820,7 +878,7 @@ open class BaaS {
     
     public func fileDownload(withFileID fileID: String) -> Data {
         let dbURL = "\(serverAddress)/file.download/\(fileID)"
-        let task = self.urlTask(
+        let task = self.networkRequest(
             dbURL,
             [
                 "APIKey": self.apiKey
@@ -833,7 +891,7 @@ open class BaaS {
     
     public func fileDelete(withFileID fileID: String) -> Any {
         let dbURL = "\(serverAddress)/file.delete/\(fileID)"
-        let task = self.urlTask(
+        let task = self.networkRequest(
             dbURL,
             [
                 "APIKey": self.apiKey
@@ -845,7 +903,7 @@ open class BaaS {
     
     internal func value(where whereStr: [[String]], inDatabase: String) -> Any {
         let dbURL = "\(serverAddress)/row.get/\(inDatabase)"
-        let task = self.urlTask(
+        let task = self.networkRequest(
             dbURL,
             [
                 "APIKey": self.apiKey,
