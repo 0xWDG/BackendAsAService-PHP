@@ -1759,14 +1759,27 @@ class Server
 
             // File not found.
             return json_encode(
+                // as array
                 array(
+                    // Set status
                     "Status" => "Failed",
+
+                    // File
                     "File" => "Not found",
+
+                    // Database didn't exists
                     "Warning" => "Database didn't exists",
+
+                    // Does it exists now?
                     "Database" => (
+                        // Check if exists
                         $this->tableExists($this->defaultTables['files'])
-                        ? "Exists"
-                        : "Does not exists!"
+
+                        // Yes
+                         ? "Exists"
+
+                        // No
+                         : "Does not exists!"
                     ),
                 )
             );
@@ -1774,16 +1787,27 @@ class Server
 
         // Ask
         $sSql = sprintf(
+            // Select the file ID
             "SELECT `id` FROM `%s` WHERE `id`='%s' LIMIT 1;",
+
+            // from the default table
             $this->defaultTables['files'],
+
+            // Escape user input
             $this->escapeString($fileID)
         );
 
+        // Count if we have found the file.
         $fileFound = ($this->db->query($sSql)->rowCount() > 0);
 
+        // Return to client
         return json_encode(
+            // as array
             array(
+                // Send status
                 "Status" => "Ok",
+
+                // Send file status
                 "File" => $fileFound ? "Found" : "Not Found",
             )
         );
