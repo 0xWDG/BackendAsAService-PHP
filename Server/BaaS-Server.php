@@ -565,10 +565,10 @@ class Server
      * </pre>
      *
      * @since 1.0
-     * @param string $SQLString The SQL Query
+     * @param string $sqlQuery The SQL Query
      * @return string the table name
      */
-    protected function tableFromSQLString($SQLString)
+    protected function tableFromSQLString($sqlQuery)
     {
         // Check if we can find the table, from the SQL Command
         // Supported:
@@ -581,7 +581,7 @@ class Server
             "/(FROM|INTO|FROM|TABLE) (`)?([a-zA-Z0-9]+)(`)?/i",
 
             // Matches the Query?
-            $SQLString,
+            $sqlQuery,
 
             // Return matches
             $match
@@ -2706,7 +2706,7 @@ class Server
         $bindings = array();
 
         // Start creating the SQL command!
-        $SQLcommand = "";
+        $sqlQuery = "";
 
         // What do we need to do?
         switch ($action) {
@@ -2714,7 +2714,7 @@ class Server
             // row.get
             case 'get':
                 // SQL Command
-                $SQLcommand = sprintf(
+                $sqlQuery = sprintf(
                     // Select .. FROM `database`
                     "SELECT %s FROM `%s`",
 
@@ -2759,7 +2759,7 @@ class Server
                 }
 
                 // SQL Command
-                $SQLcommand = sprintf(
+                $sqlQuery = sprintf(
                     // Select .. FROM `database`
                     "UPDATE `%s` SET ",
 
@@ -2784,7 +2784,7 @@ class Server
             // row.remove
             case 'remove':
                 // SQL Command
-                $SQLcommand = sprintf(
+                $sqlQuery = sprintf(
                     // Select .. FROM `database`
                     "DELETE FROM `%s`",
 
@@ -2835,7 +2835,7 @@ class Server
                         // If i is more then 0 append a , seporator
                         if ($i > 0) {
                             // Append seporator
-                            $SQLcommand .= ', ';
+                            $sqlQuery .= ', ';
                         }
 
                         // Create for every statement a Parameter ID.
@@ -2850,7 +2850,7 @@ class Server
 
                         // Append `%s` = :paramID
                         // values %s = firstParameter
-                        $SQLcommand .= sprintf(
+                        $sqlQuery .= sprintf(
                             "`%s` = :%s",
                             preg_replace(
                                 // Replace `
@@ -2892,7 +2892,7 @@ class Server
             // Check if it is a "array"
             if (is_array($decodedJSON['where'])) {
                 // Append " WHERE " to the SQL command
-                $SQLcommand .= " WHERE ";
+                $sqlQuery .= " WHERE ";
 
                 // needs to be a sub-array
                 // [xxx, eq, xxx]
@@ -2915,7 +2915,7 @@ class Server
                         // If we are more then id 0 then
                         if ($i > 0) {
                             // append " AND" to SQL command
-                            $SQLcommand .= " AND ";
+                            $sqlQuery .= " AND ";
                         }
 
                         // Switch type (eq, neq, loc, like) (lowercased)
@@ -2934,7 +2934,7 @@ class Server
 
                                 // Append `%s` = :paramID
                                 // where %s = firstParameter
-                                $SQLcommand .= sprintf(
+                                $sqlQuery .= sprintf(
                                     "`%s` = :%s",
                                     preg_replace(
                                         // Replace `
@@ -2971,7 +2971,7 @@ class Server
 
                                 // Append `%s` != :paramID
                                 // where %s = firstParameter
-                                $SQLcommand .= sprintf(
+                                $sqlQuery .= sprintf(
                                     "`%s` != :%s",
                                     preg_replace(
                                         // Replace `
@@ -3007,7 +3007,7 @@ class Server
 
                                 // Append `%s` LIKE :paramID
                                 // where %s = firstParameter
-                                $SQLcommand .= sprintf(
+                                $sqlQuery .= sprintf(
                                     "`%s` LIKE :%s",
                                     preg_replace(
                                         // Replace `
@@ -3052,7 +3052,7 @@ class Server
                                 if ($this->dbConfig['type'] == "sqlite") {
                                     // Append our special function to the SQL command
                                     // distance(latitude, longitude, $lat, $lon) is a custom function.
-                                    $SQLcommand .= sprintf(
+                                    $sqlQuery .= sprintf(
                                         "distance(latitude, longitude, :%s, :%s) < :%s",
 
                                         // Latitude Parameter ID
@@ -3066,7 +3066,7 @@ class Server
                                     );
                                 } else {
                                     // Append our special calculatoion function to the SQL command
-                                    $SQLcommand .= sprintf(
+                                    $sqlQuery .= sprintf(
                                         "ST_Distance(point (latitude, longitude), point (:%s, :%s)) < :%s",
 
                                         // Latitude Parameter ID
@@ -3098,9 +3098,9 @@ class Server
                                 // But, you are never sure what will happen.
 
                                 // Check if we have created a " AND ".
-                                if (substr($SQLcommand, -5) == " AND ") {
+                                if (substr($sqlQuery, -5) == " AND ") {
                                     // Ok, let's remove it.
-                                    $SQLcommand = substr($SQLcommand, 0, -5);
+                                    $sqlQuery = substr($sqlQuery, 0, -5);
                                 }
 
                                 // End
@@ -3131,19 +3131,19 @@ class Server
             // Is the limit numeric?
             if (is_numeric($decodedJSON['limit'])) {
                 // Append the LIMIT {value} to our SQL Command
-                $SQLcommand .= sprintf(" LIMIT %s", $decodedJSON['limit']);
+                $sqlQuery .= sprintf(" LIMIT %s", $decodedJSON['limit']);
             }
         }
 
         // And add a termination.
-        $SQLcommand .= ";";
+        $sqlQuery .= ";";
 
         // Transfer everything to JSON!
         return json_encode(
             // Execute our command, with our parameters
             $this->queryWithParameters(
                 // SQL Command
-                $SQLcommand,
+                $sqlQuery,
 
                 // Our bindings
                 $bindings
@@ -3764,7 +3764,7 @@ class Server
         }
 
         // Insert info ..
-        $SQLcommand = sprintf(
+        $sqlQuery = sprintf(
             // Insert into
             "INSERT INTO `%s` (",
 
@@ -3833,7 +3833,7 @@ class Server
                 // Check if field is not ID
                 if ($tableFields[$i] != 'id') {
                     // Append to SQL command string
-                    $SQLcommand .= sprintf(
+                    $sqlQuery .= sprintf(
                         // `...`
                         "`%s`, ",
 
@@ -3890,19 +3890,19 @@ class Server
         }
 
         // INSERT INTO ... (....) VALUES (....);
-        $SQLcommand = sprintf(
+        $sqlQuery = sprintf(
             // Create the string
             "%s) VALUES (%s);",
 
             // Remove the extra ", " (2 characters) so 0, -2
-            substr($SQLcommand, 0, -2),
+            substr($sqlQuery, 0, -2),
 
             // Remove the extra ", " (2 characters) so 0, -2
             substr($SQLValues, 0, -2)
         );
 
         // Run the query
-        $action = $this->db->query($SQLcommand);
+        $action = $this->db->query($sqlQuery);
 
         // Get the row ID
         $insertID = $this->db->lastInsertId();
@@ -3939,7 +3939,7 @@ class Server
                 "Fix" => "Please try again later",
 
                 // Append debug fields (if debugmode is true)
-                "Debug" => ($this->debugmode ? $SQLcommand : 'Off'),
+                "Debug" => ($this->debugmode ? $sqlQuery : 'Off'),
             )
         );
     }
@@ -3957,7 +3957,7 @@ class Server
         $fields = array();
 
         // our SQL query
-        $query = sprintf(
+        $sqlQuery = sprintf(
             // Query
             "SHOW columns from `%s`;",
 
@@ -3979,7 +3979,7 @@ class Server
         );
 
         // Run query.
-        $rawFields = $this->db->query($query)->fetchAll();
+        $rawFields = $this->db->query($sqlQuery)->fetchAll();
 
         // Walk trough the values
         for ($i = 0; $i < sizeof($rawFields); $i++) {
