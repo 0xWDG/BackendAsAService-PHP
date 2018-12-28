@@ -889,6 +889,7 @@ open class BaaS {
         return task
     }
     
+    @discardableResult
     public func fileDelete(withFileID fileID: String) -> Any {
         let dbURL = "\(serverAddress)/file.delete/\(fileID)"
         let task = self.networkRequest(

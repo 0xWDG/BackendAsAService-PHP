@@ -1788,7 +1788,7 @@ class Server
         // Ask
         $sSql = sprintf(
             // Select the file ID
-            "SELECT `id` FROM `%s` WHERE `id`='%s' LIMIT 1;",
+            "SELECT `id` FROM `%s` WHERE `filename`='%s' LIMIT 1;",
 
             // from the default table
             $this->defaultTables['files'],
@@ -2436,6 +2436,38 @@ class Server
 
                     // Possible-How-To-Fix
                     "Fix" => "Provide table name",
+                )
+            );
+        }
+
+        if (!$this->tableExists($tables[0])) {
+            return json_encode(
+                // Array
+                array(
+                    // Status
+                    "Status" => "Failed",
+
+                    // Warning
+                    "Warning" => "Table does not exists",
+
+                    // Possible-How-To-Fix
+                    "Fix" => "Provide table name",
+                )
+            );
+        }
+
+        if ($this->tableExists($tables[1])) {
+            return json_encode(
+                // Array
+                array(
+                    // Status
+                    "Status" => "Failed",
+
+                    // Warning
+                    "Warning" => "New table name does already exists",
+
+                    // Possible-How-To-Fix
+                    "Fix" => "Provide new table name",
                 )
             );
         }
