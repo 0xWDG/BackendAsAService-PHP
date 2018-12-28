@@ -9,6 +9,25 @@
 import Foundation
 import Compression
 
+/**
+ * **B**ackend **a**s **a** **S**ervice (_BaaS_)
+ *
+ * This class is used for the BaaS Server Interface.
+ *
+ * .
+ *
+ * **Simple usage**
+ *
+ *      class myClass: UIViewController, BaaSDelegate {
+ *          let db = BaaS.shared
+ *
+ *          override func viewDidLoad() {
+ *              db.delegate = self
+ *              db.set(apiKey: "YOURAPIKEY")
+ *              db.set(server: "https://yourserver.tld/BaaS")
+ *          }
+ *      }
+ */
 extension BaaS {
     /**
      *

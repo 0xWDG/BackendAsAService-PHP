@@ -9,7 +9,9 @@
 import Foundation
 
 /**
+ * **B**ackend **a**s **a** **S**ervice (_BaaS_)
  *
+ * This protocol is used for the BaaS Server Interface.
  */
 public protocol BaaSDelegate: class {
     /**
