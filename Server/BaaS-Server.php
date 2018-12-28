@@ -1786,7 +1786,7 @@ class Server
         }
 
         // Ask
-        $sSql = sprintf(
+        $sqlQuery = sprintf(
             // Select the file ID
             "SELECT `id` FROM `%s` WHERE `filename`='%s' LIMIT 1;",
 
@@ -1798,7 +1798,7 @@ class Server
         );
 
         // Count if we have found the file.
-        $fileFound = ($this->db->query($sSql)->rowCount() > 0);
+        $fileFound = ($this->db->query($sqlQuery)->rowCount() > 0);
 
         // Return to client
         return json_encode(
@@ -1870,7 +1870,7 @@ class Server
     private function userDatabaseSetup()
     {
         // The creation SQL
-        $sSql = sprintf(
+        $sqlQuery = sprintf(
             // String for appending
             '%s%s%s%s%s%s%s%s%s%s%s%s',
 
@@ -1914,7 +1914,7 @@ class Server
             ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;"
         );
 
-        $this->db->query($sSql);
+        $this->db->query($sqlQuery);
     }
 
     /**
@@ -1926,7 +1926,7 @@ class Server
     private function fileDatabaseSetup()
     {
         // The creation SQL
-        $sSql = sprintf(
+        $sqlQuery = sprintf(
             // String for appending
             '%s%s%s%s%s%s%s',
 
@@ -1955,7 +1955,7 @@ class Server
             ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;"
         );
 
-        $this->db->query($sSql);
+        $this->db->query($sqlQuery);
     }
 
     /**
@@ -2024,7 +2024,7 @@ class Server
     {
         // table.create
         // Create the SQL Command
-        $sSql = sprintf(
+        $sqlQuery = sprintf(
             // Create table.
             "CREATE TABLE `%s` (\n",
 
@@ -2046,19 +2046,19 @@ class Server
 
         // Append default fields.
         // id (auto incrementing)
-        $sSql .= sprintf(
+        $sqlQuery .= sprintf(
             // Required default field
             "\t`id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n"
         );
 
         // latitude
-        $sSql .= sprintf(
+        $sqlQuery .= sprintf(
             // Required default field
             "\t`latitude` text DEFAULT NULL,\n"
         );
 
         // longitude
-        $sSql .= sprintf(
+        $sqlQuery .= sprintf(
             // Required default field
             "\t`longitude` text DEFAULT NULL,\n"
         );
@@ -2131,7 +2131,7 @@ class Server
             // Check if a field is not in the of pre-reserved fields.
             if (!in_array($field['name'], $this->defaultFields)) {
                 // Append to SQL Command
-                $sSql .= sprintf(
+                $sqlQuery .= sprintf(
                     // `fieldname` fieldtype canbeempty value/null
                     "\t`%s` %s %s %s,\n",
 
@@ -2205,19 +2205,19 @@ class Server
         }
 
         // set the primary key.
-        $sSql .= sprintf(
+        $sqlQuery .= sprintf(
             // Required default field
             "\tPRIMARY KEY (`id`)\n"
         );
 
         // End the create query.
-        $sSql .= sprintf(
+        $sqlQuery .= sprintf(
             // Required default engine
             ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;"
         );
 
         // Exit with the sql command.
-        if ($this->query($sSql)) {
+        if ($this->query($sqlQuery)) {
             // Return we'll did it
             return json_encode(
                 // Array.
@@ -2250,7 +2250,7 @@ class Server
                     $this->debugmode
 
                     // It's on so return SQL Query.
-                     ? $sSql
+                     ? $sqlQuery
 
                     // Debugmode disabled
                      : 'Debugmode disabled'
@@ -2286,7 +2286,7 @@ class Server
             );
         }
 
-        $sSql = sprintf(
+        $sqlQuery = sprintf(
             // Create table.
             "TRUNCATE TABLE `%s`;\n",
 
@@ -2307,7 +2307,7 @@ class Server
         );
 
         // Exit with the sql command.
-        if ($this->query($sSql)) {
+        if ($this->query($sqlQuery)) {
             // Return we'll did it
             return json_encode(
                 // Array.
@@ -2340,7 +2340,7 @@ class Server
                     $this->debugmode
 
                     // It's on so return SQL Query.
-                     ? $sSql
+                     ? $sqlQuery
 
                     // Debugmode disabled
                      : 'Debugmode disabled'
@@ -2377,7 +2377,7 @@ class Server
         }
 
         // SQL Command
-        $sSql = sprintf(
+        $sqlQuery = sprintf(
             // Create table.
             "DROP TABLE `%s`;\n",
 
@@ -2398,7 +2398,7 @@ class Server
         );
 
         // Exit with the sql command.
-        if ($this->query($sSql)) {
+        if ($this->query($sqlQuery)) {
             // Return we'll did it
             return json_encode(
                 // Array.
@@ -2431,7 +2431,7 @@ class Server
                     $this->debugmode
 
                     // It's on so return SQL Query.
-                     ? $sSql
+                     ? $sqlQuery
 
                     // Debugmode disabled
                      : 'Debugmode disabled'
@@ -2509,7 +2509,7 @@ class Server
         }
 
         // SQL Command
-        $sSql = sprintf(
+        $sqlQuery = sprintf(
             // Create table.
             "RENAME TABLE `%s` TO `%s`;\n",
 
@@ -2545,7 +2545,7 @@ class Server
         );
 
         // Exit with the sql command.
-        if ($this->query($sSql)) {
+        if ($this->query($sqlQuery)) {
             // Return we'll did it
             return json_encode(
                 // Array.
@@ -2578,7 +2578,7 @@ class Server
                     $this->debugmode
 
                     // It's on so return SQL Query.
-                     ? $sSql
+                     ? $sqlQuery
 
                     // Debugmode disabled
                      : 'Debugmode disabled'
