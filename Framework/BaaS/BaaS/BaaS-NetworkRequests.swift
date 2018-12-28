@@ -16,6 +16,15 @@ import Security
 import CommonCrypto
 
 extension BaaS {
+    /**
+     * networkRequest
+     *
+     * Start a network request
+     *
+     * - parameter url: The url to be parsed
+     * - parameter posting: What do you need to post
+     * - returns: the data we've got from the server
+     */
     public func networkRequest(
         _ url: String,
         _ posting: Dictionary<String, Any>? = ["nothing": "send"]
@@ -28,6 +37,7 @@ extension BaaS {
         // Create a new post dict, for the JSON String
         var newPosting: Dictionary<String, String>?
         
+        // Try
         do {
             // Create JSON
             let JSON = try JSONSerialization.data(
@@ -36,75 +46,108 @@ extension BaaS {
             )
             
             // set NewPosting
-            newPosting = [
-                "JSON": String.init(
-                    data: JSON,
-                    encoding: .utf8
-                    )!
-            ]
+            newPosting = ["JSON": String.init(data: JSON,encoding: .utf8)!]
         }
-            
+        
+        // Catch errors
         catch let error as NSError {
             return "Error: \(error.localizedDescription)".data(using: String.Encoding.utf8)!
         }
         
-        // Create a NSError.
-        var error: NSError?
+        // We are waiting for data
+        var waiting: Bool = true
         
-        if (String(describing: error) == "fuckswifterrors") {
-            error = NSError(domain: "this", code: 89, userInfo: ["n":"o","n":"e"])
-        }
+        // Setup a fake, empty data
+        var data: Data? = "" . data(using: .utf8)
         
-        var waiting = true
-        var data = "".data(using: .utf8)
+        // Setup a reuseable noData dataset
+        let noData: Data = "" . data(using: .utf8)!
+        
+        // Create a URL Request
         var request = URLRequest(url: myURL)
+        
+        // With method POST
         request.httpMethod = "POST"
+        
+        // And custom Content-Type
         request.setValue(
             "application/x-www-form-urlencoded",
             forHTTPHeaderField: "Content-Type"
         )
         
-        var httpBody = ""
+        // Create a empty httpBody
+        var httpPostBody = ""
+        
+        // Index = 0
         var idx = 0
-        for (key, val) in newPosting! {
-            let before = (idx == 0) ? "" : "&"
+        
+        // Check if we can unwrap the post fields.
+        guard let postFields = newPosting else {
+            return noData
+        }
+        
+        // Walk trough the post Fields
+        for (key, val) in postFields {
+            // Check if we need to preAppend
+            let preAppend = (idx == 0) ? "" : "&"
+            
+            // Encode the value
             let encodedValue = val.addingPercentEncoding(
                 withAllowedCharacters: .urlHostAllowed
                 )!
             
-            httpBody.append(
-                contentsOf: "\(before)\(key)=\(encodedValue)"
+            // Append to httpPostBody
+            httpPostBody.append(
+                contentsOf: "\(preAppend)\(key)=\(encodedValue)"
             )
             
+            // Increase our index
             idx += 1
         }
         
-        self.log(httpBody)
-        request.httpBody = httpBody.data(using: .utf8)
+        // Log, if we are in debugmode.
+        self.log(httpPostBody)
         
+        // Set the httpBody
+        request.httpBody = httpPostBody.data(using: .utf8)
+        
+        // Create a pinned URLSession
         var session = URLSession.init(
+            // With default configuration
             configuration: .ephemeral,
+            
+            // With our pinning delegate
             delegate: URLSessionPinningDelegate(),
+            
+            // with no queue
             delegateQueue: nil
         )
         
+        // Check if we have a public key, or certificate hash.
         if (self.publicKeyHash.count == 0 || self.certificateHash.count == 0) {
-                log(
-                    "[WARNING] No Public key pinning/Certificate pinning\n" +
-                    "           Improve your security to enable this!\n"
-                )
+            // Show a error, only on debug builds
+            log(
+                "[WARNING] No Public key pinning/Certificate pinning\n" +
+                "           Improve your security to enable this!\n"
+            )
+            // Use a non-pinned URLSession
             session = URLSession.shared
         }
         
+        // Start our datatask
         session.dataTask(with: request) { (sitedata, response, error) in
-            if let sitedata = sitedata {
-                data = sitedata
-                waiting = false
-            } else {
+            // Check if we got any useable site data
+            guard let sitedata = sitedata else {
                 data = "Error" . data(using: .utf8)
                 waiting = false
+                return
             }
             
+            // save the sitedata
+            data = sitedata
+            
+            // stop waiting
+            waiting = false
             }.resume()
         
         // Dirty way to create a blocking function.
@@ -162,7 +205,7 @@ class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
                 let status = SecTrustEvaluate(serverTrust, &secresult)
                 
                 if(errSecSuccess == status) {
-//                    print(SecTrustGetCertificateCount(serverTrust))
+                    // print(SecTrustGetCertificateCount(serverTrust))
                     if let serverCertificate = SecTrustGetCertificateAtIndex(serverTrust, 0) {
                         
                         if (pinnedCertificateHash.count > 2) {
@@ -170,11 +213,11 @@ class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
                             let serverCertificateData: NSData = SecCertificateCopyData(
                                 serverCertificate
                             )
-
+                            
                             let certHash = sha256(
                                 data: serverCertificateData as Data
                             )
-
+                            
                             if (certHash == pinnedCertificateHash) {
                                 // Success! This is our server
                                 completionHandler(
@@ -192,16 +235,16 @@ class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
                             let serverPublicKey = SecCertificateCopyKey(
                                 serverCertificate
                             )
-
+                            
                             let serverPublicKeyData: NSData = SecKeyCopyExternalRepresentation(
                                 serverPublicKey!,
                                 nil
-                            )!
-
+                                )!
+                            
                             let keyHash = sha256(
                                 data: serverPublicKeyData as Data
                             )
-
+                            
                             if (keyHash == pinnedPublicKeyHash) {
                                 // Success! This is our server
                                 completionHandler(
