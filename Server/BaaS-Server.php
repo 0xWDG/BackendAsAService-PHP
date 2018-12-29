@@ -578,7 +578,7 @@ class Server
         //   CREATE TABLE X ()
         preg_match_all(
             // Regular expression
-            "/(FROM|INTO|FROM|TABLE) (`)?([a-zA-Z0-9]+)(`)?/i",
+            "/(FROM|INTO|FROM|TABLE) (`)?([a-zA-Z0-9\_\-]+)(`)?/i",
 
             // Matches the Query?
             $sqlQuery,
@@ -1748,14 +1748,20 @@ class Server
      *
      * @since 1.0
      * @param string $fileID File identifier
+     * @param boolean $asBoolean Return as Boolean?
      * @return string JSON Data.
      */
-    private function fileExists($fileID)
+    private function fileExists($fileID, $asBoolean = false)
     {
         // Check if file database exists
         if (!$this->tableExists($this->defaultTables['files'])) {
             // No, Setup.
             $this->fileDatabaseSetup();
+
+            // Do we need to return a boolean?
+            if ($asBoolean) {
+                return false;
+            }
 
             // File not found.
             return json_encode(
@@ -1800,6 +1806,11 @@ class Server
         // Count if we have found the file.
         $fileFound = ($this->db->query($sqlQuery)->rowCount() > 0);
 
+        // Do we need to return a boolean?
+        if ($asBoolean) {
+            return $fileFound;
+        }
+
         // Return to client
         return json_encode(
             // as array
@@ -1822,8 +1833,37 @@ class Server
      */
     private function fileDownload($fileID)
     {
+        // Check if file database exists
         if (!$this->tableExists($this->defaultTables['files'])) {
+            // No, Setup.
             $this->fileDatabaseSetup();
+
+            // File not found.
+            return json_encode(
+                // as array
+                array(
+                    // Set status
+                    "Status" => "Failed",
+
+                    // File
+                    "File" => "Not found",
+
+                    // Database didn't exists
+                    "Warning" => "Database didn't exists",
+
+                    // Does it exists now?
+                    "Database" => (
+                        // Check if exists
+                        $this->tableExists($this->defaultTables['files'])
+
+                        // Yes
+                         ? "Exists"
+
+                        // No
+                         : "Does not exists!"
+                    ),
+                )
+            );
         }
 
         return $this->invalidRequest();
@@ -1838,11 +1878,80 @@ class Server
      */
     private function fileRemove($fileID)
     {
+        // Check if file database exists
         if (!$this->tableExists($this->defaultTables['files'])) {
+            // No, Setup.
             $this->fileDatabaseSetup();
+
+            // File not found.
+            return json_encode(
+                // as array
+                array(
+                    // Set status
+                    "Status" => "Failed",
+
+                    // File
+                    "File" => "Not found",
+
+                    // Database didn't exists
+                    "Warning" => "Database didn't exists",
+
+                    // Does it exists now?
+                    "Database" => (
+                        // Check if exists
+                        $this->tableExists($this->defaultTables['files'])
+
+                        // Yes
+                         ? "Exists"
+
+                        // No
+                         : "Does not exists!"
+                    ),
+                )
+            );
         }
 
-        return $this->invalidRequest();
+        if ($this->fileExists($fileID, true)) {
+            // Ask
+            $sqlQuery = sprintf(
+                // Select the file ID
+                "DELETE FROM `%s` WHERE `filename`=:filename LIMIT 1;",
+
+                // from the default table
+                $this->defaultTables['files']
+            );
+
+            $sqlParameters = array(
+                "filename" => $this->escapeString($fileID),
+            );
+
+            // Count if we have found the file.
+            $fileFound = $this->queryWithParameters($sqlQuery, $sqlParameters);
+
+            // Return to client
+            return json_encode(
+                // as array
+                array(
+                    // Send status
+                    "Status" => "Ok",
+
+                    // Send file status
+                    "File" => $fileFound ? "Removed" : "Not Removed",
+                )
+            );
+        }
+
+        // Return to client
+        return json_encode(
+            // as array
+            array(
+                // Send status
+                "Status" => "Ok",
+
+                // Send file status
+                "File" => "Not Found",
+            )
+        );
     }
 
     /**
@@ -1854,13 +1963,253 @@ class Server
      */
     private function fileUpload($fileID)
     {
+        // Check if file database exists
         if (!$this->tableExists($this->defaultTables['files'])) {
+            // No, Setup.
             $this->fileDatabaseSetup();
+
+            // File not found.
+            return json_encode(
+                // as array
+                array(
+                    // Set status
+                    "Status" => "Failed",
+
+                    // File
+                    "File" => "Not found",
+
+                    // Database didn't exists
+                    "Warning" => "Database didn't exists",
+
+                    // Does it exists now?
+                    "Database" => (
+                        // Check if exists
+                        $this->tableExists($this->defaultTables['files'])
+
+                        // Yes
+                         ? "Exists"
+
+                        // No
+                         : "Does not exists!"
+                    ),
+                )
+            );
+        }
+
+        // Check if they posted a JSON
+        if (isset($_POST['JSON'])) {
+            // Can we decode it?
+            $jsonData = json_decode($_POST['JSON'], true);
+
+            // Sucesfully decoded?
+            if (is_array($jsonData)) {
+                // Check if the filename does not exists.
+                if ($this->fileExists($fileID, true)) {
+                    // Extract extension
+                    $fileExtension = explode('.', $fileID);
+
+                    // Do we have a extension?
+                    if (sizeof($fileExtension) > 1) {
+                        // Save extension for later use
+                        $fileExtension = $fileExtension[sizeof($fileExtension) - 1];
+                    } else {
+                        // No extension
+                        $fileExtension = '';
+                    }
+
+                    // New file name xxxxxx.extension
+                    $fileID = sprintf(
+                        // xxxx.extension
+                        "%s%s%s",
+
+                        // xxxx
+                        md5(uniqid()),
+
+                        // . or not?
+                        (!empty($fileExtension) ? '.' : ''),
+
+                        // Extension
+                        (!empty($fileExtension) ? $fileExtension : '')
+                    );
+                }
+
+                // Ok, do we have a file?!
+                if (isset($jsonData['file'])) {
+                    // And do we have a extension?
+                    if (empty($fileExtension)) {
+                        // Can we regonize this file?
+                        if (!$fileExtension = $this->checkFileExtension($jsonData['file'])) {
+                            // Nope, no extension...
+                            $fileExtension = '';
+                        }
+                    }
+
+                    // Yup we can upload.
+                    if (!empty($jsonData['file'])) {
+                        // Its base64 encoded.
+                        $sqlQuery = sprintf(
+                            // INSERT INTO `tableName` (...) VALUES (...)
+                            "%s%s%s",
+
+                            // Insert into
+                            "INSERT INTO `",
+
+                            // File table
+                            $this->defaultTables['files'],
+
+                            // With columns and values
+                            "` (`filename`, `filedata`) VALUES (:fileName, :fileData);"
+                        );
+
+                        // Save parameters
+                        $sqlParameters = array(
+                            // File name
+                            'fileName' => $fileID,
+
+                            // File data (base64_encode(gzcompress(..., 5)))
+                            'fileData' => $jsonData['file'],
+                        );
+
+                        // Run the query!
+                        $fileQuery = $this->queryWithParameters(
+                            // SQL Query
+                            $sqlQuery,
+
+                            // SQL Parameters
+                            $sqlParameters
+                        );
+
+                        // Append the filename (in case it has changed)
+                        $fileQuery->fileName = $fileID;
+
+                        // Return the status.
+                        return json_encode($fileQuery);
+                    } else {
+                        // Return error
+                        return json_encode(
+                            // As array
+                            array(
+                                // Send status
+                                "Status" => "Failed",
+
+                                // Send warning
+                                "Warning" => "The file seems empty",
+
+                                // How-to-fix
+                                "fix" => "Send a file",
+                            )
+                        );
+                    }
+                } else {
+                    // Return error
+                    return json_encode(
+                        // As array
+                        array(
+                            // Send status
+                            "Status" => "Failed",
+
+                            // Send warning
+                            "Warning" => "No file sended",
+
+                            // How-to-fix
+                            "fix" => "Send a file",
+                        )
+                    );
+                }
+            }
         }
 
         return $this->invalidRequest();
     }
 
+    private function checkFileExtension($fileData)
+    {
+        if ($extractedFileData = base64_decode($fileData)) {
+            if ($extractedFileData = @gzuncompress($extractedFileData)) {
+
+                if (function_exists('exif_imagetype')) {
+                    switch (@exif_imagetype($extractedFileData)) {
+                        case IMAGETYPE_GIF:
+                            return 'gif';
+                            break;
+                        case IMAGETYPE_JPEG:
+                            return 'jpg';
+                            break;
+
+                        case IMAGETYPE_PNG:
+                            return 'png';
+                            break;
+
+                        case IMAGETYPE_SWF:
+                            return 'swf';
+                            break;
+
+                        case IMAGETYPE_PSD:
+                            return 'psd';
+                            break;
+
+                        case IMAGETYPE_BMP:
+                            return 'bmp';
+                            break;
+
+                        case IMAGETYPE_TIFF_II:
+                        case IMAGETYPE_TIFF_MM:
+                            return 'tiff';
+                            break;
+
+                        case IMAGETYPE_JPC:
+                            return 'jpc';
+                            break;
+
+                        case IMAGETYPE_JP2:
+                            return 'jp2';
+                            break;
+
+                        case IMAGETYPE_JPX:
+                            return 'jpx';
+                            break;
+
+                        case IMAGETYPE_JB2:
+                            return 'jb2';
+                            break;
+
+                        case IMAGETYPE_SWC:
+                            return 'swc';
+                            break;
+
+                        case IMAGETYPE_IFF:
+                            return 'iff';
+                            break;
+
+                        case IMAGETYPE_WBMP:
+                            return 'wemb';
+                            break;
+
+                        case IMAGETYPE_XBM:
+                            return 'xbm';
+                            break;
+
+                        case IMAGETYPE_ICO:
+                            return 'ico';
+                            break;
+
+                        case IMAGETYPE_WEBP:
+                            return 'webp';
+                            break;
+                    }
+                } else {
+                    if (bin2hex($pict[0]) == 'ff' && bin2hex($pict[1]) == 'd8') {
+                        return 'jpg';
+                    }
+                    if (bin2hex($pict[0]) == '89' && $pict[1] == 'P' && $pict[2] == 'N' && $pict[3] == 'G') {
+                        return 'png';
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
     /**
      * Setup user database
      *
@@ -1943,7 +2292,7 @@ class Server
             "\t`filename` text DEFAULT NULL,\n",
 
             // longitude
-            "\t`filedata` text DEFAULT NULL,\n",
+            "\t`filedata` longtext DEFAULT NULL,\n",
 
             // username
             "\t`username` text DEFAULT NULL,\n",
@@ -3420,6 +3769,17 @@ class Server
 
                 // Send request uri
                 "ReqURI" => $_SERVER['REQUEST_URI'],
+
+                // Debug
+                "Debug" => (
+                    $this->debugmode
+                    ? array(
+                        "Query" => $query,
+                        "Parameters" => $parameters,
+                        "Extracted table from Query" => $table,
+                    )
+                    : "Debugmode disabled"
+                ),
             );
         }
 
@@ -3511,7 +3871,7 @@ class Server
                     "Status" => "Ok",
 
                     // :)
-                    "Executed" => $query,
+                    "Executed" => ($this->debugmode ? $query : true),
 
                     // RowID
                     "RowID" => $this->db->lastInsertId(),
@@ -3623,13 +3983,36 @@ class Server
             );
         }
 
+        if (
+            // Are we 'select'-ing
+            preg_match(
+                // match 'select'
+                "/select/",
+
+                // String to lowercase
+                strtolower(
+                    // the SQL Query
+                    $query
+                )
+            )
+        ) {
+            // Failed, or no data found.
+            return (object) array(
+                // Status failed
+                "Status" => "Failed",
+
+                // Warning
+                "Warning" => "Failed to execute query",
+            );
+        }
+
         // Failed, or no data found.
         return (object) array(
             // Status failed
-            "Status" => "Failed",
+            "Status" => "Ok",
 
             // Warning
-            "Warning" => "Failed to execute query",
+            "Warning" => "Executed query",
         );
     }
 
