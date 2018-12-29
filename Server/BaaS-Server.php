@@ -1866,6 +1866,40 @@ class Server
             );
         }
 
+        // Check if the file exists
+        if ($this->fileExists($fileID)) {
+            // Create the query to get the file.
+            $sqlQuery = sprintf(
+                // SELECT
+                "SELECT * FROM `%s` WHERE `%s`=%s LIMIT 1;",
+
+                // Tablename
+                $this->defaultTables['files'],
+
+                // filename
+                'filename',
+
+                // :filename
+                ':filename'
+            );
+
+            // Run query with parameters
+            $databaseValues = $this->queryWithParameters(
+                // the sql query
+                $sqlQuery,
+
+                // the parameters
+                array(
+                    // filename, escaped
+                    'filename' => $this->escapeString($fileID),
+                )
+            );
+
+            // json encode the returning data
+            return json_encode($databaseValues);
+        }
+
+        // Invalid request.
         return $this->invalidRequest();
     }
 
@@ -3863,7 +3897,7 @@ class Server
                 )
             ) {
                 // Return the data
-                $fechedData = @$stmt->fetchAll();
+                $fetchedData = @$stmt->fetchAll();
             } else {
                 // Return the Object.
                 return (object) array(
@@ -3886,18 +3920,32 @@ class Server
          * data check, If less then 1
          * then skip.
          */
-        if (sizeof($fechedData) > 1) {
+        if (sizeof($fetchedData) > 1) {
             /**
              * We've got values
              */
-            // Return the array
-            return (object) array(
-                // Send Status
-                "Status" => "Ok",
 
-                // Return values
-                "Data" => $fechedData,
-            );
+            // Remove numeric fields
+            foreach ($fetchedData as $key => $value) {
+                // Check if the key is numeric
+                if (is_numeric($key)) {
+                    // Unset, we don't need it
+                    // Unset, we don't need it
+                    unset($fetchedData[$key]);
+                }
+            }
+
+            // Set status to ok
+            $fetchedData['Status'] = 'Ok';
+
+            // Return query if in debugmode
+            $fetchedData['Query'] = ($this->debugmode) ? $query : 'hidden';
+
+            // Return parameters if in debugmode
+            $fetchedData['Parameters'] = ($this->debugmode) ? $parameters : 'hidden';
+
+            // Return the array
+            return (object) $fetchedData;
         }
 
         /**
@@ -3969,18 +4017,30 @@ class Server
          * @var [string]
          */
         // Fetch data
-        $fechedData = $new->fetch(\PDO::FETCH_BOTH);
+        $fetchedData = $new->fetch(\PDO::FETCH_BOTH);
 
         // If size is more then 0
-        if (sizeof($fechedData) > 1) {
-            // Objectify
-            return (object) array(
-                // Send Status
-                "Status" => "Ok",
+        if (sizeof($fetchedData) > 1) {
+            // Remove numeric fields
+            foreach ($fetchedData as $key => $value) {
+                // Check if the key is numeric
+                if (is_numeric($key)) {
+                    // Unset, we don't need it
+                    unset($fetchedData[$key]);
+                }
+            }
 
-                // Return values
-                "Data" => $fechedData,
-            );
+            // Set status to ok
+            $fetchedData['Status'] = 'Ok';
+
+            // Return query if in debugmode
+            $fetchedData['Query'] = ($this->debugmode) ? $query : 'hidden';
+
+            // Return parameters if in debugmode
+            $fetchedData['Parameters'] = ($this->debugmode) ? $parameters : 'hidden';
+
+            // Objectify
+            return (object) $fetchedData;
         }
 
         if (
