@@ -1723,6 +1723,9 @@ class Server
         if (!$this->tableExists($this->defaultTables['users'])) {
             $this->userDatabaseSetup();
         }
+        if ($this->userExists($userID)) {
+
+        }
 
         return $this->invalidRequest();
     }
