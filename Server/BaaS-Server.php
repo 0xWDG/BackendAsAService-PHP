@@ -2650,7 +2650,11 @@ class Server
                          ? "DEFAULT"
 
                         // Can not be empty
-                         : "NOT"
+                         : (
+                            !empty($field['defaultValue'])
+                            ? ''
+                            : "NOT"
+                        )
                     ),
 
                     // Can the field be empty?
@@ -2659,7 +2663,7 @@ class Server
                         $field['canBeEmpty'] == 'no'
 
                         // Nope, so ignore.
-                         ? ''
+                         ? 'NULL'
 
                         // Yes, do the math.
                          : (
@@ -2667,14 +2671,41 @@ class Server
                             !empty($field['defaultValue'])
 
                             // Nope, not empty
-                             ? sprintf(
-                                // '...'
-                                "'%s'",
+                             ? (
+                                // Needs number, and is the value numeric?
+                                $field['type'] == 'number' && is_numeric($field['defaultValue'])
 
-                                // Escape the default Value
-                                $this->escapeString(
-                                    // Get the default value
-                                    $field['defaultValue']
+                                // The value is numeric!
+                                 ? sprintf(
+                                    // ...
+                                    "%s",
+
+                                    // Escape the default Value
+                                    $this->escapeString(
+                                        // Get the default value
+                                        $field['defaultValue']
+                                    )
+                                )
+
+                                // No number when needed, so
+                                 : (
+                                    // Needs number, and is the value numeric?
+                                    $field['type'] == 'number' && !is_numeric($field['defaultValue'])
+
+                                    // Nope so return 0
+                                     ? "0"
+
+                                    // Return the value (string)
+                                     : sprintf(
+                                        // '...'
+                                        "'%s'",
+
+                                        // Escape the default Value
+                                        $this->escapeString(
+                                            // Get the default value
+                                            $field['defaultValue']
+                                        )
+                                    )
                                 )
                             )
 
@@ -2769,7 +2800,7 @@ class Server
         }
 
         $sqlQuery = sprintf(
-            // Create table.
+            // truncate table.
             "TRUNCATE TABLE `%s`;\n",
 
             // Escape the database
@@ -2992,7 +3023,7 @@ class Server
 
         // SQL Command
         $sqlQuery = sprintf(
-            // Create table.
+            // Rename table.
             "RENAME TABLE `%s` TO `%s`;\n",
 
             // Escape the tables
@@ -4774,7 +4805,7 @@ class Server
      * @since 1.0
      * @param int $code HTTP Status Code
      */
-    protected function setHTTPStatusCode($code = 200)
+    protected function setHTTPStatusCode($code = 200, $returnAsText = false)
     {
         // Set http code.
         switch ($code) {
@@ -4935,6 +4966,10 @@ class Server
                 break;
         }
 
+        if ($returnAsText) {
+            return $text;
+        }
+
         // set response code
         if (function_exists('http_response_code')) {
             // set response code
@@ -5081,7 +5116,20 @@ class Server
                             'protocol' => $this->protocol,
 
                             // What are the default http status/error codes?
-                            'errorCode' => $this->errorCode,
+                            'errorCode' => array(
+                                "blocked" => array(
+                                    "code" => $this->errorCode['blocked'],
+                                    "message" => $this->setHTTPStatusCode($this->errorCode['blocked'], true),
+                                ),
+                                "invalidRequest" => array(
+                                    "code" => $this->errorCode['invalidRequest'],
+                                    "message" => $this->setHTTPStatusCode($this->errorCode['invalidRequest'], true),
+                                ),
+                                "ok" => array(
+                                    "code" => $this->errorCode['ok'],
+                                    "message" => $this->setHTTPStatusCode($this->errorCode['ok'], true),
+                                ),
+                            ),
 
                             // What defaults field are you using in your database?
                             'defaultFields' => $this->defaultFields,
