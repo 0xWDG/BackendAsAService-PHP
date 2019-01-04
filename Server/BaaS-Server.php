@@ -34,7 +34,7 @@ class Server
      * @since 1.0
      * @var string $build BaaS build number
      */
-    private $build = "20181228";
+    private $build = "20181231";
 
     /**
      * Set API Version
@@ -2071,18 +2071,18 @@ class Server
                 }
 
                 // Ok, do we have a file?!
-                if (isset($jsonData['file'])) {
+                if (isset($jsonData['fileData'])) {
                     // And do we have a extension?
                     if (empty($fileExtension)) {
                         // Can we regonize this file?
-                        if (!$fileExtension = $this->checkFileExtension($jsonData['file'])) {
+                        if (!$fileExtension = $this->checkFileExtension($jsonData['fileData'])) {
                             // Nope, no extension...
                             $fileExtension = '';
                         }
                     }
 
                     // Yup we can upload.
-                    if (!empty($jsonData['file'])) {
+                    if (!empty($jsonData['fileData'])) {
                         // Its base64 encoded.
                         $sqlQuery = sprintf(
                             // INSERT INTO `tableName` (...) VALUES (...)
@@ -2104,7 +2104,7 @@ class Server
                             'fileName' => $fileID,
 
                             // File data (base64_encode(gzcompress(..., 5)))
-                            'fileData' => $jsonData['file'],
+                            'fileData' => $jsonData['fileData'],
                         );
 
                         // Run the query!

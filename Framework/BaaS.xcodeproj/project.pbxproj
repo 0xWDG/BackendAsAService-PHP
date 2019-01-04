@@ -7,10 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DE0E4EC821DF94F600E9B243 /* BaaS-JSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0E4EC721DF94F600E9B243 /* BaaS-JSONDecoder.swift */; };
 		DEA0328E21A8383200599F48 /* BaaS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA0328421A8383100599F48 /* BaaS.framework */; };
 		DEA0329321A8383200599F48 /* BaaSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0329221A8383200599F48 /* BaaSTests.swift */; };
 		DEA0329521A8383200599F48 /* BaaS.h in Headers */ = {isa = PBXBuildFile; fileRef = DEA0328721A8383100599F48 /* BaaS.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DEA032A821A8387100599F48 /* BaaS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA032A721A8387100599F48 /* BaaS.swift */; };
+		DEA032A821A8387100599F48 /* BaaS-Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA032A721A8387100599F48 /* BaaS-Main.swift */; };
 		DEA032AA21A8389100599F48 /* BaaS-Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA032A921A8389100599F48 /* BaaS-Delegate.swift */; };
 		DEF2ED1121D64ECC00B41BDF /* BaaS-Compression.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF2ED1021D64ECC00B41BDF /* BaaS-Compression.swift */; };
 		DEF2ED1321D6525F00B41BDF /* BaaS-NetworkRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF2ED1221D6525F00B41BDF /* BaaS-NetworkRequests.swift */; };
@@ -56,13 +57,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DE0E4EC721DF94F600E9B243 /* BaaS-JSONDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BaaS-JSONDecoder.swift"; path = "BaaS/BaaS-JSONDecoder.swift"; sourceTree = "<group>"; };
 		DEA0328421A8383100599F48 /* BaaS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BaaS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEA0328721A8383100599F48 /* BaaS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaaS.h; sourceTree = "<group>"; };
 		DEA0328821A8383100599F48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DEA0328D21A8383200599F48 /* BaaSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BaaSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEA0329221A8383200599F48 /* BaaSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaaSTests.swift; sourceTree = "<group>"; };
 		DEA0329421A8383200599F48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DEA032A721A8387100599F48 /* BaaS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BaaS.swift; path = BaaS/BaaS.swift; sourceTree = "<group>"; };
+		DEA032A721A8387100599F48 /* BaaS-Main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BaaS-Main.swift"; path = "BaaS/BaaS-Main.swift"; sourceTree = "<group>"; };
 		DEA032A921A8389100599F48 /* BaaS-Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BaaS-Delegate.swift"; path = "BaaS/BaaS-Delegate.swift"; sourceTree = "<group>"; };
 		DEF2ED1021D64ECC00B41BDF /* BaaS-Compression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BaaS-Compression.swift"; path = "BaaS/BaaS-Compression.swift"; sourceTree = "<group>"; };
 		DEF2ED1221D6525F00B41BDF /* BaaS-NetworkRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BaaS-NetworkRequests.swift"; path = "BaaS/BaaS-NetworkRequests.swift"; sourceTree = "<group>"; };
@@ -114,7 +116,8 @@
 			children = (
 				DEA0328721A8383100599F48 /* BaaS.h */,
 				DEA0328821A8383100599F48 /* Info.plist */,
-				DEA032A721A8387100599F48 /* BaaS.swift */,
+				DEA032A721A8387100599F48 /* BaaS-Main.swift */,
+				DE0E4EC721DF94F600E9B243 /* BaaS-JSONDecoder.swift */,
 				DEF2ED1021D64ECC00B41BDF /* BaaS-Compression.swift */,
 				DEF2ED1221D6525F00B41BDF /* BaaS-NetworkRequests.swift */,
 				DEA032A921A8389100599F48 /* BaaS-Delegate.swift */,
@@ -297,8 +300,9 @@
 			files = (
 				DEF2ED1121D64ECC00B41BDF /* BaaS-Compression.swift in Sources */,
 				DEF2ED1321D6525F00B41BDF /* BaaS-NetworkRequests.swift in Sources */,
-				DEA032A821A8387100599F48 /* BaaS.swift in Sources */,
+				DEA032A821A8387100599F48 /* BaaS-Main.swift in Sources */,
 				DEA032AA21A8389100599F48 /* BaaS-Delegate.swift in Sources */,
+				DE0E4EC821DF94F600E9B243 /* BaaS-JSONDecoder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

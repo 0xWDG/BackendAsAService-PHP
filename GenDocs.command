@@ -45,6 +45,10 @@ git commit -m 'Updated documentation'
 git push
 
 cd ../BackendasaService.github.io
+cd APIDocumentation
+php _generate.php
+cd ..
+
 git add -A .
 git commit -m 'Updated documentation'
 git push

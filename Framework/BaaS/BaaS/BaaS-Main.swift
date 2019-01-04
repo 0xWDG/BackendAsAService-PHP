@@ -9,6 +9,8 @@
 import Foundation
 
 #if os(iOS)
+import UserNotifications
+
 extension UIColor
 {
     public class var BaaS: UIColor
@@ -108,7 +110,7 @@ open class BaaS {
      *
      * BaaS Build number
      */
-    private let build = "20181228"
+    private let build = "20181231"
     
     /**
      * Server's public key hash
@@ -141,15 +143,42 @@ open class BaaS {
         case cmyk = "100,17,0,0"
         case m = "17"
     }
-
+    
     /**
      * Init
      *
      * We're live.
      */
     public init() {
-        // We're live.
-        delegate?.testForReturn(withDataAs: "ABC")
+        #if os(iOS)
+        
+        // Ask every quarter if there are new notifications
+        UIApplication.shared.setMinimumBackgroundFetchInterval(
+            UIApplication.backgroundFetchIntervalMinimum
+        )
+        
+        // Request authorization to send push messages
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { (granted, error) in
+            if !granted {
+                // Acces not granted
+                self.log("Status not granted")
+            } else {
+                // Access granted
+                self.log("Status granted")
+            }
+        }
+        
+        switch(UIApplication.shared.backgroundRefreshStatus) {
+        case .available:
+            self.log("Background refresh available")
+            break;
+        case .restricted:
+            self.log("Background refresh restructed")
+            break;
+        case .denied:
+            self.log("Background refresh disabled for us")
+        }
+        #endif
     }
     
     /**
@@ -176,6 +205,61 @@ open class BaaS {
         }
         
         return true
+    }
+    
+    public func checkForNotificationsInBackground() -> UIBackgroundFetchResult {
+        self.fireNotification(withTitle: "Test for notifications", Description: "Cool!")
+        // Notifications
+        return .newData
+        
+        // No notifications
+        //        return .noData
+    }
+    
+    private func generateRandomString(length: Int) -> String {
+        let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        return String(
+            (0...(length - 1)).map {
+                _ in letters.randomElement()!
+            }
+        )
+    }
+
+    private func fireNotification(withTitle: String, Description: String) {
+        let notificationCenter = UNUserNotificationCenter.current()
+        
+        notificationCenter.getNotificationSettings { (settings) in
+            if settings.authorizationStatus != .authorized {
+                self.log("Not authorized to send notifications")
+                return
+            }
+        }
+        
+        let identifier = self.generateRandomString(length: 10)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let content = UNMutableNotificationContent()
+        content.title = withTitle
+        content.body = Description
+        content.sound = .default
+        
+        let request = UNNotificationRequest(
+            identifier: identifier,
+            content: content,
+            trigger: trigger
+        )
+        
+        notificationCenter.add(request, withCompletionHandler: { (error) in
+            if let error = error {
+                // Something went wrong
+                self.log("Unexpected error \(error)")
+            }
+        })
+    }
+    
+    private func resetNotifications() {
+        let notificationCenter = UNUserNotificationCenter.current()
+        
+        notificationCenter.removeAllPendingNotificationRequests()
     }
     
     /**
@@ -212,7 +296,7 @@ open class BaaS {
     public func set(certificateHash: String) -> Void {
         self.certificateHash = certificateHash
     }
-
+    
     /**
      * Set hash of the server's public key
      *
@@ -223,7 +307,7 @@ open class BaaS {
     public func set(publicKeyHash: String) -> Void {
         self.publicKeyHash = publicKeyHash
     }
-
+    
     /**
      * Get hash of the server's certificate
      *
@@ -234,7 +318,7 @@ open class BaaS {
     public func getCertificateHash() -> String {
         return self.certificateHash
     }
-
+    
     /**
      * Get hash of the server's public key
      *
@@ -245,7 +329,7 @@ open class BaaS {
     public func getPublicKeyHash() -> String {
         return self.publicKeyHash
     }
-
+    
     /**
      * Set server URL
      *
@@ -430,6 +514,13 @@ open class BaaS {
         var Data: String?
         
         /**
+         * BaaS Response: File
+         *
+         * Is the file found?
+         */
+        var File: String?
+        
+        /**
          * BaaS Response: Where
          *
          * This the Where cause where the BaaS Server searched on
@@ -534,6 +625,13 @@ open class BaaS {
             }
             
             do {
+                File = try values.decodeIfPresent(String.self, forKey: .File)
+            }
+            catch {
+                File = "N/A"
+            }
+            
+            do {
                 Where = try values.decodeIfPresent(String.self, forKey: .Where)
             }
             catch {
@@ -584,6 +682,7 @@ open class BaaS {
                     ReqURI == "N/A" &&
                     Table == "N/A" &&
                     Data == "N/A" &&
+                    File == "N/A" &&
                     Where == "N/A" &&
                     Method == "N/A" &&
                     Info == "N/A" &&
@@ -757,7 +856,7 @@ open class BaaS {
      *
      * - parameter values: Which values?
      * - parameter inDatabase: Which database?
-     * - returns: BaaS.BaaS_Response_JSON
+     * - returns: Bool
      */
     public func create(values: [String: String], inDatabase: String) -> Bool {
         let dbURL = "\(serverAddress)/row.create/\(inDatabase)"
@@ -839,13 +938,20 @@ open class BaaS {
         return self.lastRowID
     }
     
+    /**
+     * Upload file
+     *
+     * - parameter data: File data
+     * - parameter saveWithFileID: Preffered file ID
+     * - returns: [Boolean, FileID]
+     */
     public func fileUpload(data fileData: Data, saveWithFileID fileID: String) -> Any {
         let dbURL = "\(serverAddress)/file.upload/\(fileID)"
         
         guard let compressedData = fileData.deflate() else {
             return false
         }
-
+        
         guard let postSafeFileData = String.init(data: compressedData.base64EncodedData(), encoding: .utf8) else {
             return false
         }
@@ -861,6 +967,12 @@ open class BaaS {
         return String.init(data: task, encoding: .utf8)!
     }
     
+    /**
+     * File Exists
+     *
+     * - parameter withFileID: The file identifier
+     * - returns: Boolean
+     */
     public func fileExists(withFileID fileID: String) -> Bool {
         let dbURL = "\(serverAddress)/file.exists/\(fileID)"
         let task = self.networkRequest(
@@ -870,11 +982,9 @@ open class BaaS {
             ]
         )
         
-        // deflate
-
-        //        return String.init(data: task, encoding: .utf8)!
-        return false
+        return BaaS_Response_Decoder(jsonData: task).File == "Found"
     }
+    
     
     public func fileDownload(withFileID fileID: String) -> Data {
         let dbURL = "\(serverAddress)/file.download/\(fileID)"
@@ -885,7 +995,22 @@ open class BaaS {
             ]
         )
         
-        //        return String.init(data: task, encoding: .utf8)!
+        log(String.init(data: task, encoding: .utf8)!)
+        
+        guard let stringData = JSON(task).filedata?.string else {
+            //            return BaaS_Response_Decoder(jsonData: task).Data
+            log("Failed to decode filedata!")
+            return "" . data(using: .utf8)!
+        }
+        
+        let compressedFile = Data(base64Encoded: stringData)
+        
+        if let unCompressedFile = compressedFile?.inflate() {
+            log("returning uncompressed file")
+            return unCompressedFile
+        }
+        
+        log("Something went wrong")
         return task
     }
     
