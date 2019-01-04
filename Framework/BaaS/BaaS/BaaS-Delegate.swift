@@ -15,6 +15,7 @@ import Foundation
  */
 public protocol BaaSDelegate: class {
     /**
+     * testForReturn(withDataAs: String)
      *
      */
     func testForReturn(withDataAs: String)

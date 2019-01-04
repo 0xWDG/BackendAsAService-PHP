@@ -1712,6 +1712,102 @@ class Server
     }
 
     /**
+     * create session
+     *
+     * @since 1.0
+     * @param string $sessionID The session ID
+     * @return string JSON Data.
+     */
+    private function sessionCreate($sessionID)
+    {
+        if (!$this->tableExists($this->defaultTables['users'])) {
+            $this->userDatabaseSetup();
+        }
+
+        return $this->invalidRequest();
+    }
+
+    /**
+     * invalidate session
+     *
+     * @since 1.0
+     * @param string $sessionID The session ID
+     * @return string JSON Data.
+     */
+    private function sessionInvalidate($sessionID)
+    {
+        if (!$this->tableExists($this->defaultTables['users'])) {
+            $this->userDatabaseSetup();
+        }
+
+        return $this->invalidRequest();
+    }
+
+    /**
+     * [Administrator] invalidate all sessions
+     *
+     * @since 1.0
+     * @param string $sessionID The session ID
+     * @return string JSON Data.
+     */
+    private function sessionAdminInvalidateAll($sessionID = 0)
+    {
+        if (!$this->tableExists($this->defaultTables['users'])) {
+            $this->userDatabaseSetup();
+        }
+
+        return $this->invalidRequest();
+    }
+
+    /**
+     * [Administrator] is login enabled?
+     *
+     * @since 1.0
+     * @param string $status The status
+     * @return string JSON Data.
+     */
+    private function userAdminLoginEnabled($status)
+    {
+        if (!$this->tableExists($this->defaultTables['users'])) {
+            $this->userDatabaseSetup();
+        }
+
+        return $this->invalidRequest();
+    }
+
+    /**
+     * [Administrator] is register enabled?
+     *
+     * @since 1.0
+     * @param string $status The status
+     * @return string JSON Data.
+     */
+    private function userAdminRegisterEnabled($status)
+    {
+        if (!$this->tableExists($this->defaultTables['users'])) {
+            $this->userDatabaseSetup();
+        }
+
+        return $this->invalidRequest();
+    }
+
+    /**
+     * [Administrator] set User status
+     *
+     * @since 1.0
+     * @param string $userID The user's id
+     * @return string JSON Data.
+     */
+    private function userAdminStatus($userID)
+    {
+        if (!$this->tableExists($this->defaultTables['users'])) {
+            $this->userDatabaseSetup();
+        }
+
+        return $this->invalidRequest();
+    }
+
+    /**
      * Reset userpassword
      *
      * @since 1.0

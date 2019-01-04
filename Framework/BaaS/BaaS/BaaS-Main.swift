@@ -83,7 +83,7 @@ open class BaaS {
      * Should we debug right now?
      */
     private let debug = _isDebugAssertConfiguration()
-    
+
     /**
      * lastRowID
      *
@@ -534,7 +534,6 @@ open class BaaS {
          */
         var Method: String?
         
-        // MARK: Inserted row
         /**
          * BaaS Response: info
          *
@@ -549,7 +548,6 @@ open class BaaS {
          */
         var RowID: String?
         
-        // MARK: if in debug mode
         /**
          * BaaS Response: Debug
          *
@@ -557,7 +555,6 @@ open class BaaS {
          */
         var Debug: String?
         
-        // MARK: Error at IP-Blocking
         /**
          * BaaS Response: FilePath
          *
@@ -763,7 +760,6 @@ open class BaaS {
      */
     public func database(createWithName: String, withFields: [BaaS_dbField]) -> Bool {
         print(withFields)
-        let dbURL = "\(serverAddress)/table.create/\(createWithName)"
         var data: [[String: String]] = []
         
         for field in withFields {
@@ -777,14 +773,12 @@ open class BaaS {
             )
         }
         
-        let JSON: [String: Any] = [
-            "APIKey": self.apiKey,
-            "Fields": data
-        ]
-        
         let task = self.networkRequest(
-            dbURL,
-            JSON
+            "\(serverAddress)/table.create/\(createWithName)",
+            [
+                "APIKey": self.apiKey,
+                "Fields": data
+            ]
         )
         
         log(String.init(data: task, encoding: .utf8)!)
@@ -799,9 +793,8 @@ open class BaaS {
      * - returns: Boolean
      */
     public func database(existsWithName: String) -> Bool {
-        let dbURL = "\(serverAddress)/table.exists/\(existsWithName)"
         let task = self.networkRequest(
-            dbURL,
+            "\(serverAddress)/table.exists/\(existsWithName)",
             [
                 "APIKey": self.apiKey
             ]
@@ -859,13 +852,13 @@ open class BaaS {
      * - returns: Bool
      */
     public func create(values: [String: String], inDatabase: String) -> Bool {
-        let dbURL = "\(serverAddress)/row.create/\(inDatabase)"
         let task = self.networkRequest(
-            dbURL,
+            "\(serverAddress)/row.create/\(inDatabase)",
             [
                 "APIKey": self.apiKey,
                 "values": values
-            ])
+            ]
+        )
         
         if let integer: Int = Int(BaaS_Response_Decoder(jsonData: task).RowID ?? "0") {
             self.lastRowID = integer
@@ -882,12 +875,11 @@ open class BaaS {
      * - returns: Bool
      */
     public func rename(from: String, to: String) -> Bool {
-        let dbURL = "\(serverAddress)/table.rename/\(from)/\(to)"
         let task = self.networkRequest(
-            dbURL,
+            "\(serverAddress)/table.rename/\(from)/\(to)",
             [
                 "APIKey": self.apiKey,
-                ]
+            ]
         )
         
         return BaaS_Response_Decoder(jsonData: task).Status == "Success"
@@ -900,12 +892,11 @@ open class BaaS {
      * - returns: Bool
      */
     public func empty(table: String) -> Bool {
-        let dbURL = "\(serverAddress)/table.empty/\(table)"
         let task = self.networkRequest(
-            dbURL,
+            "\(serverAddress)/table.empty/\(table)",
             [
                 "APIKey": self.apiKey,
-                ]
+            ]
         )
         
         return BaaS_Response_Decoder(jsonData: task).Status == "Success"
@@ -918,12 +909,11 @@ open class BaaS {
      * - returns: Bool
      */
     public func remove(table: String) -> Bool {
-        let dbURL = "\(serverAddress)/table.remove/\(table)"
         let task = self.networkRequest(
-            dbURL,
+            "\(serverAddress)/table.remove/\(table)",
             [
                 "APIKey": self.apiKey,
-                ]
+            ]
         )
         
         return BaaS_Response_Decoder(jsonData: task).Status == "Success"
@@ -946,8 +936,6 @@ open class BaaS {
      * - returns: [Boolean, FileID]
      */
     public func fileUpload(data fileData: Data, saveWithFileID fileID: String) -> Any {
-        let dbURL = "\(serverAddress)/file.upload/\(fileID)"
-        
         guard let compressedData = fileData.deflate() else {
             return false
         }
@@ -957,7 +945,7 @@ open class BaaS {
         }
         
         let task = self.networkRequest(
-            dbURL,
+            "\(serverAddress)/file.upload/\(fileID)",
             [
                 "APIKey": self.apiKey,
                 "fileData": postSafeFileData
@@ -974,9 +962,8 @@ open class BaaS {
      * - returns: Boolean
      */
     public func fileExists(withFileID fileID: String) -> Bool {
-        let dbURL = "\(serverAddress)/file.exists/\(fileID)"
         let task = self.networkRequest(
-            dbURL,
+            "\(serverAddress)/file.exists/\(fileID)",
             [
                 "APIKey": self.apiKey
             ]
@@ -987,9 +974,8 @@ open class BaaS {
     
     
     public func fileDownload(withFileID fileID: String) -> Data {
-        let dbURL = "\(serverAddress)/file.download/\(fileID)"
         let task = self.networkRequest(
-            dbURL,
+            "\(serverAddress)/file.download/\(fileID)",
             [
                 "APIKey": self.apiKey
             ]
@@ -1016,9 +1002,8 @@ open class BaaS {
     
     @discardableResult
     public func fileDelete(withFileID fileID: String) -> Any {
-        let dbURL = "\(serverAddress)/file.delete/\(fileID)"
         let task = self.networkRequest(
-            dbURL,
+            "\(serverAddress)/file.delete/\(fileID)",
             [
                 "APIKey": self.apiKey
             ]
@@ -1028,9 +1013,8 @@ open class BaaS {
     }
     
     internal func value(where whereStr: [[String]], inDatabase: String) -> Any {
-        let dbURL = "\(serverAddress)/row.get/\(inDatabase)"
         let task = self.networkRequest(
-            dbURL,
+            "\(serverAddress)/row.get/\(inDatabase)",
             [
                 "APIKey": self.apiKey,
                 "where": whereStr
