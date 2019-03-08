@@ -73,9 +73,13 @@ class FirstViewController: UIViewController, BaaSDelegate {
             )
         )
         
-        db.log(
-            db.rename(from: "x", to: "y")
-        )
+//        db.log(
+//            db.rename(from: "x", to: "y")
+//        )
+
+//        db.log(
+//            db.rename(from: "y", to: "x")
+//        )
     }
         
         func testForReturn(withDataAs: String) {

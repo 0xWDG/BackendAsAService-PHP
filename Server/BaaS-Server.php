@@ -55,6 +55,22 @@ class Server
     private $debugmode = false;
 
     /**
+     * email address
+     *
+     * @since 1.0
+     * @var bool $emailAddress set email address
+     */
+    private $emailAddress = "BaaS@wdg.codes";
+
+    /**
+     * BaaS address
+     *
+     * @since 1.0
+     * @var bool $BaaSAddress set email address
+     */
+    private $BaaSAddress = "INIT";
+
+    /**
      * Automatic translation
      *
      * @since 1.0
@@ -696,6 +712,18 @@ class Server
     {
         // Set the debugmode
         $this->debugmode = $status;
+    }
+
+    /**
+     * Set the email address
+     *
+     * @since 1.0
+     * @param bool $emailAddress email address
+     */
+    public function setEmailAddress($emailAddress)
+    {
+        // Set the debugmode
+        $this->emailAddress = $emailAddress;
     }
 
     /**
@@ -1660,6 +1688,7 @@ class Server
             $this->userDatabaseSetup();
         }
 
+        //username, password, email
         return $this->invalidRequest();
     }
 
@@ -1692,6 +1721,8 @@ class Server
             $this->userDatabaseSetup();
         }
 
+        // email (if user did request)
+        // remove if admin
         return $this->invalidRequest();
     }
 
@@ -2505,6 +2536,22 @@ class Server
     private function tableCreate($tableName)
     {
         // table.create
+        if ($this->tableExists($tableName)) {
+            return json_encode(
+                // In Array
+                array(
+                    // Status
+                    "Status" => "Failed",
+
+                    // Warning
+                    "Warning" => "Database already exists.",
+
+                    // Possible-how-to-fix
+                    "Fix" => "N/A",
+                )
+            );
+        }
+
         // Create the SQL Command
         $sqlQuery = sprintf(
             // Create table.
@@ -2997,7 +3044,7 @@ class Server
                     "Status" => "Failed",
 
                     // Warning
-                    "Warning" => "Table does not exists",
+                    "Warning" => "Table \"{$tables[0]}\" does not exists",
 
                     // Possible-How-To-Fix
                     "Fix" => "Provide table name",
@@ -4270,43 +4317,49 @@ class Server
      */
     private function rowCreate($action)
     {
+        print_r($action);
+
         // row.create
         // Check if the table exists
         if (!$this->tableExists($action)) {
             // Return a error, it does not exists.
-            return array(
-                // Send Status
-                "Status" => "Failed",
+            return json_encode(
+                array(
+                    // Send Status
+                    "Status" => "Failed",
 
-                // Table ... does not exists
-                "Error" => sprintf(
                     // Table ... does not exists
-                    "Table \"%s\" does not exists",
+                    "Error" => sprintf(
+                        // Table ... does not exists
+                        "Table \"%s\" does not exists",
 
-                    // Table name
-                    $table
-                ),
+                        // Table name
+                        $table
+                    ),
 
-                // Table
-                "Table" => $table,
+                    // Table
+                    "Table" => $table,
 
-                // Request
-                "ReqURI" => $_SERVER['REQUEST_URI'],
+                    // Request
+                    "ReqURI" => $_SERVER['REQUEST_URI'],
+                )
             );
         }
 
         // Check if we got some data
         if (!isset($_POST['JSON'])) {
             // Return a error
-            return array(
-                // Send Status
-                "Status" => "Failed",
+            return json_encode(
+                array(
+                    // Send Status
+                    "Status" => "Failed",
 
-                // No JSON
-                "Error" => "Please post JSON",
+                    // No JSON
+                    "Error" => "Please post JSON",
 
-                // No JSON
-                "Fix" => "Post JSON",
+                    // No JSON
+                    "Fix" => "Post JSON",
+                )
             );
         }
 
@@ -4324,15 +4377,17 @@ class Server
             sizeof($decodedJSON) < 1
         ) {
             // Could not decode
-            return array(
-                // Send Status
-                "Status" => "Failed",
+            return json_encode(
+                array(
+                    // Send Status
+                    "Status" => "Failed",
 
-                // Error message
-                "Error" => "Please post valid JSON",
+                    // Error message
+                    "Error" => "Please post valid JSON",
 
-                // Fix
-                "Fix" => "Failed to decode JSON",
+                    // Fix
+                    "Fix" => "Failed to decode JSON",
+                )
             );
         }
 
@@ -4720,6 +4775,17 @@ class Server
                 include_once $extension;
             }
         }
+
+        // Great
+        $protocol = stripos($_SERVER['SERVER_PROTOCOL'], 'https') === true ? 'https://' : 'http://';
+        $reqURI = explode("index.php", $_SERVER['PHP_SELF'])[0];
+
+        $this->BaaSAddress = sprintf(
+            '%s%s%s',
+            $protocol,
+            $_SERVER['HTTP_HOST'],
+            $reqURI
+        );
     }
 
     /**

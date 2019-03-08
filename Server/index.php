@@ -41,6 +41,14 @@ $server->setTriesTime("+24 hours");
 // Default: off
 $server->setDebugmode(true);
 
+// Set server's email address to send emails from
+$server->setEmailAddress("BaaS@wdg.codes");
+
+// Set server's activation page (register, reset password, activate)
+// This must be public (see BaaS_Actions.php for a example).
+// If you want to use the default one. comment bellow
+// $server->setUserActionAddress("http://127.0.0.1/BaaS_Actions.php");
+
 // Attach and load Extension.
 $server->attachExtension(
     // Extension URL

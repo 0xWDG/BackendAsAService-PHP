@@ -67,8 +67,8 @@ extension BaaS {
             // set NewPosting
             newPosting = ["JSON": String.init(data: JSON,encoding: .utf8)!]
         }
-        
-        // Catch errors
+            
+            // Catch errors
         catch let error as NSError {
             return "Error: \(error.localizedDescription)".data(using: String.Encoding.utf8)!
         }
@@ -125,7 +125,7 @@ extension BaaS {
         }
         
         // Log, if we are in debugmode.
-        self.log(httpPostBody)
+        self.log("url: \(url)\npost body (escaped): \(httpPostBody)\npost body (unescaped): \(httpPostBody.removingPercentEncoding!)")
         
         // Set the httpBody
         request.httpBody = httpPostBody.data(using: .utf8)
@@ -174,7 +174,7 @@ extension BaaS {
         
         // Unwrap our data
         guard let unwrappedData = data else {
-            return "Error while unwrapping data".data(using: .utf8)!
+            return "Error while unwrapping data" . data(using: .utf8)!
         }
         
         // Return the data.

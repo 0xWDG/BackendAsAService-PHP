@@ -49,46 +49,22 @@ extension NSColor
  *      }
  */
 open class BaaS {
-    /**
-     * Delegate of the Backend to return
-     *
-     * This is the delegate where it calls back to.
-     */
+    /// This is the delegate where it calls back to.
     public weak var delegate: BaaSDelegate?
     
-    /**
-     * The API Key which the user provides
-     *
-     * This is the API key as you have set in index.php
-     */
-    private var apiKey: String = "§§DEVELOPMENT_UNSAFE_KEY§§"
+    /// The API Key which the user provides
+    private var apiKey: String = "DEVELOPMENT_UNSAFE_KEY"
     
-    /**
-     * The URL of the backend server (BaaS Server)
-     *
-     * This should be your servers address
-     */
+    /// The URL of the backend server (BaaS Server)
     private var serverAddress: URL = URL.init(string: "https://wdgwv.com")!
     
-    /**
-     * Maximum server timeout
-     *
-     * Maximum time before the BaaS Controller gives a timeout.
-     */
+    /// Maximum time before the BaaS Controller gives a timeout.
     private var serverTimeout: Int = 30
     
-    /**
-     * Debugmode
-     *
-     * Should we debug right now?
-     */
+    /// Should we debug right now?
     private let debug = _isDebugAssertConfiguration()
 
-    /**
-     * lastRowID
-     *
-     * Last row ID
-     */
+    /// Last row ID
     private var lastRowID = 0
     
     /**
@@ -98,33 +74,23 @@ open class BaaS {
      */
     public static var shared: BaaS = BaaS()
     
-    /**
-     * Version number
-     *
-     * BaaS Version number
-     */
+    /// BaaS Version number
     private let version = "1.0"
     
-    /**
-     * Build number
-     *
-     * BaaS Build number
-     */
+    /// BaaS Build number
     private let build = "20181231"
     
-    /**
-     * Server's public key hash
-     *
-     * Server's public key hash
-     */
+    /// Server's public key hash
     var publicKeyHash = ""
     
-    /**
-     * Server's certificate hash
-     *
-     * Server's certificate hash
-     */
+    /// Server's certificate hash
     var certificateHash = ""
+  
+    /// The user's session ID
+    var sessionID = ""
+    
+    /// notificationCenter to send notifications
+    let notificationCenter = UNUserNotificationCenter.current()
     
     /**
      * BaaS Color
@@ -132,15 +98,34 @@ open class BaaS {
      * BaaS Color (hex, rgb, hsv, cmyk)
      */
     public enum BaaS_Color: String {
+        /// Official BaaS color in hex
         case hex = "#00d4ff"
+
+        /// Official BaaS color in rgb
         case rgb = "0,212,255"
+
+        /// Official BaaS color in r, y, k
         case r, y, k = "0"
+
+        /// Official BaaS color in g
         case g = "212"
+
+        /// Official BaaS color in b
         case b = "255"
+
+        /// Official BaaS color in hsv
         case hsv = "190,100,100"
+
+        /// Official BaaS color in h
         case h = "190"
+
+        /// Official BaaS color in s, v, c
         case s, v, c = "100"
+
+        /// Official BaaS color in cmyk
         case cmyk = "100,17,0,0"
+
+        /// Official BaaS color in m
         case m = "17"
     }
     
@@ -161,10 +146,10 @@ open class BaaS {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { (granted, error) in
             if !granted {
                 // Acces not granted
-                self.log("Status not granted")
+                self.log("[Notification center] Status not granted")
             } else {
                 // Access granted
-                self.log("Status granted")
+                self.log("[Notification center] Status granted")
             }
         }
         
@@ -213,7 +198,7 @@ open class BaaS {
         return .newData
         
         // No notifications
-        //        return .noData
+//        return .noData
     }
     
     private func generateRandomString(length: Int) -> String {
@@ -226,8 +211,6 @@ open class BaaS {
     }
 
     private func fireNotification(withTitle: String, Description: String) {
-        let notificationCenter = UNUserNotificationCenter.current()
-        
         notificationCenter.getNotificationSettings { (settings) in
             if settings.authorizationStatus != .authorized {
                 self.log("Not authorized to send notifications")
@@ -235,13 +218,19 @@ open class BaaS {
             }
         }
         
+        /// Generate a identifier for the notification
         let identifier = self.generateRandomString(length: 10)
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        let content = UNMutableNotificationContent()
-        content.title = withTitle
-        content.body = Description
-        content.sound = .default
         
+        /// create a timer interfal trigger
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        
+        /// make notification contents
+        let content = UNMutableNotificationContent()
+            content.title = withTitle
+            content.body = Description
+            content.sound = .default
+        
+        /// make a notification request
         let request = UNNotificationRequest(
             identifier: identifier,
             content: content,
@@ -257,8 +246,6 @@ open class BaaS {
     }
     
     private func resetNotifications() {
-        let notificationCenter = UNUserNotificationCenter.current()
-        
         notificationCenter.removeAllPendingNotificationRequests()
     }
     
@@ -1026,5 +1013,4 @@ open class BaaS {
     
     @available(*, deprecated)
     internal func deprecated_placeholder() { }
-    
 }
