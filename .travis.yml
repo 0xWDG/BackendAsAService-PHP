@@ -1,6 +1,7 @@
 matrix:
   include:
     - language: objective-c
+      name: "[Framework] Swift"
       osx_image: xcode10.1
       xcode_project: Framework/BaaS.xcodeproj
       xcode_scheme: BaaSTests
@@ -9,6 +10,7 @@ matrix:
         - xcodebuild test -project Framework/BaaS.xcodeproj -scheme BaaSTests -destination 'platform=iOS Simulator,name=iPhone XS Max' CODE_SIGNING_ALLOWED=NO
 
     - language: php
+      name: "[Server] PHP 5.6"
       php:
         - '5.6'
       script: 
@@ -16,12 +18,14 @@ matrix:
 
 
     - language: php
+      name: "[Server] PHP 7.1"
       php:
         - '7.1'
       script: 
         - phpunit Server/phptest.php
 
     - language: php
+      name: "[Server] PHP 7.2 (Custom tests)"
       php:
         - '7.2'
       script: 
