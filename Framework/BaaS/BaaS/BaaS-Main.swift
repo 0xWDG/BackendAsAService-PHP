@@ -61,8 +61,14 @@ open class BaaS {
     /// Maximum time before the BaaS Controller gives a timeout.
     private var serverTimeout: Int = 30
     
+    
+    #if !targetEnvironment(simulator)
     /// Should we debug right now?
     private let debug = _isDebugAssertConfiguration()
+    #else
+    /// Should we debug right now? (always)
+    private let debug = true
+    #endif
 
     /// Last row ID
     private var lastRowID = 0
@@ -78,7 +84,7 @@ open class BaaS {
     private let version = "1.0"
     
     /// BaaS Build number
-    private let build = "20181231"
+    private let build = "20190309"
     
     /// Server's public key hash
     var publicKeyHash = ""
@@ -89,8 +95,10 @@ open class BaaS {
     /// The user's session ID
     var sessionID = ""
     
+    #if !targetEnvironment(simulator)
     /// notificationCenter to send notifications
     let notificationCenter = UNUserNotificationCenter.current()
+    #endif
     
     /**
      * BaaS Color
@@ -135,7 +143,7 @@ open class BaaS {
      * We're live.
      */
     public init() {
-        #if os(iOS)
+        #if os(iOS) && !targetEnvironment(simulator)
         
         // Ask every quarter if there are new notifications
         UIApplication.shared.setMinimumBackgroundFetchInterval(
@@ -211,6 +219,7 @@ open class BaaS {
     }
 
     private func fireNotification(withTitle: String, Description: String) {
+        #if os(iOS) && !targetEnvironment(simulator)
         notificationCenter.getNotificationSettings { (settings) in
             if settings.authorizationStatus != .authorized {
                 self.log("Not authorized to send notifications")
@@ -243,10 +252,13 @@ open class BaaS {
                 self.log("Unexpected error \(error)")
             }
         })
+        #endif
     }
     
     private func resetNotifications() {
+        #if os(iOS) && !targetEnvironment(simulator)
         notificationCenter.removeAllPendingNotificationRequests()
+        #endif
     }
     
     /**
@@ -432,6 +444,19 @@ open class BaaS {
     }
     
     /**
+     * BaaS possible status
+     *
+     *     success
+     *     failed
+     *     warning
+     */
+    public enum BaaS_Status: String, CodingKey {
+        case Success
+        case Failed, Fail
+        case Warning
+    }
+
+    /**
      * BaaS Response JSON Field
      *
      *     Status:    This is the Status of the BaaS Server call
@@ -548,7 +573,14 @@ open class BaaS {
          * The FilePath is not writeable error thrown by the BaaS Server call
          */
         var FilePath: String?
-        
+
+        /**
+         * BaaS Response: Session ID
+         *
+         * The session ID
+         */
+        var sID: String?
+
         /**
          * Initialize from a decoder.
          *
@@ -657,6 +689,13 @@ open class BaaS {
                 FilePath = "N/A"
             }
             
+            do{
+                sID = try values.decodeIfPresent(String.self, forKey: .sID)
+            }
+            catch {
+                sID = "N/A"
+            }
+            
             // This looks like the weirdest if, which has ever lived.
             if (
                 Status == "Error" &&
@@ -672,7 +711,8 @@ open class BaaS {
                     Info == "N/A" &&
                     RowID == "N/A" &&
                     Debug == "N/A" &&
-                    FilePath == "N/A"
+                    FilePath == "N/A" &&
+                    sID == "N/A"
                 ) {
                 throw BaaS_Errors.unableToDecodeJSON
             }
@@ -790,6 +830,59 @@ open class BaaS {
         log(String.init(data: task, encoding: .utf8)!)
         
         return false
+    }
+    
+    /**
+     * user Login
+     *
+     * - parameter username: The username
+     * - parameter password: The password
+     * - returns: Boolean
+     */
+    public func userLogin(username: String, password: String) -> Bool {
+        let task = self.networkRequest(
+            "\(serverAddress)/user.login",
+            [
+                "APIKey": self.apiKey,
+                "username": username,
+                "password": password
+            ]
+        )
+        
+        log(String.init(data: task, encoding: .utf8)!)
+        
+        let response = BaaS_Response_Decoder(jsonData: task)
+
+        if let sessionID = response.sID {
+            self.sessionID = sessionID
+        }
+
+        return response.Status == "Success"
+    }
+    
+    /**
+     * user Create
+     *
+     * - parameter username: The username
+     * - parameter password: The password
+     * - parameter email: The email
+     * - returns: Boolean
+     */
+    public func userCreate(username: String, password: String, email: String) -> Bool {
+        let task = self.networkRequest(
+            "\(serverAddress)/user.create",
+            [
+                "APIKey": self.apiKey,
+                "username": username,
+                "password": password,
+                "email": email
+            ]
+        )
+        
+        log(String.init(data: task, encoding: .utf8)!)
+        
+        let response = BaaS_Response_Decoder(jsonData: task)
+        return response.Status == "Success"
     }
     
     /**

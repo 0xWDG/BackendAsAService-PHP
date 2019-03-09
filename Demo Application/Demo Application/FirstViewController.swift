@@ -32,6 +32,8 @@ class FirstViewController: UIViewController, BaaSDelegate {
             db.log("Database not created.")
         }
         
+        db.log(db.userLogin(username: "test", password: "test"))
+
 //        if db.database(existsWithName: "testDatabase") {
 //            db.log("Database exists")
 //        } else {
