@@ -7,7 +7,8 @@
 //
 
 import XCTest
-//@testable import Demo_Application
+@testable import CommonCrypto
+@testable import BaaS
 
 class Demo_ApplicationTests: XCTestCase {
 

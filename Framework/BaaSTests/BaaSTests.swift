@@ -7,6 +7,7 @@
 //
 
 import XCTest
+@testable import CommonCrypto
 @testable import BaaS
 
 class BaaSTests: XCTestCase, BaaSDelegate {

@@ -12,8 +12,10 @@ import Foundation
 // For Certificate/Public Key-Pinning
 import Security
 
+#if !targetEnvironment(simulator)
 // For supporting SHA256
 import CommonCrypto
+#endif
 
 /**
  * **B**ackend **a**s **a** **S**ervice (_BaaS_)
@@ -200,6 +202,7 @@ class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
     ]
     
     private func sha256(data : Data) -> String {
+        #if !targetEnvironment(simulator)
         var keyWithHeader = Data(bytes: rsa2048Asn1Header)
         keyWithHeader.append(data)
         var hash = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
@@ -210,6 +213,9 @@ class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
         
         
         return Data(hash).base64EncodedString()
+        #else
+        return data.base64EncodedString()
+        #endif
     }
     
     func urlSession(

@@ -20,6 +20,34 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		DE1AAC432234095E00DD2E97 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DE1AAC3B2234095E00DD2E97 /* CommonCrypto.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 211216831AE68D26004E1CE6;
+			remoteInfo = "CommonCrypto-macOS";
+		};
+		DE1AAC452234095E00DD2E97 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DE1AAC3B2234095E00DD2E97 /* CommonCrypto.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 216CAE341AE6B273009A69EF;
+			remoteInfo = "CommonCrypto-iOS";
+		};
+		DE1AAC472234095E00DD2E97 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DE1AAC3B2234095E00DD2E97 /* CommonCrypto.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 804503281BA209F6002A5470;
+			remoteInfo = "CommonCrypto-watchOS";
+		};
+		DE1AAC492234095E00DD2E97 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DE1AAC3B2234095E00DD2E97 /* CommonCrypto.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 80098A511C12E5890029C530;
+			remoteInfo = "CommonCrypto-tvOS";
+		};
 		DEA032A321A8385500599F48 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DEA0329E21A8385500599F48 /* BaaS.xcodeproj */;
@@ -72,6 +100,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DE1AAC3B2234095E00DD2E97 /* CommonCrypto.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CommonCrypto.xcodeproj; path = "../Framework/BaaS/BaaS/External Frameworks/CommonCrypto.xcodeproj"; sourceTree = "<group>"; };
 		DEA0329E21A8385500599F48 /* BaaS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BaaS.xcodeproj; path = ../Framework/BaaS.xcodeproj; sourceTree = "<group>"; };
 		DEBE557F21A828C40055B597 /* Demo Application.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Demo Application.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEBE558221A828C40055B597 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -115,6 +144,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DE1AAC3C2234095E00DD2E97 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DE1AAC442234095E00DD2E97 /* CommonCrypto.framework */,
+				DE1AAC462234095E00DD2E97 /* CommonCrypto.framework */,
+				DE1AAC482234095E00DD2E97 /* CommonCrypto.framework */,
+				DE1AAC4A2234095E00DD2E97 /* CommonCrypto.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		DE2BFAA621A8332200A77505 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -134,6 +174,7 @@
 		DEBE557621A828C40055B597 = {
 			isa = PBXGroup;
 			children = (
+				DE1AAC3B2234095E00DD2E97 /* CommonCrypto.xcodeproj */,
 				DEA0329E21A8385500599F48 /* BaaS.xcodeproj */,
 				DEBE558121A828C40055B597 /* Demo Application */,
 				DEBE559821A828C70055B597 /* Demo ApplicationTests */,
@@ -287,6 +328,10 @@
 					ProductGroup = DEA0329F21A8385500599F48 /* Products */;
 					ProjectRef = DEA0329E21A8385500599F48 /* BaaS.xcodeproj */;
 				},
+				{
+					ProductGroup = DE1AAC3C2234095E00DD2E97 /* Products */;
+					ProjectRef = DE1AAC3B2234095E00DD2E97 /* CommonCrypto.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -298,6 +343,34 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		DE1AAC442234095E00DD2E97 /* CommonCrypto.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CommonCrypto.framework;
+			remoteRef = DE1AAC432234095E00DD2E97 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DE1AAC462234095E00DD2E97 /* CommonCrypto.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CommonCrypto.framework;
+			remoteRef = DE1AAC452234095E00DD2E97 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DE1AAC482234095E00DD2E97 /* CommonCrypto.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CommonCrypto.framework;
+			remoteRef = DE1AAC472234095E00DD2E97 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DE1AAC4A2234095E00DD2E97 /* CommonCrypto.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CommonCrypto.framework;
+			remoteRef = DE1AAC492234095E00DD2E97 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		DEA032A421A8385500599F48 /* BaaS.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
