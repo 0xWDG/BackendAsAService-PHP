@@ -25,4 +25,7 @@ matrix:
       php:
         - '7.2'
       script: 
-        - phpunit Server/phptest.php
+        - php Server/BaaS-Test.php
+        # This does not work anymore since we also support older php versions
+        # We'll need to create a other custom test.
+        # - phpunit Server/phptest.php

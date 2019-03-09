@@ -1,4 +1,6 @@
 <?php
+exit(1); // No error.
+
 /*
 We're creating HTTP Calls right now, please be sure that PHP is running
  */
