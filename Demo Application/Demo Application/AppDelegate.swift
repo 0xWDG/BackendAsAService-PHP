@@ -10,10 +10,11 @@ import UIKit
 import BaaS
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    /// BaaS Shared
     var database = BaaS.shared
     
+    /// Window.
     var window: UIWindow?
-
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.

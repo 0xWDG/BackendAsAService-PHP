@@ -50,17 +50,17 @@ extension BaaS {
         _ url: String,
         _ posting: Dictionary<String, Any>? = ["nothing": "send"]
         ) -> Data {
-        // Check if the URL is valid
+        /// Check if the URL is valid
         guard let myURL = URL(string: url) else {
             return "Error: \(url) doesn't appear to be an URL".data(using: String.Encoding.utf8)!
         }
         
-        // Create a new post dict, for the JSON String
+        /// Create a new post dict, for the JSON String
         var newPosting: Dictionary<String, String>?
         
         // Try
         do {
-            // Create JSON
+            /// Create JSON
             let JSON = try JSONSerialization.data(
                 withJSONObject: posting as Any,
                 options: .sortedKeys
@@ -70,21 +70,21 @@ extension BaaS {
             newPosting = ["JSON": String.init(data: JSON,encoding: .utf8)!]
         }
             
-            // Catch errors
+        /// Catch errors
         catch let error as NSError {
             return "Error: \(error.localizedDescription)".data(using: String.Encoding.utf8)!
         }
         
-        // We are waiting for data
+        /// We are waiting for data
         var waiting: Bool = true
         
-        // Setup a fake, empty data
+        /// Setup a fake, empty data
         var data: Data? = "" . data(using: .utf8)
         
-        // Setup a reuseable noData dataset
+        /// Setup a reuseable noData dataset
         let noData: Data = "" . data(using: .utf8)!
         
-        // Create a URL Request
+        /// Create a URL Request
         var request = URLRequest(url: myURL)
         
         // With method POST
@@ -96,26 +96,26 @@ extension BaaS {
             forHTTPHeaderField: "Content-Type"
         )
         
-        // Create a empty httpBody
+        /// Create a empty httpBody
         var httpPostBody = ""
         
-        // Index = 0
+        /// Index = 0
         var idx = 0
         
-        // Check if we can unwrap the post fields.
+        /// Check if we can unwrap the post fields.
         guard let postFields = newPosting else {
             return noData
         }
         
         // Walk trough the post Fields
         for (key, val) in postFields {
-            // Check if we need to preAppend
+            /// Check if we need to preAppend
             let preAppend = (idx == 0) ? "" : "&"
             
-            // Encode the value
+            /// Encode the value
             let encodedValue = val.addingPercentEncoding(
                 withAllowedCharacters: .urlHostAllowed
-                )!
+            )!
             
             // Append to httpPostBody
             httpPostBody.append(
@@ -132,7 +132,7 @@ extension BaaS {
         // Set the httpBody
         request.httpBody = httpPostBody.data(using: .utf8)
         
-        // Create a pinned URLSession
+        /// Create a pinned URLSession
         var session = URLSession.init(
             // With default configuration
             configuration: .ephemeral,
@@ -145,7 +145,8 @@ extension BaaS {
         )
         
         // Check if we have a public key, or certificate hash.
-        if (self.publicKeyHash.count == 0 || self.certificateHash.count == 0) {
+        if (self.publicKeyHash.count == 0 ||
+            self.certificateHash.count == 0) {
             // Show a error, only on debug builds
             log(
                 "[WARNING] No Public key pinning/Certificate pinning\n" +
@@ -157,7 +158,7 @@ extension BaaS {
         
         // Start our datatask
         session.dataTask(with: request) { (sitedata, response, error) in
-            // Check if we got any useable site data
+            /// Check if we got any useable site data
             guard let sitedata = sitedata else {
                 data = "Error" . data(using: .utf8)
                 waiting = false
@@ -169,12 +170,12 @@ extension BaaS {
             
             // stop waiting
             waiting = false
-            }.resume()
+        }.resume()
         
         // Dirty way to create a blocking function.
         while (waiting) { }
         
-        // Unwrap our data
+        /// Unwrap our data
         guard let unwrappedData = data else {
             return "Error while unwrapping data" . data(using: .utf8)!
         }
@@ -186,7 +187,10 @@ extension BaaS {
 
 // See: https://www.bugsee.com/blog/ssl-certificate-pinning-in-mobile-applications/
 class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
+    /// Hash of the pinned certificate
     let pinnedCertificateHash: String
+    
+    /// Hash of the pinned public key
     let pinnedPublicKeyHash: String
     
     override init() {
@@ -196,15 +200,21 @@ class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
         super.init()
     }
     
+    /// RSA2048 Asn1 Header
     let rsa2048Asn1Header:[UInt8] = [
-        0x30, 0x82, 0x01, 0x22, 0x30, 0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86,
-        0xf7, 0x0d, 0x01, 0x01, 0x01, 0x05, 0x00, 0x03, 0x82, 0x01, 0x0f, 0x00
+        0x30, 0x82, 0x01, 0x22, 0x30, 0x0d,
+        0x06, 0x09, 0x2a, 0x86, 0x48, 0x86,
+        0xf7, 0x0d, 0x01, 0x01, 0x01, 0x05,
+        0x00, 0x03, 0x82, 0x01, 0x0f, 0x00
     ]
     
     private func sha256(data : Data) -> String {
         #if !targetEnvironment(simulator)
+        /// Key header
         var keyWithHeader = Data(bytes: rsa2048Asn1Header)
         keyWithHeader.append(data)
+        
+        /// Hash
         var hash = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
         
         keyWithHeader.withUnsafeBytes {
@@ -223,22 +233,27 @@ class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Swift.Void
         ) {
-        
         if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust) {
+            /// Server trust
             if let serverTrust = challenge.protectionSpace.serverTrust {
+                /// server trust
                 var secresult = SecTrustResultType.invalid
+                
+                /// status
                 let status = SecTrustEvaluate(serverTrust, &secresult)
                 
                 if(errSecSuccess == status) {
                     // print(SecTrustGetCertificateCount(serverTrust))
+                    /// Server certificate
                     if let serverCertificate = SecTrustGetCertificateAtIndex(serverTrust, 0) {
                         
                         if (pinnedCertificateHash.count > 2) {
-                            // Certificate pinning
+                            /// Certificate pinning
                             let serverCertificateData: NSData = SecCertificateCopyData(
                                 serverCertificate
                             )
                             
+                            /// Get hash
                             let certHash = sha256(
                                 data: serverCertificateData as Data
                             )
@@ -256,16 +271,18 @@ class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
                         }
                         
                         if (pinnedPublicKeyHash.count > 2) {
-                            // Public key pinning
+                            /// Public key pinning
                             let serverPublicKey = SecCertificateCopyKey(
                                 serverCertificate
                             )
                             
+                            /// Public key data
                             let serverPublicKeyData: NSData = SecKeyCopyExternalRepresentation(
                                 serverPublicKey!,
                                 nil
                                 )!
                             
+                            /// Key hash
                             let keyHash = sha256(
                                 data: serverPublicKeyData as Data
                             )

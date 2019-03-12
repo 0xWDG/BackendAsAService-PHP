@@ -10,6 +10,7 @@ import UIKit
 import BaaS
 
 class FirstViewController: UIViewController, BaaSDelegate {
+    /// BaaS Shared
     let db = BaaS.shared
     
     override func viewDidLoad() {

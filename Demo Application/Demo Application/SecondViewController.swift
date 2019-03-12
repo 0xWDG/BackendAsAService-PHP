@@ -9,13 +9,13 @@
 import UIKit
 import BaaS
 class SecondViewController: UIViewController {
+    /// BaaS Shared
+    let database = BaaS.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        // Initialize database
-        let database = BaaS.shared
         //        database.delegate = self
         database.set(server: "http://127.0.0.1:8000/index.php")
         database.set(apiKey: "DEVELOPMENT_UNSAFE_KEY")
