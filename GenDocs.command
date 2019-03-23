@@ -1,15 +1,17 @@
-echo 'Change to script directory'
-echo $(dirname "$0")
+BASEDIR=$(dirname "$0")
 
-cd $(dirname "$0")
+echo 'Change to script directory'
+echo $BASEDIR
+
+cd $BASEDIR
 
 echo 'Change Server build number'
 sed -i -e 's/build = ".*"/build = "'$(date "+%Y%m%d")'"/g' Server/BaaS-Server.php
 rm Server/BaaS-Server.php-e
 
 echo 'Change Swift build number'
-sed -i -e 's/build = ".*"/build = "'$(date "+%Y%m%d")'"/g' Framework/BaaS/BaaS/BaaS.swift
-rm Framework/BaaS/BaaS/BaaS.swift-e
+sed -i -e 's/build = ".*"/build = "'$(date "+%Y%m%d")'"/g' Framework/BaaS/BaaS/BaaS-Main.swift
+rm Framework/BaaS/BaaS/BaaS-Main.swift-e
 
 # echo 'Sleeping.'
 # sleep 1
@@ -40,11 +42,14 @@ rm -rf build
 
 echo 'Bye!'
 
+cd $BASEDIR
+
 git add -A .
 git commit -m 'Updated documentation'
 git push
 
-cd ../BackendasaService.github.io
+cd ..
+cd BackendasaService.github.io
 cd APIDocumentation
 php _generate.php
 cd ..

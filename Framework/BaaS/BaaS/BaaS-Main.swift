@@ -84,7 +84,7 @@ open class BaaS {
     private let version = "1.0"
     
     /// BaaS Build number
-    private let build = "20190309"
+    private let build = "20190323"
     
     /// Server's public key hash
     var publicKeyHash = ""
