@@ -51,7 +51,7 @@ git push
 cd ..
 cd BackendasaService.github.io
 cd APIDocumentation
-php _generate.php
+php index.php
 cd ..
 
 git add -A .
