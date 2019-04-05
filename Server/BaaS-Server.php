@@ -251,6 +251,9 @@ class Server
      */
     private $extensions = array();
 
+    private $userRegistrationDisabled = false;
+    private $userLoginDisabled = false;
+
     /**
      * Set database configuration
      *
@@ -555,7 +558,9 @@ class Server
                     // Send API key back
                     'APIKey' => (
                         isset($_POST['APIKey']) ? $_POST['APIKey'] : (
-                            json_decode($_POST['JSON'])->APIKey ? json_decode($_POST['JSON'])->APIKey : 'None prodived'
+                            json_decode($_POST['JSON'])->APIKey
+                            ? json_decode($_POST['JSON'])->APIKey
+                            : 'None prodived'
                         )
                     ),
                 )
@@ -1688,7 +1693,90 @@ class Server
             $this->userDatabaseSetup();
         }
 
-        //username, password, email
+        if ($this->userRegistrationDisabled) {
+            return json_encode(
+                array(
+                    "Status" => "Failed",
+                    "Details" => "Registration disabled",
+                )
+            );
+        }
+
+        // Check if they posted a JSON
+        if (isset($_POST['JSON'])) {
+            // Can we decode it?
+            $jsonData = json_decode($_POST['JSON'], true);
+
+            // Sucesfully decoded?
+            if (is_array($jsonData)) {
+                if ($this->userExists($jsonData['username'])) {
+                    return json_encode(
+                        array(
+                            "Status" => "Failed",
+                            "Details" => "Username already taken",
+                            "Fix" => "Choose another username",
+                        )
+                    );
+                }
+
+                if ($this->userExists($jsonData['email'])) {
+                    return json_encode(
+                        array(
+                            "Status" => "Failed",
+                            "Details" => "Email already used",
+                            "Fix" => "Forget your password?",
+                        )
+                    );
+                }
+
+                // Create the query to get the file.
+                $sqlQuery = sprintf(
+                    // SELECT
+                    "INSERT INTO `%s` (
+                        `username`,
+                        `password`,
+                        `email`,
+                        `status`,
+                        `activationToken`,
+                        `recoveryToken`
+                    ) VALUES (
+                        :username,
+                        :password,
+                        :email,
+                        '1',
+                        :activationToken,
+                        :recoveryToken
+                    );",
+
+                    // Tablename
+                    $this->defaultTables['users']
+                );
+
+                // Run query with parameters
+                $databaseValues = $this->queryWithParameters(
+                    // the sql query
+                    $sqlQuery,
+
+                    // the parameters
+                    array(
+                        'username' => $this->escapeString($jsonData['username']),
+                        'password' => $this->escapeString($jsonData['password']),
+                        'email' => $this->escapeString($jsonData['email']),
+                        'activationToken' => md5(time() . $jsonData['email']),
+                        'recoveryToken' => md5($jsonData['email'] . time()),
+                    )
+                );
+
+                return json_encode(
+                    array(
+                        "Status" => "Success",
+                        "Details" => "User account created",
+                        "UserID" => $this->db->lastInsertId(),
+                    )
+                );
+            }
+        }
+
         return $this->invalidRequest();
     }
 
@@ -1705,7 +1793,19 @@ class Server
             $this->userDatabaseSetup();
         }
 
-        return $this->invalidRequest();
+        $sSql = "SELECT `username` FROM `%s` WHERE (`username` = :username or `email` = :email) LIMIT 1;";
+
+        $databaseValues = $this->queryWithParameters(
+            sprintf($sSql, $this->defaultTables['users']),
+            array(
+                'username' => $this->escapeString($userID),
+                'email' => $this->escapeString($userID),
+            )
+        );
+
+        return (
+            @$databaseValues->Status == "Ok"
+        );
     }
 
     /**
@@ -1737,6 +1837,60 @@ class Server
     {
         if (!$this->tableExists($this->defaultTables['users'])) {
             $this->userDatabaseSetup();
+        }
+
+        if ($this->userLoginDisabled) {
+            return json_encode(
+                array(
+                    "Status" => "Failed",
+                    "SessionID" => md5(uniqid() . $_SERVER['REMOTE_ADDR']),
+                    "Details" => "Login disabled",
+                )
+            );
+        }
+
+        // Check if they posted a JSON
+        if (isset($_POST['JSON'])) {
+            // Can we decode it?
+            $jsonData = json_decode($_POST['JSON'], true);
+
+            if (is_array($jsonData)) {
+                $sSql = "SELECT `username` FROM `%s` WHERE
+               (`username` = :username or `email` = :email )
+              and
+               `password` = :password
+              LIMIT 1;
+              ";
+
+                $databaseValues = $this->queryWithParameters(
+                    sprintf($sSql, $this->defaultTables['users']),
+                    array(
+                        'username' => $this->escapeString($jsonData['username']),
+                        'email' => $this->escapeString($jsonData['username']),
+                        'password' => $this->escapeString($jsonData['password']),
+                    )
+                );
+
+                if (@$databaseValues->Status == "Ok") {
+                    return json_encode(
+                        array(
+                            "Status" => "Success",
+                            "SessionID" => md5(uniqid() . $_SERVER['REMOTE_ADDR']),
+                            "Details" => "User logged in",
+                        )
+                    );
+                } else {
+                    return json_encode(
+                        array(
+                            "Status" => "Failed",
+                            "SessionID" => md5(uniqid() . $_SERVER['REMOTE_ADDR']),
+                            "Details" => "Username/Password incorrect",
+                        )
+                    );
+                }
+            } else {
+                // invalid data.
+            }
         }
 
         return $this->invalidRequest();
@@ -1946,7 +2100,7 @@ class Server
             // as array
             array(
                 // Send status
-                "Status" => "Ok",
+                "Status" => "Success",
 
                 // Send file status
                 "File" => $fileFound ? "Found" : "Not Found",
@@ -2097,7 +2251,7 @@ class Server
                 // as array
                 array(
                     // Send status
-                    "Status" => "Ok",
+                    "Status" => "Success",
 
                     // Send file status
                     "File" => $fileFound ? "Removed" : "Not Removed",
@@ -2110,7 +2264,7 @@ class Server
             // as array
             array(
                 // Send status
-                "Status" => "Ok",
+                "Status" => "Success",
 
                 // Send file status
                 "File" => "Not Found",
@@ -2783,7 +2937,7 @@ class Server
                 // Array.
                 array(
                     // Return status
-                    "Status" => "Ok",
+                    "Status" => "Success",
 
                     // Information
                     "Info" => "Table created",
@@ -2873,7 +3027,7 @@ class Server
                 // Array.
                 array(
                     // Return status
-                    "Status" => "Ok",
+                    "Status" => "Success",
 
                     // Information
                     "Info" => "Table emptied",
@@ -2964,7 +3118,7 @@ class Server
                 // Array.
                 array(
                     // Return status
-                    "Status" => "Ok",
+                    "Status" => "Success",
 
                     // Information
                     "Info" => "Table removed",
@@ -3111,7 +3265,7 @@ class Server
                 // Array.
                 array(
                     // Return status
-                    "Status" => "Ok",
+                    "Status" => "Success",
 
                     // Information
                     "Info" => "Table renamed",
@@ -4079,7 +4233,7 @@ class Server
                 // Return the Object.
                 return (object) array(
                     // Send Status
-                    "Status" => "Ok",
+                    "Status" => "Success",
 
                     // :)
                     "Executed" => ($this->debugmode ? $query : true),
@@ -4246,7 +4400,7 @@ class Server
         // Failed, or no data found.
         return (object) array(
             // Status failed
-            "Status" => "Ok",
+            "Status" => "Success",
 
             // Warning
             "Warning" => "Executed query",
@@ -4317,8 +4471,6 @@ class Server
      */
     private function rowCreate($action)
     {
-        print_r($action);
-
         // row.create
         // Check if the table exists
         if (!$this->tableExists($action)) {

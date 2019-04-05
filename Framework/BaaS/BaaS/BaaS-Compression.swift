@@ -127,9 +127,10 @@ public extension Data
      * - returns: raw deflated data according to [RFC-1951](https://tools.ietf.org/html/rfc1951).
      * - note: Fixed at compression level 5 (best trade off between speed and time)
      */
-    public func deflate() -> Data?
+    func deflate() -> Data?
     {
-        return self.withUnsafeBytes { (sourcePtr: UnsafePointer<UInt8>) -> Data? in
+        return self.withUnsafeBytes {
+            (sourcePtr: UnsafePointer<UInt8>) -> Data? in
             let configuration = (
                 operation: COMPRESSION_STREAM_ENCODE,
                 algorithm: COMPRESSION_ZLIB
@@ -149,9 +150,11 @@ public extension Data
      * stream according to [RFC-1951](https://tools.ietf.org/html/rfc1951).
      * - returns: uncompressed data
      */
-    public func inflate() -> Data?
+    func inflate() -> Data?
     {
-        return self.withUnsafeBytes { (sourcePtr: UnsafePointer<UInt8>) -> Data? in
+        //'withUnsafeBytes' is deprecated: use `withUnsafeBytes<R>(_: (UnsafeRawBufferPointer) throws -> R) rethrows -> R` instead
+        return self.withUnsafeBytes {
+            (sourcePtr: UnsafePointer<UInt8>) -> Data? in
             let configuration = (
                 operation: COMPRESSION_STREAM_DECODE,
                 algorithm: COMPRESSION_ZLIB

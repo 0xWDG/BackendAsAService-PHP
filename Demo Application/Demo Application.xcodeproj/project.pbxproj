@@ -296,6 +296,7 @@
 				TargetAttributes = {
 					DEBE557E21A828C40055B597 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -304,10 +305,12 @@
 					};
 					DEBE559421A828C70055B597 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 						TestTargetID = DEBE557E21A828C40055B597;
 					};
 					DEBE559F21A828C70055B597 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 						TestTargetID = DEBE557E21A828C40055B597;
 					};
 				};
@@ -611,7 +614,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.WDGWV.Demo-Application";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -630,7 +633,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.WDGWV.Demo-Application";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -649,7 +652,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.WDGWV.Demo-ApplicationTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Demo Application.app/Demo Application";
 			};
@@ -669,7 +672,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.WDGWV.Demo-ApplicationTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Demo Application.app/Demo Application";
 			};
@@ -688,7 +691,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.WDGWV.Demo-ApplicationUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = "Demo Application";
 			};
@@ -707,7 +710,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.WDGWV.Demo-ApplicationUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = "Demo Application";
 			};

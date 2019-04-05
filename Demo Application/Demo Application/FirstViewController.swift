@@ -26,14 +26,21 @@ class FirstViewController: UIViewController, BaaSDelegate {
             db.database(createFieldWithName: "emailx", type: .number, defaultValue: "1", canBeEmpty: true)
 
         ]
+        db.noop(dbLayout)
         
-        if db.database(createWithName: "testDatabase", withFields: dbLayout) {
-            db.log("Database Created \\o/")
+//        if db.database(createWithName: "testDatabase", withFields: dbLayout) {
+//            db.log("Database Created \\o/")
+//        } else {
+//            db.log("Database not created.")
+//        }
+        
+        db.log(db.userCreate(username: "test", password: "test", email: "my@email.com"))
+
+        if db.userLogin(username: "test", password: "test") {
+            db.log("User logged in!")
         } else {
-            db.log("Database not created.")
+            db.log("Failed to login")
         }
-        
-        db.log(db.userLogin(username: "test", password: "test"))
 
 //        if db.database(existsWithName: "testDatabase") {
 //            db.log("Database exists")
@@ -65,16 +72,17 @@ class FirstViewController: UIViewController, BaaSDelegate {
 //        )
 //
 //        //        db.log(db.test())
-        db.log(
-            db.create(
-                values: [
-                    "x": "Hello from Swift",
-                    "latitude": "123",
-                    "longitude": "321"
-                ],
-                inDatabase: "x"
-            )
-        )
+
+//        db.log(
+//            db.create(
+//                values: [
+//                    "x": "Hello from Swift",
+//                    "latitude": "123",
+//                    "longitude": "321"
+//                ],
+//                inDatabase: "x"
+//            )
+//        )
         
 //        db.log(
 //            db.rename(from: "x", to: "y")

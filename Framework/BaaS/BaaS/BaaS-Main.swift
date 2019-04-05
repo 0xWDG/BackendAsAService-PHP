@@ -480,6 +480,13 @@ open class BaaS {
          * This is the Status of the BaaS Server call
          */
         var Status: String
+
+        /**
+         * BaaS Response: Details
+         *
+         * This is the Details of the BaaS Server call
+         */
+        var Details: String?
         
         // MARK: General errors
         /**
@@ -577,10 +584,17 @@ open class BaaS {
         /**
          * BaaS Response: Session ID
          *
-         * The session ID
+         * The Session ID
          */
-        var sID: String?
+        var SessionID: String?
 
+        /**
+         * BaaS Response: User ID
+         *
+         * The User ID
+         */
+        var UserID: String?
+        
         /**
          * Initialize from a decoder.
          *
@@ -596,6 +610,13 @@ open class BaaS {
             }
             catch {
                 Status = "Error"
+            }
+            
+            do {
+                Details = try values.decode(String.self, forKey: .Details)
+            }
+            catch {
+                Details = "N/A"
             }
             
             do {
@@ -668,7 +689,7 @@ open class BaaS {
                 Info = "N/A"
             }
             
-            do{
+            do {
                 RowID = try values.decodeIfPresent(String.self, forKey: .RowID)
             }
             catch{
@@ -682,23 +703,31 @@ open class BaaS {
                 Debug = "N/A"
             }
             
-            do{
+            do {
                 FilePath = try values.decodeIfPresent(String.self, forKey: .FilePath)
             }
             catch {
                 FilePath = "N/A"
             }
             
-            do{
-                sID = try values.decodeIfPresent(String.self, forKey: .sID)
+            do {
+                SessionID = try values.decodeIfPresent(String.self, forKey: .SessionID)
             }
             catch {
-                sID = "N/A"
+                SessionID = "N/A"
+            }
+            
+            do {
+                UserID = try values.decodeIfPresent(String.self, forKey: .UserID)
+            }
+            catch {
+                UserID = "N/A"
             }
             
             // This looks like the weirdest if, which has ever lived.
             if (
                 Status == "Error" &&
+                    Details == "N/A" &&
                     Error == "Unable to parse JSON" &&
                     Fix == "Please send valid JSON" &&
                     Exception == "N/A" &&
@@ -712,7 +741,8 @@ open class BaaS {
                     RowID == "N/A" &&
                     Debug == "N/A" &&
                     FilePath == "N/A" &&
-                    sID == "N/A"
+                    SessionID == "N/A" &&
+                    UserID == "N/A"
                 ) {
                 throw BaaS_Errors.unableToDecodeJSON
             }
@@ -853,7 +883,7 @@ open class BaaS {
         
         let response = BaaS_Response_Decoder(jsonData: task)
 
-        if let sessionID = response.sID {
+        if let sessionID = response.SessionID {
             self.sessionID = sessionID
         }
 
@@ -1104,6 +1134,7 @@ open class BaaS {
         return String.init(data: task, encoding: .utf8)!
     }
     
+    public func noop(_ any: Any) { }
     @available(*, deprecated)
     internal func deprecated_placeholder() { }
 }
