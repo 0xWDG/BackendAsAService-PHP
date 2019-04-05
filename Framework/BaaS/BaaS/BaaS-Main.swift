@@ -1134,7 +1134,13 @@ open class BaaS {
         return String.init(data: task, encoding: .utf8)!
     }
     
+    /**
+     * **No** **op**eration
+     *
+     * - parameter _: Any
+     */
     public func noop(_ any: Any) { }
+    
     @available(*, deprecated)
     internal func deprecated_placeholder() { }
 }
