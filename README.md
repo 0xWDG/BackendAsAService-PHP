@@ -11,7 +11,9 @@
 
 See the progress of [v1.0](https://github.com/BackendasaService/BaaS/projects/3), [Multi-Platform Client](https://github.com/BackendasaService/BaaS/projects/1), [Multi-Platform Server](https://github.com/BackendasaService/BaaS/projects/2) (sorted by priority)
 
-Documentation: <a target='_blank' href='https://BackendasaService.github.io/Framework'>Swift Client Documentation</a>, <a target='_blank' href='https://BackendasaService.github.io/Server'>PHP Server Documentation</a>
+Documentation: 
+<a target='_blank' href='https://backendasaservice.github.io/APIDocumentation/'>API  Documentation</a>,
+<a target='_blank' href='https://BackendasaService.github.io/Framework'>Swift Client Documentation</a>, <a target='_blank' href='https://BackendasaService.github.io/Server'>PHP Server Documentation</a>
 <br />
 
 ---
