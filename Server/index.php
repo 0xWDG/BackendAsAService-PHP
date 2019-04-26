@@ -64,13 +64,3 @@ $server->attachExtension(
 
 // Serve
 echo $server->serve();
-
-if (!headers_sent()) {
-    // Debug me.
-    print_r(
-        array(
-            $_SERVER['REQUEST_URI'],
-            $_POST,
-        )
-    );
-}

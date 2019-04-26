@@ -22,9 +22,7 @@ import Foundation
 
 @dynamicMemberLookup
 public enum JSON {
-    
     // MARK: Cases
-    
     case dictionary(Dictionary<String, JSON>)
     case array(Array<JSON>)
     case string(String)
@@ -33,7 +31,6 @@ public enum JSON {
     case null
     
     // MARK: Dynamic Member Lookup
-    
     public subscript(index: Int) -> JSON? {
         if case .array(let arr) = self {
             return index < arr.count ? arr[index] : nil
@@ -138,10 +135,15 @@ public enum JSON {
         } else if case .number(let value) = self {
             return value.boolValue
         } else if case .string(let value) = self,
-            (["true", "t", "yes", "y", "1"].contains { value.caseInsensitiveCompare($0) == .orderedSame }) {
+            (["true", "t", "yes", "y", "1"].contains {
+                value.caseInsensitiveCompare($0) == .orderedSame
+                }
+            ) {
             return true
         } else if case .string(let value) = self,
-            (["false", "f", "no", "n", "0"].contains { value.caseInsensitiveCompare($0) == .orderedSame }) {
+            (["false", "f", "no", "n", "0"].contains {
+                value.caseInsensitiveCompare($0) == .orderedSame
+            }) {
             return false
         }
         return nil
@@ -152,18 +154,34 @@ public enum JSON {
     public var object: Any {
         get {
             switch self {
-            case .dictionary(let value): return value.mapValues { $0.object }
-            case .array(let value): return value.map { $0.object }
-            case .string(let value): return value
-            case .number(let value): return value
-            case .bool(let value): return value
-            case .null: return NSNull()
+            case .dictionary(let value):
+                return value.mapValues { $0.object }
+                
+            case .array(let value):
+                return value.map { $0.object }
+                
+            case .string(let value):
+                return value
+                
+            case .number(let value):
+                return value
+                
+            case .bool(let value):
+                return value
+                
+            case .null:
+                return NSNull()
             }
         }
     }
     
     public func data(options: JSONSerialization.WritingOptions = []) -> Data {
-        return (try? JSONSerialization.data(withJSONObject: self.object, options: options)) ?? Data()
+        return (
+            try? JSONSerialization.data(
+                withJSONObject: self.object,
+                options: options
+            )
+        ) ?? Data()
     }
     
 }

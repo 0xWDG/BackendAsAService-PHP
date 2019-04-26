@@ -34,7 +34,11 @@ class FirstViewController: UIViewController, BaaSDelegate {
 //            db.log("Database not created.")
 //        }
         
-        db.log(db.userCreate(username: "test", password: "test", email: "my@email.com"))
+        if db.userCreate(username: "test", password: "test", email: "my@email.com") {
+            db.log("User created")
+        } else {
+            db.log("Failed to create user")
+        }
 
         if db.userLogin(username: "test", password: "test") {
             db.log("User logged in!")
