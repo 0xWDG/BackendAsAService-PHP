@@ -70,6 +70,22 @@ class Server {
 	private $BaaSAddress = "INIT";
 
 	/**
+	 * Time befor resetting the maximum retries
+	 *
+	 * @since 1.0
+	 * @var string $sessionTime time to reset session token
+	 */
+	private $sessionTime = "+1 month";
+
+	/**
+	 * Bind Session to IP?
+	 *
+	 * @since 1.0
+	 * @var bool $bindSessionToIP Bind Session to IP?
+	 */
+	private $bindSessionToIP = false;
+
+	/**
 	 * Automatic translation
 	 *
 	 * @since 1.0
@@ -99,7 +115,7 @@ class Server {
 	 * @since 1.0
 	 * @var string $triesTime time to reset maximum tries
 	 */
-	private $tiesTime = "+24 hours";
+	private $triesTime = "+24 hours";
 
 	/**
 	 * Save file location.
@@ -238,6 +254,9 @@ class Server {
 
 		// File database name
 		'files' => 'BaaS_FileDB',
+
+		// Sessions database name
+		'sessions' => 'BaaS_SessionDB',
 	);
 
 	/**
@@ -531,9 +550,12 @@ class Server {
 		// Check if the key is valid, the JSON way.
 		if (isset($_POST['JSON'])) {
 			// if POST JSON APIKey equals APIKey
-			if (json_decode($_POST['JSON'])->APIKey === $this->APIKey) {
-				// APIKey is valid
-				return true;
+			$JSON = json_decode($_POST['JSON']);
+			if (isset($JSON)) {
+				if ($JSON->APIKey === $this->APIKey) {
+					// APIKey is valid
+					return true;
+				}
 			}
 		}
 
@@ -564,8 +586,8 @@ class Server {
 					// Send API key back
 					'APIKey' => (
 						isset($_POST['APIKey']) ? $_POST['APIKey'] : (
-							json_decode($_POST['JSON'])->APIKey
-							? json_decode($_POST['JSON'])->APIKey
+							@json_decode($_POST['JSON'])->APIKey
+							? @json_decode($_POST['JSON'])->APIKey
 							: 'None prodived'
 						)
 					),
@@ -720,6 +742,26 @@ class Server {
 	public function setDebugmode($status) {
 		// Set the debugmode
 		$this->debugmode = $status;
+	}
+
+	/**
+	 * Set the lifetime of a (user) session
+	 *
+	 * @since 1.0
+	 * @param bool $sessionTimeValue Time string like "+1 month"
+	 */
+	public function setSessionTime($sessionTimeValue) {
+		$this->sessionTime = $sessionTimeValue;
+	}
+
+	/**
+	 * Set bind to IP on/off
+	 *
+	 * @since 1.0
+	 * @param bool $bindToIPValue On or Off (default false)
+	 */
+	public function setBindToIP($bindToIPValue) {
+		$this->bindToIP = is_bool($bindToIPValue) ? $bindToIPValue : false;
 	}
 
 	/**
@@ -1091,6 +1133,24 @@ class Server {
 
 		// Reset old attempts
 		$this->resetOldAttempts();
+
+		// Asking for CSS.
+		if ($_SERVER['REQUEST_URI'] == "/css.css") {
+			header("Content-type: text/css");
+			if (file_exists('Data/css.css')) {
+				return file_get_contents('Data/css.css');
+			}
+			exit;
+		}
+
+		// Asking for Javascript.
+		if ($_SERVER['REQUEST_URI'] == "/js.js") {
+			header("Content-type: application/javascript");
+			if (file_exists('Data/js.js')) {
+				return file_get_contents('Data/js.js');
+			}
+			exit;
+		}
 
 		// Handle /db.admin/ methods
 		if (
@@ -1846,7 +1906,7 @@ class Server {
 			$jsonData = json_decode($_POST['JSON'], true);
 
 			if (is_array($jsonData)) {
-				$sSql = "SELECT `username` FROM `%s` WHERE
+				$sSql = "SELECT `id`, `username` FROM `%s` WHERE
                (`username` = :username or `email` = :email )
               and
                `password` = :password
@@ -1856,21 +1916,79 @@ class Server {
 				$databaseValues = $this->queryWithParameters(
 					sprintf($sSql, $this->defaultTables['users']),
 					array(
-						'username' => $this->escapeString($jsonData['username']),
-						'email' => $this->escapeString($jsonData['username']),
-						'password' => $this->hashPassword($jsonData['password']),
+						'username' => $this->escapeString(
+							isset($jsonData['username'])
+							? $jsonData['username']
+							: ''
+						),
+						'email' => $this->escapeString(
+							isset($jsonData['username'])
+							? $jsonData['username']
+							: ''
+						),
+						'password' => $this->hashPassword(
+							isset($jsonData['password'])
+							? $jsonData['password']
+							: ''
+						),
 					)
 				);
 
 				if (@$databaseValues->Status == "Ok") {
+					// Save login token.
+					if (!$this->tableExists($this->defaultTables['sessions'])) {
+						$this->sessionDatabaseSetup();
+					}
+
+					// SessionID
+					$sID = md5(uniqid() . $_SERVER['REMOTE_ADDR']);
+
+					// setup the SQL Query
+					$sSql = sprintf(
+						// Complete query
+						"%s%s%s",
+
+						// Insert row
+						sprintf(
+							"INSERT INTO `%s` ",
+							$this->defaultTables['sessions']
+						),
+
+						// Add id, sessionID, dateTime, and userID
+						"(`id`, `sessionID`, `datetime`, `userID`) ",
+
+						// link id, sessionID, dateTime, and userID
+						"VALUES (NULL, :sessionID, NOW(), :userID);"
+					);
+
+					// Send parameters
+					$parameters = array(
+						// Session ID
+						'sessionID' => $sID,
+
+						// User ID
+						'userID' => $databaseValues->id,
+					);
+
+					// Register session
+					$this->queryWithParameters(
+						// With SQL
+						$sSql,
+
+						// and Parameters
+						$parameters
+					);
+
+					// Show the success!
 					return json_encode(
 						array(
 							"Status" => "Success",
-							"SessionID" => md5(uniqid() . $_SERVER['REMOTE_ADDR']),
+							"SessionID" => $sID,
 							"Details" => "User logged in",
 						)
 					);
 				} else {
+					// Failed :'(
 					return json_encode(
 						array(
 							"Status" => "Failed",
@@ -2582,14 +2700,54 @@ class Server {
 			// id (auto incrementing)
 			"\t`id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n",
 
-			// latitude
+			// file name
 			"\t`filename` text DEFAULT NULL,\n",
 
-			// longitude
+			// file data
 			"\t`filedata` longtext DEFAULT NULL,\n",
 
 			// username
 			"\t`username` text DEFAULT NULL,\n",
+
+			// set the primary key.
+			"\tPRIMARY KEY (`id`)\n",
+
+			// End the create query.
+			") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;"
+		);
+
+		$this->db->query($sqlQuery);
+	}
+
+	/**
+	 * Setup Session database
+	 *
+	 * @since 1.0
+	 * @return void
+	 */
+	private function sessionDatabaseSetup() {
+		// The creation SQL
+		$sqlQuery = sprintf(
+			// String for appending
+			"%s%s%s%s%s%s%s",
+
+			// Create table
+			sprintf(
+				"CREATE TABLE `%s` (\n",
+				$this->defaultTables['sessions']
+			),
+
+			// id (auto incrementing)
+			"\t`id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n",
+
+			// Session ID
+			"\t`sessionID` text DEFAULT NULL,\n",
+
+			// Maximum lifetime
+			"\t`datetime` datetime DEFAULT NULL,\n",
+
+			// userID
+			"\t`userID` int(11) DEFAULT NULL,\n",
 
 			// set the primary key.
 			"\tPRIMARY KEY (`id`)\n",
@@ -4314,28 +4472,31 @@ class Server {
 		// Fetch data
 		$fetchedData = $new->fetch(\PDO::FETCH_BOTH);
 
-		// If size is more then 0
-		if (sizeof($fetchedData) > 1) {
-			// Remove numeric fields
-			foreach ($fetchedData as $key => $value) {
-				// Check if the key is numeric
-				if (is_numeric($key)) {
-					// Unset, we don't need it
-					unset($fetchedData[$key]);
+		// Check if fetched data exists
+		if (isset($fetchedData)) {
+			// If size is more then 0
+			if (sizeof($fetchedData) > 1) {
+				// Remove numeric fields
+				foreach ($fetchedData as $key => $value) {
+					// Check if the key is numeric
+					if (is_numeric($key)) {
+						// Unset, we don't need it
+						unset($fetchedData[$key]);
+					}
 				}
+
+				// Set status to ok
+				$fetchedData['Status'] = 'Ok';
+
+				// Return query if in debugmode
+				$fetchedData['Query'] = ($this->debugmode) ? $query : 'hidden';
+
+				// Return parameters if in debugmode
+				$fetchedData['Parameters'] = ($this->debugmode) ? $parameters : 'hidden';
+
+				// Objectify
+				return (object) $fetchedData;
 			}
-
-			// Set status to ok
-			$fetchedData['Status'] = 'Ok';
-
-			// Return query if in debugmode
-			$fetchedData['Query'] = ($this->debugmode) ? $query : 'hidden';
-
-			// Return parameters if in debugmode
-			$fetchedData['Parameters'] = ($this->debugmode) ? $parameters : 'hidden';
-
-			// Objectify
-			return (object) $fetchedData;
 		}
 
 		if (
@@ -5261,7 +5422,7 @@ class Server {
 							'triesMaximum' => $this->triesMaximum,
 
 							// And how long i will be blocked?
-							'tiesTime' => $this->tiesTime,
+							'triesTime' => $this->triesTime,
 
 							// And where are you saving that information?
 							'BFfile' => $this->BFfile,
