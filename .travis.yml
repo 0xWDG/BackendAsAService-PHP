@@ -18,11 +18,13 @@ matrix:
 
 
     - language: php
-      name: "[Server] PHP 7.1"
+      name: "[Server] PHP 7.1 (Custom tests)"
       php:
         - '7.1'
       script: 
-        - phpunit Server/phptest.php
+        - php Server/BaaS-Test.php
+        #- phpunit Server/phptest.php
+        # Does not work anymore?
 
     - language: php
       name: "[Server] PHP 7.2 (Custom tests)"
