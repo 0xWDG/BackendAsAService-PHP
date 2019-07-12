@@ -4378,11 +4378,31 @@ class Server {
 			 * We've got values
 			 */
 
+			if (sizeof($fetchedData) > 2) {
+				$fetchedData['values'] = $fetchedData;
+				$newArray = array();
+				// Remove numeric fields
+				foreach ($fetchedData['values'] as $key => $value) {
+					// Check if the key is numeric
+					if (is_numeric($key)) {
+						// Unset, we don't need it
+						$tArr = $fetchedData['values'][$key];
+						foreach ($tArr as $key => $value) {
+							if (is_numeric($key)) {
+								unset($tArr[$key]);
+							}
+						}
+						$newArray[] = $tArr;
+						unset($fetchedData['values'][$key]);
+					}
+				}
+				$fetchedData['values'] = $newArray;
+			}
+
 			// Remove numeric fields
 			foreach ($fetchedData as $key => $value) {
 				// Check if the key is numeric
 				if (is_numeric($key)) {
-					// Unset, we don't need it
 					// Unset, we don't need it
 					unset($fetchedData[$key]);
 				}
@@ -4519,6 +4539,10 @@ class Server {
 
 				// Warning
 				"Warning" => "Failed to execute query",
+
+				"query" => $query,
+
+				"newQuery" => isset($newQuery) ? $newQuery : '',
 			);
 		}
 
