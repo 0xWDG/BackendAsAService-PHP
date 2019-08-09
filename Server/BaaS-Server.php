@@ -33,7 +33,7 @@ class Server {
 	 * @since 1.0
 	 * @var string $build BaaS build number
 	 */
-	private $build = "20190809";
+	private $build = "20190808";
 
 	/**
 	 * Set API Version
@@ -918,8 +918,8 @@ class Server {
 							// Sprintf mysql:...
 							sprintf(
 								// mysql:host=$this->dbConfig['host'];
-								// dbname=$this->dbConfig['name'];charset=UTF8
-								"mysql:host=%s;dbname=%s;charset=UTF8",
+								// dbname=$this->dbConfig['name'];charset=UTF8mb4
+								"mysql:host=%s;dbname=%s;charset=UTF8mb4",
 
 								// Host
 								$this->dbConfig['host'],
@@ -2690,7 +2690,7 @@ class Server {
 			"\tPRIMARY KEY (`id`)\n",
 
 			// End the create query.
-			") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;"
+			") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=UTF8mb4;"
 		);
 
 		$this->db->query($sqlQuery);
@@ -2730,7 +2730,7 @@ class Server {
 			"\tPRIMARY KEY (`id`)\n",
 
 			// End the create query.
-			") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;"
+			") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=UTF8mb4;"
 		);
 
 		$this->db->query($sqlQuery);
@@ -2770,7 +2770,7 @@ class Server {
 			"\tPRIMARY KEY (`id`)\n",
 
 			// End the create query.
-			") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;"
+			") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=UTF8mb4;"
 		);
 
 		$this->db->query($sqlQuery);
@@ -3076,7 +3076,7 @@ class Server {
 		// End the create query.
 		$sqlQuery .= sprintf(
 			// Required default engine
-			") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;"
+			") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=UTF8mb4;"
 		);
 
 		// Exit with the sql command.
