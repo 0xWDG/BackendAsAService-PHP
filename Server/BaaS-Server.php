@@ -33,7 +33,7 @@ class Server {
 	 * @since 1.0
 	 * @var string $build BaaS build number
 	 */
-	private $build = "20190323";
+	private $build = "20190808";
 
 	/**
 	 * Set API Version
@@ -123,7 +123,7 @@ class Server {
 	 * @since 1.0
 	 * @var string $BFfile File location
 	 */
-	private $BFfile = "BFlog/%s.txt";
+	private $BFfile = "Data/BFlog/%s.txt";
 
 	/**
 	 * Save file directory.
@@ -131,7 +131,7 @@ class Server {
 	 * @since 1.0
 	 * @var string $blockFilePath Directory location
 	 */
-	private $blockFilePath = "BFlog/";
+	private $blockFilePath = "Data/BFlog/";
 
 	/**
 	 * is current user an Admin?
@@ -171,7 +171,7 @@ class Server {
 	 * @since 1.0
 	 * @var string $saveFilesToDatabase Save files to the database?
 	 */
-	private $saveFilesToDatabase = true;
+	private $saveFilesToDatabase = false;
 
 	/**
 	 * Database Configuration
@@ -269,7 +269,24 @@ class Server {
 	 */
 	private $extensions = array();
 
+	/**
+	 * userRegistrationDisabled
+	 *
+	 * Is the user registration disabled?
+	 *
+	 * @since 1.0
+	 * @var bool $extensions userRegistrationDisabled?
+	 */
 	private $userRegistrationDisabled = false;
+
+	/**
+	 * userLoginDisabled
+	 *
+	 * Is the user login disabled?
+	 *
+	 * @since 1.0
+	 * @var bool $extensions userLoginDisabled?
+	 */
 	private $userLoginDisabled = false;
 
 	/**
@@ -1137,8 +1154,8 @@ class Server {
 		// Asking for CSS.
 		if ($_SERVER['REQUEST_URI'] == "/css.css") {
 			header("Content-type: text/css");
-			if (file_exists('Data/css.css')) {
-				return file_get_contents('Data/css.css');
+			if (file_exists('Data/Admin/css.css')) {
+				return file_get_contents('Data/Admin/css.css');
 			}
 			exit;
 		}
@@ -1146,8 +1163,8 @@ class Server {
 		// Asking for Javascript.
 		if ($_SERVER['REQUEST_URI'] == "/js.js") {
 			header("Content-type: application/javascript");
-			if (file_exists('Data/js.js')) {
-				return file_get_contents('Data/js.js');
+			if (file_exists('Data/Admin/js.js')) {
+				return file_get_contents('Data/Admin/js.js');
 			}
 			exit;
 		}
@@ -1783,7 +1800,7 @@ class Server {
 					);
 				}
 
-				// Create the query to get the file.
+				// Create the query to create the user.
 				$sqlQuery = sprintf(
 					// SELECT
 					"INSERT INTO `%s` (
@@ -4030,7 +4047,7 @@ class Server {
 		header("Content-type: text/html; charset=ut8");
 
 		// Get minified layout
-		$adminTemplate = file_get_contents("Data/layout.html");
+		$adminTemplate = file_get_contents("Data/Admin/layout.html");
 
 		// Replace title
 		$adminTemplate = preg_replace(
@@ -4378,31 +4395,11 @@ class Server {
 			 * We've got values
 			 */
 
-			if (sizeof($fetchedData) > 2) {
-				$fetchedData['values'] = $fetchedData;
-				$newArray = array();
-				// Remove numeric fields
-				foreach ($fetchedData['values'] as $key => $value) {
-					// Check if the key is numeric
-					if (is_numeric($key)) {
-						// Unset, we don't need it
-						$tArr = $fetchedData['values'][$key];
-						foreach ($tArr as $key => $value) {
-							if (is_numeric($key)) {
-								unset($tArr[$key]);
-							}
-						}
-						$newArray[] = $tArr;
-						unset($fetchedData['values'][$key]);
-					}
-				}
-				$fetchedData['values'] = $newArray;
-			}
-
 			// Remove numeric fields
 			foreach ($fetchedData as $key => $value) {
 				// Check if the key is numeric
 				if (is_numeric($key)) {
+					// Unset, we don't need it
 					// Unset, we don't need it
 					unset($fetchedData[$key]);
 				}
@@ -5063,7 +5060,7 @@ class Server {
 		$this->isAdmin = $this->isLoggedInAsAdmin();
 
 		// Load Extensions (if exists)
-		foreach (glob("Data/*_extension.php") as $extension) {
+		foreach (glob("Data/Extensions/*_extension.php") as $extension) {
 			// Is the file readable?
 			if (is_readable($extension)) {
 				// Load the file
@@ -5081,6 +5078,20 @@ class Server {
 			$_SERVER['HTTP_HOST'],
 			$reqURI
 		);
+
+		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+			if (!isset($_POST['JSON'])) {
+				$json_params = @urldecode(
+					@file_get_contents("php://input")
+				);
+
+				@json_decode($json_params); // ignore all errors, since it is a check.
+
+				if (json_last_error() == JSON_ERROR_NONE) {
+					$_POST['JSON'] = $json_params;
+				}
+			}
+		}
 	}
 
 	/**
@@ -5371,19 +5382,19 @@ class Server {
 						"PHP Version" => phpversion(),
 
 						// Get Webserver details
-						"Webserver" => $_SERVER['SERVER_SOFTWARE'],
+						"Webserver" => @$_SERVER['SERVER_SOFTWARE'],
 
 						// Get Gateway interface
-						"Gateway Interface" => $_SERVER['GATEWAY_INTERFACE'],
+						"Gateway Interface" => @$_SERVER['GATEWAY_INTERFACE'],
 
 						// Get the server's IP-Address
-						"Server IP" => $_SERVER['SERVER_ADDR'],
+						"Server IP" => @$_SERVER['SERVER_ADDR'],
 
 						// Get the server's name
-						"Server name" => $_SERVER['SERVER_NAME'],
+						"Server name" => @$_SERVER['SERVER_NAME'],
 
 						// Get the document root.
-						"Document Root" => $_SERVER['DOCUMENT_ROOT'],
+						"Document Root" => @$_SERVER['DOCUMENT_ROOT'],
 					),
 
 					// Section: BaaS Information
@@ -5508,7 +5519,7 @@ class Server {
 					// Section: Client Information
 					"Client Information" => array(
 						// What is the IP-Address of the client?
-						"IP-Address" => $_SERVER['REMOTE_ADDR'],
+						"IP-Address" => @$_SERVER['REMOTE_ADDR'],
 
 						// What is their name?
 						"Hostname" => (
@@ -5519,10 +5530,10 @@ class Server {
 							 ? (!empty($_SERVER['REMOTE_HOST'])
 
 								// Not empty, so we can use it
-								 ? $_SERVER['REMOTE_HOST']
+								 ? @$_SERVER['REMOTE_HOST']
 
 								// Get the hostname by the REMOTE_ADDR
-								 : gethostbyaddr($_SERVER['REMOTE_ADDR'])
+								 : gethostbyaddr(@$_SERVER['REMOTE_ADDR'])
 							)
 
 							// Get the hostname by the REMOTE_ADDR
@@ -5530,16 +5541,16 @@ class Server {
 						),
 
 						// Which protocol is used to talk?
-						"HTTP Protocol" => $_SERVER['SERVER_PROTOCOL'],
+						"HTTP Protocol" => @$_SERVER['SERVER_PROTOCOL'],
 
 						// Which method is used?
-						"HTTP Method" => $_SERVER['REQUEST_METHOD'],
+						"HTTP Method" => @$_SERVER['REQUEST_METHOD'],
 
 						// At what time?
-						"Request Time" => $_SERVER['REQUEST_TIME'],
+						"Request Time" => @$_SERVER['REQUEST_TIME'],
 
 						// And what is requested?
-						"Requested URL" => $_SERVER['REQUEST_URI'],
+						"Requested URL" => @$_SERVER['REQUEST_URI'],
 
 						// Do you have Cookies?
 						"Cookies" => $_COOKIE,
@@ -5548,31 +5559,31 @@ class Server {
 						"Session" => $_SESSION,
 
 						// What answers does the client accept?
-						"HTTP Accept" => $_SERVER['HTTP_ACCEPT'],
+						"HTTP Accept" => @$_SERVER['HTTP_ACCEPT'],
 
 						// And which character sets are supported?
-						"HTTP Accept Charset" => $_SERVER['HTTP_ACCEPT_CHARSET'],
+						"HTTP Accept Charset" => @$_SERVER['HTTP_ACCEPT_CHARSET'],
 
 						// Ok, and about the encoding?, i'll preffer utf8
-						"HTTP Accept Encoding" => $_SERVER['HTTP_ACCEPT_ENCODING'],
+						"HTTP Accept Encoding" => @$_SERVER['HTTP_ACCEPT_ENCODING'],
 
 						// And what language does the client speak?
-						"HTTP Accept Language" => $_SERVER['HTTP_ACCEPT_LANGUAGE'],
+						"HTTP Accept Language" => @$_SERVER['HTTP_ACCEPT_LANGUAGE'],
 
 						// HTTP Connection?
-						"HTTP Connection" => $_SERVER['HTTP_CONNECTION'],
+						"HTTP Connection" => @$_SERVER['HTTP_CONNECTION'],
 
 						// Which name you called me (the server)
-						"HTTP Host" => $_SERVER['HTTP_HOST'],
+						"HTTP Host" => @$_SERVER['HTTP_HOST'],
 
 						// Where are you from?
-						"HTTP Referer" => $_SERVER['HTTP_REFERER'],
+						"HTTP Referer" => @$_SERVER['HTTP_REFERER'],
 
 						// What's your user agent?
-						"HTTP User Agent" => $_SERVER['HTTP_USER_AGENT'],
+						"HTTP User Agent" => @$_SERVER['HTTP_USER_AGENT'],
 
 						// Are you using HTTPS?
-						"HTTPS" => $_SERVER['HTTPS'],
+						"HTTPS" => @$_SERVER['HTTPS'],
 					),
 				)
 			);
@@ -5593,7 +5604,7 @@ class Server {
 			}
 
 			// Get possible extensions
-			foreach (glob("Data/*_extension.php") as $extension) {
+			foreach (glob("Data/Extensions/*_extension.php") as $extension) {
 				// Is the file readable?
 				if (is_readable($extension)) {
 					// Append information to 'BaaS Information' -> 'BaaS Configuration' -> 'extensions' -> 'found'
