@@ -2984,11 +2984,11 @@ class Server {
 						// Check if our field is a number
 						$field['type'] == 'number'
 
-						// It's text
-						 ? "text"
-
 						// It's a Integer
-						 : "int(11)"
+						 ? "int(11)"
+
+						// It's text
+						 : "text"
 					),
 
 					// Can the field be empty?
