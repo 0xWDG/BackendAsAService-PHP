@@ -444,18 +444,18 @@ class Server {
 				// Array of errors
 				array(
 					// Warning
-					"Warning" => "Extension not callable",
+					"warning" => "Extension not callable",
 
 					// Possible Fix
-					"Fix" => "Please check that the function exists, and is callable (not private)",
+					"fix" => "Please check that the function exists, and is callable (not private)",
 
 					// Extension
-					"Extension" => array(
+					"extension" => array(
 						// URL
-						"URL" => $extensionURL,
+						"url" => $extensionURL,
 
 						// Call
-						"Call" => $extensionCall,
+						"call" => $extensionCall,
 					),
 				)
 			);
@@ -502,13 +502,13 @@ class Server {
 							json_encode(
 								array(
 									// Send Status
-									"Status" => "Failed",
+									"status" => "Failed",
 
 									// Send the warning message
-									'Warning' => "You are blocked from using this service.",
+									"warning" => "You are blocked from using this service.",
 
 									// Send some details
-									'Details' => sprintf(
+									"details" => sprintf(
 										// BaaS/...
 										"BaaS/%s, Connection: Close, IP-Address: %s",
 
@@ -520,7 +520,7 @@ class Server {
 									),
 
 									// Return the API Key
-									'APIKey' => (
+									"apiKey" => (
 										// Does the APIKey exists?
 										isset($_POST['APIKey'])
 
@@ -589,19 +589,19 @@ class Server {
 			json_encode(
 				array(
 					// Send Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Send warning
-					'Warning' => "You are using an invalid API key for this service.",
+					"warning" => "You are using an invalid API key for this service.",
 
 					// Send details
-					'Details' => sprintf(
+					"details" => sprintf(
 						"BaaS/%s, Connection: Close, IP-Address: %s",
 						$this->APIVer, $_SERVER['REMOTE_ADDR']
 					),
 
 					// Send API key back
-					'APIKey' => (
+					"apiKey" => (
 						isset($_POST['APIKey']) ? $_POST['APIKey'] : (
 							@json_decode($_POST['JSON'])->APIKey
 							? @json_decode($_POST['JSON'])->APIKey
@@ -676,16 +676,16 @@ class Server {
 			echo json_encode(
 				array(
 					// Send Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Send error message
-					"Error" => "Not connected to a database",
+					"error" => "Not connected to a database",
 
 					// Send how-to-fix
-					"Fix" => "Please check the database configuration",
+					"fix" => "Please check the database configuration",
 
 					// Send debug text if debugmode is on.
-					"Debug" => ($this->debugmode ? $this->dbConfig : 'Off'),
+					"debug" => ($this->debugmode ? $this->dbConfig : 'Off'),
 				)
 			);
 
@@ -967,13 +967,13 @@ class Server {
 			echo json_encode(
 				array(
 					// Send Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Send Error message
-					"Error" => "Missing server type, cannot continue.",
+					"error" => "Missing server type, cannot continue.",
 
 					// Send how-to-fix
-					"Fix" => "Please review your configuration settings",
+					"fix" => "Please review your configuration settings",
 				)
 			);
 		}
@@ -985,10 +985,10 @@ class Server {
 				// Make a array
 				array(
 					// Send Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Send Error message
-					"Error" => sprintf(
+					"error" => sprintf(
 						// Failed to connect to the TYPE database
 						"Failed to connect to the %s database",
 
@@ -997,15 +997,15 @@ class Server {
 					),
 
 					// Send how-to-fix
-					"Fix" => "Please review your configuration settings",
+					"fix" => "Please review your configuration settings",
 
 					// Send server information
-					"Server" => array(
+					"server" => array(
 						// Send server type
-						"Type" => $this->dbConfig['type'],
+						"type" => $this->dbConfig['type'],
 
 						// Send server status
-						"Status" => (
+						"status" => (
 							// Is it a SQL Server?
 							$this->dbConfig['type'] == 'mysql'
 
@@ -1030,10 +1030,10 @@ class Server {
 				// Array
 				array(
 					// Send Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Database type is missing
-					"Error" => !empty($this->errorMessage)
+					"error" => !empty($this->errorMessage)
 
 					// The error message
 					 ? $this->errorMessage
@@ -1042,7 +1042,7 @@ class Server {
 					 : "No database type is selected",
 
 					// Show a fix
-					"Fix" => "Check the documentation!",
+					"fix" => "Check the documentation!",
 				)
 			);
 		}
@@ -1054,16 +1054,16 @@ class Server {
 				// Array
 				array(
 					// Send Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Send error message
-					"Error" => "Not connected to a database!",
+					"error" => "Not connected to a database!",
 
 					// Send how-to-fix
-					"Fix" => "Set database configuration.",
+					"fix" => "Set database configuration.",
 
 					// Send server/database type
-					"Type" => $this->dbConfig['type'],
+					"type" => $this->dbConfig['type'],
 				)
 			);
 		}
@@ -1077,13 +1077,13 @@ class Server {
 					// Array
 					array(
 						// Send Status
-						"Status" => "Failed",
+						"status" => "Failed",
 
 						// Database host is missing
-						"Error" => "No database host is entered",
+						"error" => "No database host is entered",
 
 						// Show a fix
-						"Fix" => "Please select a valid database host",
+						"fix" => "Please select a valid database host",
 					)
 				);
 			}
@@ -1094,13 +1094,13 @@ class Server {
 					// Array
 					array(
 						// Send Status
-						"Status" => "Failed",
+						"status" => "Failed",
 
 						// Database name is missing
-						"Error" => "No database name is entered",
+						"error" => "No database name is entered",
 
 						// Show a fix
-						"Fix" => "Please select a valid database name",
+						"fix" => "Please select a valid database name",
 					)
 				);
 			}
@@ -1112,13 +1112,13 @@ class Server {
 					// Array
 					array(
 						// Send Status
-						"Status" => "Failed",
+						"status" => "Failed",
 
 						// Database user is missing
-						"Error" => "No database user is entered",
+						"error" => "No database user is entered",
 
 						// Show a fix
-						"Fix" => "Please select a valid database user",
+						"fix" => "Please select a valid database user",
 					)
 				);
 			}
@@ -1137,10 +1137,10 @@ class Server {
 				// Array
 				array(
 					// Send Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// File path is not writeable
-					"Error" => "File path is not writeable",
+					"error" => "File path is not writeable",
 
 					// Show file path
 					"FilePath" => $this->blockFilePath,
@@ -1767,8 +1767,8 @@ class Server {
 		if ($this->userRegistrationDisabled) {
 			return json_encode(
 				array(
-					"Status" => "Failed",
-					"Details" => "Registration disabled",
+					"status" => "Failed",
+					"details" => "Registration disabled",
 				)
 			);
 		}
@@ -1783,9 +1783,9 @@ class Server {
 				if ($this->userExists($jsonData['username'])) {
 					return json_encode(
 						array(
-							"Status" => "Failed",
-							"Details" => "Username already taken",
-							"Fix" => "Choose another username",
+							"status" => "Failed",
+							"details" => "Username already taken",
+							"fix" => "Choose another username",
 						)
 					);
 				}
@@ -1793,9 +1793,9 @@ class Server {
 				if ($this->userExists($jsonData['email'])) {
 					return json_encode(
 						array(
-							"Status" => "Failed",
-							"Details" => "Email already used",
-							"Fix" => "Forget your password?",
+							"status" => "Failed",
+							"details" => "Email already used",
+							"fix" => "Forget your password?",
 						)
 					);
 				}
@@ -1840,9 +1840,9 @@ class Server {
 
 				return json_encode(
 					array(
-						"Status" => "Success",
-						"Details" => "User account created",
-						"UserID" => $this->db->lastInsertId(),
+						"status" => "Success",
+						"details" => "User account created",
+						"userID" => $this->db->lastInsertId(),
 					)
 				);
 			}
@@ -1910,9 +1910,9 @@ class Server {
 		if ($this->userLoginDisabled) {
 			return json_encode(
 				array(
-					"Status" => "Failed",
-					"SessionID" => md5(uniqid() . $_SERVER['REMOTE_ADDR']),
-					"Details" => "Login disabled",
+					"status" => "Failed",
+					"sessionID" => md5(uniqid() . $_SERVER['REMOTE_ADDR']),
+					"details" => "Login disabled",
 				)
 			);
 		}
@@ -1951,7 +1951,7 @@ class Server {
 					)
 				);
 
-				if (@$databaseValues->Status == "Ok") {
+				if (@$databaseValues->status == "Ok") {
 					// Save login token.
 					if (!$this->tableExists($this->defaultTables['sessions'])) {
 						$this->sessionDatabaseSetup();
@@ -1999,18 +1999,18 @@ class Server {
 					// Show the success!
 					return json_encode(
 						array(
-							"Status" => "Success",
-							"SessionID" => $sID,
-							"Details" => "User logged in",
+							"status" => "Success",
+							"sessionID" => $sID,
+							"details" => "User logged in",
 						)
 					);
 				} else {
 					// Failed :'(
 					return json_encode(
 						array(
-							"Status" => "Failed",
-							"SessionID" => md5(uniqid() . $_SERVER['REMOTE_ADDR']),
-							"Details" => "Username/Password incorrect",
+							"status" => "Failed",
+							"sessionID" => md5(uniqid() . $_SERVER['REMOTE_ADDR']),
+							"details" => "Username/Password incorrect",
 						)
 					);
 				}
@@ -2169,16 +2169,16 @@ class Server {
 				// as array
 				array(
 					// Set status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// File
-					"File" => "Not found",
+					"file" => "Not found",
 
 					// Database didn't exists
-					"Warning" => "Database didn't exists",
+					"warning" => "Database didn't exists",
 
 					// Does it exists now?
-					"Database" => (
+					"database" => (
 						// Check if exists
 						$this->tableExists($this->defaultTables['files'])
 
@@ -2217,10 +2217,10 @@ class Server {
 			// as array
 			array(
 				// Send status
-				"Status" => "Success",
+				"status" => "Success",
 
 				// Send file status
-				"File" => $fileFound ? "Found" : "Not Found",
+				"file" => $fileFound ? "Found" : "Not Found",
 			)
 		);
 	}
@@ -2243,16 +2243,16 @@ class Server {
 				// as array
 				array(
 					// Set status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// File
-					"File" => "Not found",
+					"file" => "Not found",
 
 					// Database didn't exists
-					"Warning" => "Database didn't exists",
+					"warning" => "Database didn't exists",
 
 					// Does it exists now?
-					"Database" => (
+					"database" => (
 						// Check if exists
 						$this->tableExists($this->defaultTables['files'])
 
@@ -2321,16 +2321,16 @@ class Server {
 				// as array
 				array(
 					// Set status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// File
-					"File" => "Not found",
+					"file" => "Not found",
 
 					// Database didn't exists
-					"Warning" => "Database didn't exists",
+					"warning" => "Database didn't exists",
 
 					// Does it exists now?
-					"Database" => (
+					"database" => (
 						// Check if exists
 						$this->tableExists($this->defaultTables['files'])
 
@@ -2366,10 +2366,10 @@ class Server {
 				// as array
 				array(
 					// Send status
-					"Status" => "Success",
+					"status" => "Success",
 
 					// Send file status
-					"File" => $fileFound ? "Removed" : "Not Removed",
+					"file" => $fileFound ? "Removed" : "Not Removed",
 				)
 			);
 		}
@@ -2379,10 +2379,10 @@ class Server {
 			// as array
 			array(
 				// Send status
-				"Status" => "Success",
+				"status" => "Success",
 
 				// Send file status
-				"File" => "Not Found",
+				"file" => "Not Found",
 			)
 		);
 	}
@@ -2405,16 +2405,16 @@ class Server {
 				// as array
 				array(
 					// Set status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// File
-					"File" => "Not found",
+					"file" => "Not found",
 
 					// Database didn't exists
-					"Warning" => "Database didn't exists",
+					"warning" => "Database didn't exists",
 
 					// Does it exists now?
-					"Database" => (
+					"database" => (
 						// Check if exists
 						$this->tableExists($this->defaultTables['files'])
 
@@ -2522,10 +2522,10 @@ class Server {
 							// As array
 							array(
 								// Send status
-								"Status" => "Failed",
+								"status" => "Failed",
 
 								// Send warning
-								"Warning" => "The file seems empty",
+								"warning" => "The file seems empty",
 
 								// How-to-fix
 								"fix" => "Send a file",
@@ -2538,10 +2538,10 @@ class Server {
 						// As array
 						array(
 							// Send status
-							"Status" => "Failed",
+							"status" => "Failed",
 
 							// Send warning
-							"Warning" => "No file sended",
+							"warning" => "No file sended",
 
 							// How-to-fix
 							"fix" => "Send a file",
@@ -2813,19 +2813,19 @@ class Server {
 			// Array
 			array(
 				// Send Status
-				"Status" => "Failed",
+				"status" => "Failed",
 
 				// Error Message
-				"Error" => "Method not implented.",
+				"error" => "Method not implented.",
 
 				// Get current Method
-				"Method" => $method,
+				"method" => $method,
 
 				// Wit. data
-				"Data" => $request,
+				"data" => $request,
 
 				// Requested URI
-				"ReqURI" => $_SERVER['REQUEST_URI'],
+				"reqURI" => $_SERVER['REQUEST_URI'],
 			)
 		);
 	}
@@ -2844,13 +2844,13 @@ class Server {
 				// In Array
 				array(
 					// Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Warning
-					"Warning" => "Database already exists.",
+					"warning" => "Database already exists.",
 
 					// Possible-how-to-fix
-					"Fix" => "N/A",
+					"fix" => "N/A",
 				)
 			);
 		}
@@ -2902,13 +2902,13 @@ class Server {
 				// In Array
 				array(
 					// Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Warning
-					"Warning" => "Missing JSON data",
+					"warning" => "Missing JSON data",
 
 					// Possible-how-to-fix
-					"Fix" => "Add JSON data",
+					"fix" => "Add JSON data",
 				)
 			);
 		}
@@ -2929,13 +2929,13 @@ class Server {
 				// In Array
 				array(
 					// Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Warning
-					"Warning" => "Corrupt JSON data",
+					"warning" => "Corrupt JSON data",
 
 					// Possible-how-to-fix
-					"Fix" => "Please provide valid JSON data",
+					"fix" => "Please provide valid JSON data",
 				)
 			);
 		}
@@ -2947,13 +2947,13 @@ class Server {
 				// In Array
 				array(
 					// Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Warning
-					"Warning" => "Missing fields",
+					"warning" => "Missing fields",
 
 					// Possible-how-to-fix
-					"Fix" => "Add fields",
+					"fix" => "Add fields",
 				)
 			);
 		}
@@ -3086,10 +3086,10 @@ class Server {
 				// Array.
 				array(
 					// Return status
-					"Status" => "Success",
+					"status" => "Success",
 
 					// Information
-					"Info" => "Table created",
+					"info" => "Table created",
 				)
 			);
 		}
@@ -3099,16 +3099,16 @@ class Server {
 			// Array
 			array(
 				// Return status
-				"Status" => "Failed",
+				"status" => "Failed",
 
 				// Information
-				"Info" => "Table not created",
+				"info" => "Table not created",
 
 				// How-To-Fix
-				"Fix" => "Turn on debugging to see this",
+				"fix" => "Turn on debugging to see this",
 
 				// Debug?
-				"Debug" => (
+				"debug" => (
 					// Check if debugmode is on
 					$this->debugmode
 
@@ -3137,13 +3137,13 @@ class Server {
 				// Array
 				array(
 					// Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Warning
-					"Warning" => "Table does not exists",
+					"warning" => "Table does not exists",
 
 					// Possible-How-To-Fix
-					"Fix" => "Provide table name",
+					"fix" => "Provide table name",
 				)
 			);
 		}
@@ -3175,10 +3175,10 @@ class Server {
 				// Array.
 				array(
 					// Return status
-					"Status" => "Success",
+					"status" => "Success",
 
 					// Information
-					"Info" => "Table emptied",
+					"info" => "Table emptied",
 				)
 			);
 		}
@@ -3188,16 +3188,16 @@ class Server {
 			// Array
 			array(
 				// Return status
-				"Status" => "Failed",
+				"status" => "Failed",
 
 				// Information
-				"Info" => "Table not emptied",
+				"info" => "Table not emptied",
 
 				// How-To-Fix
-				"Fix" => "Turn on debugging to see this",
+				"fix" => "Turn on debugging to see this",
 
 				// Debug?
-				"Debug" => (
+				"debug" => (
 					// Check if debugmode is on
 					$this->debugmode
 
@@ -3226,13 +3226,13 @@ class Server {
 				// Array
 				array(
 					// Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Warning
-					"Warning" => "Table does not exists",
+					"warning" => "Table does not exists",
 
 					// Possible-How-To-Fix
-					"Fix" => "Provide table name",
+					"fix" => "Provide table name",
 				)
 			);
 		}
@@ -3265,10 +3265,10 @@ class Server {
 				// Array.
 				array(
 					// Return status
-					"Status" => "Success",
+					"status" => "Success",
 
 					// Information
-					"Info" => "Table removed",
+					"info" => "Table removed",
 				)
 			);
 		}
@@ -3278,16 +3278,16 @@ class Server {
 			// Array
 			array(
 				// Return status
-				"Status" => "Failed",
+				"status" => "Failed",
 
 				// Information
-				"Info" => "Table not removed",
+				"info" => "Table not removed",
 
 				// How-To-Fix
-				"Fix" => "Turn on debugging to see this",
+				"fix" => "Turn on debugging to see this",
 
 				// Debug?
-				"Debug" => (
+				"debug" => (
 					// Check if debugmode is on
 					$this->debugmode
 
@@ -3325,13 +3325,13 @@ class Server {
 				// Array
 				array(
 					// Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Warning
-					"Warning" => "Missing new table name",
+					"warning" => "Missing new table name",
 
 					// Possible-How-To-Fix
-					"Fix" => "Provide table name",
+					"fix" => "Provide table name",
 				)
 			);
 		}
@@ -3341,13 +3341,13 @@ class Server {
 				// Array
 				array(
 					// Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Warning
-					"Warning" => "Table \"{$tables[0]}\" does not exists",
+					"warning" => "Table \"{$tables[0]}\" does not exists",
 
 					// Possible-How-To-Fix
-					"Fix" => "Provide table name",
+					"fix" => "Provide table name",
 				)
 			);
 		}
@@ -3357,13 +3357,13 @@ class Server {
 				// Array
 				array(
 					// Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Warning
-					"Warning" => "New table name does already exists",
+					"warning" => "New table name does already exists",
 
 					// Possible-How-To-Fix
-					"Fix" => "Provide new table name",
+					"fix" => "Provide new table name",
 				)
 			);
 		}
@@ -3411,10 +3411,10 @@ class Server {
 				// Array.
 				array(
 					// Return status
-					"Status" => "Success",
+					"status" => "Success",
 
 					// Information
-					"Info" => "Table renamed",
+					"info" => "Table renamed",
 				)
 			);
 		}
@@ -3424,16 +3424,16 @@ class Server {
 			// Array
 			array(
 				// Return status
-				"Status" => "Failed",
+				"status" => "Failed",
 
 				// Information
-				"Info" => "Table not renamed",
+				"info" => "Table not renamed",
 
 				// How-To-Fix
-				"Fix" => "Turn on debugging to see this",
+				"fix" => "Turn on debugging to see this",
 
 				// Debug?
-				"Debug" => (
+				"debug" => (
 					// Check if debugmode is on
 					$this->debugmode
 
@@ -3549,13 +3549,13 @@ class Server {
 			// return error
 			return array(
 				// Send Status
-				"Status" => "Failed",
+				"status" => "Failed",
 
 				// Send error
-				"Error" => "Please post JSON",
+				"error" => "Please post JSON",
 
 				// Send how-to-fix
-				"Fix" => "Failed to decode JSON",
+				"fix" => "Failed to decode JSON",
 			);
 		}
 
@@ -3604,13 +3604,13 @@ class Server {
 				return json_encode(
 					array(
 						// Send Status
-						"Status" => "Failed",
+						"status" => "Failed",
 
 						// Missing value
-						"Error" => "Can not update nothing",
+						"error" => "Can not update nothing",
 
 						// Which one?
-						"Fix" => "Use: values[[key, value]]",
+						"fix" => "Use: values[[key, value]]",
 					)
 				);
 			}
@@ -3669,13 +3669,13 @@ class Server {
 				// Error messages
 				array(
 					// Send Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Invalid request
-					"Error" => "Invalid request",
+					"error" => "Invalid request",
 
 					// Invalid action
-					"ReqURI" => $action,
+					"reqURI" => $action,
 				)
 			);
 			break;
@@ -3730,13 +3730,13 @@ class Server {
 							// Array
 							array(
 								// Send Status
-								"Status" => "Failed",
+								"status" => "Failed",
 
 								// Show error
-								"Error" => "Incorrect number of (set) parameters [Expected: 2]",
+								"error" => "Incorrect number of (set) parameters [Expected: 2]",
 
 								// Return sended values
-								"Where" => $decodedJSON['values'][$i],
+								"where" => $decodedJSON['values'][$i],
 							)
 						);
 					}
@@ -3969,13 +3969,13 @@ class Server {
 							// Array
 							array(
 								// Send Status
-								"Status" => "Failed",
+								"status" => "Failed",
 
 								// Show error
-								"Error" => "Incorrect number of (where) parameters [Expected: 3]",
+								"error" => "Incorrect number of (where) parameters [Expected: 3]",
 
 								// Return values
-								"Where" => $decodedJSON['where'][$i],
+								"where" => $decodedJSON['where'][$i],
 							)
 						);
 					}
@@ -4257,10 +4257,10 @@ class Server {
 			// Return the object
 			return (object) array(
 				// Send Status
-				"Status" => "Failed",
+				"status" => "Failed",
 
 				// Send error
-				"Error" => sprintf(
+				"error" => sprintf(
 					// Table ... does not exists
 					"Table \"%s\" does not exists",
 
@@ -4272,10 +4272,10 @@ class Server {
 				"Table" => $table,
 
 				// Send request uri
-				"ReqURI" => $_SERVER['REQUEST_URI'],
+				"reqURI" => $_SERVER['REQUEST_URI'],
 
 				// Debug
-				"Debug" => (
+				"debug" => (
 					$this->debugmode
 					? array(
 						"Query" => $query,
@@ -4372,13 +4372,13 @@ class Server {
 				// Return the Object.
 				return (object) array(
 					// Send Status
-					"Status" => "Success",
+					"status" => "Success",
 
 					// :)
-					"Executed" => ($this->debugmode ? $query : true),
+					"executed" => ($this->debugmode ? $query : true),
 
 					// RowID
-					"RowID" => $this->db->lastInsertId(),
+					"rowID" => $this->db->lastInsertId(),
 				);
 			}
 		} catch (PDOException $e) {
@@ -4429,13 +4429,13 @@ class Server {
 			}
 
 			// Set status to ok
-			$fetchedData['Status'] = 'Ok';
+			$fetchedData['status'] = 'Ok';
 
 			// Return query if in debugmode
-			$fetchedData['Query'] = ($this->debugmode) ? $query : 'hidden';
+			$fetchedData['query'] = ($this->debugmode) ? $query : 'hidden';
 
 			// Return parameters if in debugmode
-			$fetchedData['Parameters'] = ($this->debugmode) ? $parameters : 'hidden';
+			$fetchedData['parameters'] = ($this->debugmode) ? $parameters : 'hidden';
 
 			// Return the array
 			return (object) $fetchedData;
@@ -4526,13 +4526,13 @@ class Server {
 				}
 
 				// Set status to ok
-				$fetchedData['Status'] = 'Ok';
+				$fetchedData['status'] = 'Ok';
 
 				// Return query if in debugmode
-				$fetchedData['Query'] = ($this->debugmode) ? $query : 'hidden';
+				$fetchedData['query'] = ($this->debugmode) ? $query : 'hidden';
 
 				// Return parameters if in debugmode
-				$fetchedData['Parameters'] = ($this->debugmode) ? $parameters : 'hidden';
+				$fetchedData['parameters'] = ($this->debugmode) ? $parameters : 'hidden';
 
 				// Objectify
 				return (object) $fetchedData;
@@ -4555,10 +4555,10 @@ class Server {
 			// Failed, or no data found.
 			return (object) array(
 				// Status failed
-				"Status" => "Failed",
+				"status" => "Failed",
 
 				// Warning
-				"Warning" => "Failed to execute query",
+				"warning" => "Failed to execute query",
 
 				"query" => $query,
 
@@ -4569,10 +4569,10 @@ class Server {
 		// Failed, or no data found.
 		return (object) array(
 			// Status failed
-			"Status" => "Success",
+			"status" => "Success",
 
 			// Warning
-			"Warning" => "Executed query",
+			"warning" => "Executed query",
 		);
 	}
 
@@ -4644,10 +4644,10 @@ class Server {
 			return json_encode(
 				array(
 					// Send Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Table ... does not exists
-					"Error" => sprintf(
+					"error" => sprintf(
 						// Table ... does not exists
 						"Table \"%s\" does not exists",
 
@@ -4659,7 +4659,7 @@ class Server {
 					"Table" => $table,
 
 					// Request
-					"ReqURI" => $_SERVER['REQUEST_URI'],
+					"reqURI" => $_SERVER['REQUEST_URI'],
 				)
 			);
 		}
@@ -4670,13 +4670,13 @@ class Server {
 			return json_encode(
 				array(
 					// Send Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// No JSON
-					"Error" => "Please post JSON",
+					"error" => "Please post JSON",
 
 					// No JSON
-					"Fix" => "Post JSON",
+					"fix" => "Post JSON",
 				)
 			);
 		}
@@ -4698,13 +4698,13 @@ class Server {
 			return json_encode(
 				array(
 					// Send Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Error message
-					"Error" => "Please post valid JSON",
+					"error" => "Please post valid JSON",
 
 					// Fix
-					"Fix" => "Failed to decode JSON",
+					"fix" => "Failed to decode JSON",
 				)
 			);
 		}
@@ -4757,16 +4757,16 @@ class Server {
 					// Array
 					array(
 						// Send Status
-						"Status" => "Failed",
+						"status" => "Failed",
 
 						// Send error message
-						"Error" => "Missing required parameter",
+						"error" => "Missing required parameter",
 
 						// Send missing parameter
-						"Parameter" => $tableFields[$i],
+						"parameter" => $tableFields[$i],
 
 						// Send how to fix
-						"Fix" => sprintf(
+						"fix" => sprintf(
 							// Provide parameter ...
 							"Provide parameter \"%s\".",
 
@@ -4860,13 +4860,13 @@ class Server {
 				// Array
 				array(
 					// Send Status
-					"Status" => "Success",
+					"status" => "Success",
 
 					// Send info
-					"Info" => "Row inserted",
+					"info" => "Row inserted",
 
 					// Send RowID
-					"RowID" => $insertID,
+					"rowID" => $insertID,
 				)
 			);
 		}
@@ -4876,16 +4876,16 @@ class Server {
 			// Array
 			array(
 				// Send Status
-				"Status" => "Failed",
+				"status" => "Failed",
 
 				// Send Error message
-				"Error" => "Could not insert row",
+				"error" => "Could not insert row",
 
 				// Send how-to-fix
-				"Fix" => "Please try again later",
+				"fix" => "Please try again later",
 
 				// Append debug fields (if debugmode is true)
-				"Debug" => ($this->debugmode ? $sqlQuery : 'Off'),
+				"debug" => ($this->debugmode ? $sqlQuery : 'Off'),
 			)
 		);
 	}
@@ -5147,13 +5147,13 @@ class Server {
 				// Array
 				array(
 					// Send Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Show error message
-					"Error" => "PDOException happend!",
+					"error" => "PDOException happend!",
 
 					// Show the exception
-					"Exception" => $exception->getMessage(),
+					"exception" => $exception->getMessage(),
 				)
 			);
 		}
@@ -5165,13 +5165,13 @@ class Server {
 				// Array
 				array(
 					// Send Status
-					"Status" => "Failed",
+					"status" => "Failed",
 
 					// Show error message
-					"Error" => "Exception happend!",
+					"error" => "Exception happend!",
 
 					// Show the exception
-					"Exception" => $exception->getMessage(),
+					"exception" => $exception->getMessage(),
 				)
 			);
 		}
@@ -5181,13 +5181,13 @@ class Server {
 			// Return the error in JSON
 			array(
 				// Send Status
-				"Status" => "Failed",
+				"status" => "Failed",
 
 				// Show error message
-				"Error" => "Uncought exception!",
+				"error" => "Uncought exception!",
 
 				// Show the exceptional message
-				"Exception" => $exception,
+				"exception" => $exception,
 			)
 		);
 	}
@@ -5474,7 +5474,7 @@ class Server {
 							'translate' => $this->translate,
 
 							// What is the API Key?
-							'APIKey' => $this->APIKey,
+							"apiKey" => $this->APIKey,
 
 							// How many times i can try?
 							'triesMaximum' => $this->triesMaximum,
