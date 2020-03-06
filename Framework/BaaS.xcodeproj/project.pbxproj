@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DE0E4EC821DF94F600E9B243 /* BaaS-JSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0E4EC721DF94F600E9B243 /* BaaS-JSONDecoder.swift */; };
+		DE84E9C42409547300DBFAB6 /* BaaS-NetworkStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE84E9C32409547300DBFAB6 /* BaaS-NetworkStatus.swift */; };
 		DEA0328E21A8383200599F48 /* BaaS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEA0328421A8383100599F48 /* BaaS.framework */; };
 		DEA0329321A8383200599F48 /* BaaSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0329221A8383200599F48 /* BaaSTests.swift */; };
 		DEA0329521A8383200599F48 /* BaaS.h in Headers */ = {isa = PBXBuildFile; fileRef = DEA0328721A8383100599F48 /* BaaS.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -58,6 +59,7 @@
 
 /* Begin PBXFileReference section */
 		DE0E4EC721DF94F600E9B243 /* BaaS-JSONDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BaaS-JSONDecoder.swift"; path = "BaaS/BaaS-JSONDecoder.swift"; sourceTree = "<group>"; };
+		DE84E9C32409547300DBFAB6 /* BaaS-NetworkStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BaaS-NetworkStatus.swift"; path = "BaaS/BaaS-NetworkStatus.swift"; sourceTree = "<group>"; };
 		DEA0328421A8383100599F48 /* BaaS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BaaS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DEA0328721A8383100599F48 /* BaaS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaaS.h; sourceTree = "<group>"; };
 		DEA0328821A8383100599F48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				DEF2ED1021D64ECC00B41BDF /* BaaS-Compression.swift */,
 				DEF2ED1221D6525F00B41BDF /* BaaS-NetworkRequests.swift */,
 				DEA032A921A8389100599F48 /* BaaS-Delegate.swift */,
+				DE84E9C32409547300DBFAB6 /* BaaS-NetworkStatus.swift */,
 			);
 			path = BaaS;
 			sourceTree = "<group>";
@@ -302,6 +305,7 @@
 				DEF2ED1121D64ECC00B41BDF /* BaaS-Compression.swift in Sources */,
 				DEF2ED1321D6525F00B41BDF /* BaaS-NetworkRequests.swift in Sources */,
 				DEA032A821A8387100599F48 /* BaaS-Main.swift in Sources */,
+				DE84E9C42409547300DBFAB6 /* BaaS-NetworkStatus.swift in Sources */,
 				DEA032AA21A8389100599F48 /* BaaS-Delegate.swift in Sources */,
 				DE0E4EC821DF94F600E9B243 /* BaaS-JSONDecoder.swift in Sources */,
 			);
@@ -367,7 +371,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -433,6 +437,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
