@@ -13,10 +13,18 @@ import Foundation
  *
  * This protocol is used for the BaaS Server Interface.
  */
-public protocol BaaSDelegate: class {
+@objc
+public protocol BaaSDelegate {
     /**
      * testForReturn(withDataAs: String)
      *
      */
-    func testForReturn(withDataAs: String)
+    @objc optional func testForReturn(withDataAs: String)
+    @objc optional func receivedChatMessage(messageID: Int, message: String, nsfwScore: Int, from: String, verifiedUser: Bool)
+}
+
+// To make things optional.
+extension BaaSDelegate {
+    func testForReturn(withDataAs: String) { }
+    func receivedChatMessage(messageID: Int, message: String, nsfwScore: Int, from: String, verifiedUser: Bool) { }
 }

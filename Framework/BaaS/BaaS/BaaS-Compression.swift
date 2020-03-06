@@ -52,8 +52,7 @@ extension BaaS {
     }
 }
 
-public extension Data
-{
+public extension Data {
     /**
      *
      */
@@ -70,8 +69,7 @@ public extension Data
         source: UnsafePointer<UInt8>,
         sourceSize: Int,
         preload: Data = Data()
-        ) -> Data?
-    {
+        ) -> Data? {
         guard config.operation == COMPRESSION_STREAM_ENCODE || sourceSize > 0 else { return nil }
         
         let streamBase = UnsafeMutablePointer<compression_stream>.allocate(capacity: 1)
@@ -127,10 +125,8 @@ public extension Data
      * - returns: raw deflated data according to [RFC-1951](https://tools.ietf.org/html/rfc1951).
      * - note: Fixed at compression level 5 (best trade off between speed and time)
      */
-    func deflate() -> Data?
-    {
-        return self.withUnsafeBytes {
-            (sourcePtr: UnsafePointer<UInt8>) -> Data? in
+    func deflate() -> Data? {
+        return self.withUnsafeBytes { (sourcePtr: UnsafePointer<UInt8>) -> Data? in
             let configuration = (
                 operation: COMPRESSION_STREAM_ENCODE,
                 algorithm: COMPRESSION_ZLIB
@@ -150,11 +146,8 @@ public extension Data
      * stream according to [RFC-1951](https://tools.ietf.org/html/rfc1951).
      * - returns: uncompressed data
      */
-    func inflate() -> Data?
-    {
-        //'withUnsafeBytes' is deprecated: use `withUnsafeBytes<R>(_: (UnsafeRawBufferPointer) throws -> R) rethrows -> R` instead
-        return self.withUnsafeBytes {
-            (sourcePtr: UnsafePointer<UInt8>) -> Data? in
+    func inflate() -> Data? {
+        return self.withUnsafeBytes { (sourcePtr: UnsafePointer<UInt8>) -> Data? in
             let configuration = (
                 operation: COMPRESSION_STREAM_DECODE,
                 algorithm: COMPRESSION_ZLIB
@@ -170,12 +163,11 @@ public extension Data
 }
 
 // Fix for swift 5.
-extension Data
-{
-    func withUnsafeBytes<ResultType, ContentType>(_ body: (UnsafePointer<ContentType>) throws -> ResultType) rethrows -> ResultType
-    {
-        return try self.withUnsafeBytes({
-            (rawBufferPointer: UnsafeRawBufferPointer) -> ResultType in
+extension Data {
+    func withUnsafeBytes<ResultType, ContentType>(
+        _ body: (UnsafePointer<ContentType>) throws -> ResultType
+    ) rethrows -> ResultType {
+        return try self.withUnsafeBytes({ (rawBufferPointer: UnsafeRawBufferPointer) -> ResultType in
             return try body(
                 rawBufferPointer.bindMemory(to: ContentType.self).baseAddress!
             )

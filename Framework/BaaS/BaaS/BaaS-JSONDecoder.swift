@@ -152,26 +152,24 @@ public enum JSON {
     // MARK: Helpers
     
     public var object: Any {
-        get {
-            switch self {
-            case .dictionary(let value):
-                return value.mapValues { $0.object }
-                
-            case .array(let value):
-                return value.map { $0.object }
-                
-            case .string(let value):
-                return value
-                
-            case .number(let value):
-                return value
-                
-            case .bool(let value):
-                return value
-                
-            case .null:
-                return NSNull()
-            }
+        switch self {
+        case .dictionary(let value):
+            return value.mapValues { $0.object }
+            
+        case .array(let value):
+            return value.map { $0.object }
+            
+        case .string(let value):
+            return value
+            
+        case .number(let value):
+            return value
+            
+        case .bool(let value):
+            return value
+            
+        case .null:
+            return NSNull()
         }
     }
     
@@ -181,7 +179,7 @@ public enum JSON {
                 withJSONObject: self.object,
                 options: options
             )
-        ) ?? Data()
+            ) ?? Data()
     }
     
 }
