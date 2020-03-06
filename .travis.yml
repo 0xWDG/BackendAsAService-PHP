@@ -7,7 +7,7 @@ matrix:
       xcode_scheme: BaaSTests
       xcode_destination: platform=platform=iOS Simulator,name=iPhone XS Max'
       script:
-        - xcodebuild test -project Framework/BaaS.xcodeproj -scheme BaaSTests -destination 'platform=iOS Simulator,name=iPhone XS Max' CODE_SIGNING_ALLOWED=NO
+        - xcodebuild test -project Framework/BaaS.xcodeproj -scheme BaaSTests -destination 'platform=iOS Simulator,name=iPhone 11 Pro Max' CODE_SIGNING_ALLOWED=NO
 
     - language: php
       name: "[Server] PHP 5.6"
