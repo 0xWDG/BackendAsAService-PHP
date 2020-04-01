@@ -38,7 +38,7 @@ extension NSColor
  *
  * **Simple usage**
  *
- * _AppDelegate_
+ * **AppDelegate**
  *
  *     var database = BaaS.shared
  *
@@ -58,7 +58,7 @@ extension NSColor
  *          )
  *     }
  *
- * _a ViewController_
+ * **a ViewController (no chat)**
  *
  *      class myViewController: UIViewController, BaaSDelegate {
  *          let db = BaaS.shared
@@ -68,11 +68,26 @@ extension NSColor
  *          }
  *      }
  *
- * - Copyright: [Wesley de Groot](https://wesleydegroot.nl) ([WDGWV](https://wdgwv.com)) and [Contributors](https://github.com/BackendasaService/BaaS/graphs/contributors).
+ * **a ViewController (with chat)**
+ *
+ *      class myViewController: UIViewController, BaaSDelegate, BaaSChatDelegate {
+ *          let db = BaaS.shared
+ *
+ *          override func viewDidLoad() {
+ *              db.delegate = self
+ *              db.chatDelegate = self
+ *          }
+ *      }
+ *
+ * - Copyright: [Wesley de Groot](https://wesleydegroot.nl) ([WDGWV](https://wdgwv.com))\
+ *  and [Contributors](https://github.com/BackendasaService/BaaS/graphs/contributors).
  */
 open class BaaS {
     /// This is the delegate where it calls back to.
     public weak var delegate: BaaSDelegate?
+
+    /// This is the delegate where it calls back to.
+    public var chatDelegate: BaaSChatDelegate?
     
     /// The API Key which the user provides
     private var apiKey: String = "DEVELOPMENT_UNSAFE_KEY"
@@ -1248,33 +1263,39 @@ open class BaaS {
         return baasResponseDecoder(jsonData: task).status == "Success"
     }
     
-    public func lisenForChatMessages(forChatID: String) {
-        guard let delegate = self.delegate else {
+    public func lisenForChatMessages(forChatID: String, file: StaticString = #file, line: UInt = #line) {
+        guard let delegate = self.chatDelegate else {
             fatalError(
-                "[BaaS] Lisening for messages without delegate, add BaaSDelegate to your main class,"
-                + "and link it (BaaS.shared.delegate = self (or your other class))."
+                "[BaaS] Lisening for messages without delegate, add BaaSChatDelegate to your main class,"
+                + "and link it (BaaS.shared.chatDelegate = self (or your other class)).",
+                file: file,
+                line: line
             )
         }
         
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .seconds(30)) {
+        self.log("Start Checking for messages (wait 10 sec)")
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .seconds(5)) {
             self.checkForChatMessages(forChatID: forChatID, withDelegate: delegate)
         }
     }
     
-    internal func checkForChatMessages(forChatID: String, withDelegate: BaaSDelegate) {
+    internal func checkForChatMessages(forChatID: String, withDelegate: BaaSChatDelegate) {
+        self.log("Checking for messages")
+        
         // swiftlint:disable:next line_length
-        let randomChatStrings = ["The Japanese yen for commerce is still well-known.", "There was coal in his stocking and he was thrilled.", "My dentist tells me that chewing bricks is very bad for your teeth.", "They called out her name time and again, but were met with nothing but silence.", "Improve your goldfish's physical fitness by getting him a bicycle.", "We have a lot of rain in June.", "Nothing seemed out of place except the washing machine in the bar.", "Swim at your own risk was taken as a challenge for the group of Kansas City college students.", "She opened up her third bottle of wine of the night.", "There is a fly in the car with us.", "When nobody is around, the trees gossip about the people who have walked under them.", "With a single flip of the coin, his life changed forever.", "Don't put peanut butter on the dog's nose.", "The snow-covered path was no help in finding his way out of the backcountry.", "You're good at English when you know the difference between a man eating chicken and a man-eating chicken.", "His seven-layer cake only had six layers.", "At that moment she realized she had a sixth sense.", "I'm a great listener, really good with empathy vs sympathy and all that, but I hate people.", "She did her best to help him.", "As you consider all the possible ways to improve yourself and the world, you notice John Travolta seems fairly unhappy.", "There are few things better in life than a slice of pie.", "Flesh-colored yoga pants were far worse than even he feared.", "I just wanted to tell you I could see the love you have for your child by the way you look at her.", "Doris enjoyed tapping her nails on the table to annoy everyone.", "When he encountered maize for the first time, he thought it incredibly corny.", "She cried diamonds.", "This book is sure to liquefy your brain.", "Various sea birds are elegant, but nothing is as elegant as a gliding pelican.", "I hope that, when I've built up my savings, I'll be able to travel to Mexico.", "For oil spots on the floor, nothing beats parking a motorbike in the lounge.", "People who insist on picking their teeth with their elbows are so annoying!", "He wondered if she would appreciate his toenail collection.", "This is the last random sentence I will be writing and I am going to stop mid-sent", "Erin accidentally created a new universe.", "He wondered why at 18 he was old enough to go to war", "He went back to the video to see what had been recorded and was shocked at what he saw.", "Plans for this weekend include turning wine into water.", "Truth in advertising and dinosaurs with skateboards have much in common.", "Please wait outside of the house.", "My Mum tries to be cool by saying that she likes all the same things that I do.", "Don't piss in my garden and tell me you're trying to help my plants grow.", "Random words in front of other random words create a random sentence.", "It didn't make sense unless you had the power to eat colors.", "Hit me with your pet shark!", "The Tsunami wave crashed against the raised houses and broke the pilings as if they were toothpicks.", "They throw cabbage that turns your brain into emotional baggage.", "The quick brown fox jumps over the lazy dog.", "A song can make or ruin a person’s day if they let it get to them.", "There is so much to understand.", "You're unsure whether or not to trust him, but very thankful that you wore a turtle neck."]
+        let randomChatStrings = ["The Japanese yen for commerce is still well-known.", "There was coal in his stocking and he was thrilled.", "My dentist tells me that chewing bricks is very bad for your teeth.", "They called out her name time and again, but were met with nothing but silence.", "Improve your goldfish's physical fitness by getting him a bicycle.", "We have a lot of rain in June.", "Nothing seemed out of place except the washing machine in the bar.", "Swim at your own risk was taken as a challenge for the group of Kansas City college students.", "She opened up her third bottle of wine of the night.", "There is a fly in the car with us.", "When nobody is around, the trees gossip about the people who have walked under them.", "With a single flip of the coin, his life changed forever.", "Don't put peanut butter on the dog's nose.", "The snow-covered path was no help in finding his way out of the backcountry.", "You're good at English when you know the difference between a man eating chicken and a man-eating chicken.", "His seven-layer cake only had six layers.", "At that moment she realized she had a sixth sense.", "I'm a great listener, really good with empathy vs sympathy and all that, but I hate people.", "She did her best to help him.", "As you consider all the possible ways to improve yourself and the world, you notice John Travolta seems fairly unhappy.", "There are few things better in life than a slice of pie.", "Flesh-colored yoga pants were far worse than even he feared.", "I just wanted to tell you I could see the love you have for your child by the way you look at her.", "Doris enjoyed tapping her nails on the table to annoy everyone.", "When he encountered maize for the first time, he thought it incredibly corny.", "She cried diamonds.", "This book is sure to liquefy your brain.", "Various sea birds are elegant, but nothing is as elegant as a gliding pelican.", "I hope that, when I've built up my savings, I'll be able to travel to Mexico.", "For oil spots on the floor, nothing beats parking a motorbike in the lounge.", "People who insist on picking their teeth with their elbows are so annoying!", "He wondered if she would appreciate his toenail collection.", "This is the last random sentence I will be writing and I am going to stop mid-sent", "Erin accidentally created a new universe.", "He wondered why at 18 he was old enough to go to war", "He went back to the video to see what had been recorded and was shocked at what he saw.", "Plans for this weekend include turning wine into water.", "Truth in advertising and dinosaurs with skateboards have much in common.", "Please wait outside of the house.", "My Mum tries to be cool by saying that she likes all the same things that I do.", "Don't piss in my garden and tell me you're trying to help my plants grow.", "Random words in front of other random words create a random sentence.", "It didn't make sense unless you had the power to eat colors.", "Hit me with your pet shark!", "The Tsunami wave crashed against the raised houses and broke the pilings as if they were toothpicks.", "They throw cabbage that turns your brain into emotional baggage.", "The quick brown fox jumps over the lazy dog.", "A song can make or ruin a person’s day if they let it get to them.", "There is so much to understand.", "You're unsure whether or not to trust him, but very thankful that you wore a turtle neck.", "Happen?", "Eten?", "Dineren?", "Uiteten?", "Hoe heet je?", "Hoe gaat het?", "Hoe oud ben je?", "Waar kom je vandaan?", "Heb je kinderen?", "Waar woon je?", "Welk werk heb je gedaan?", "Ben je getrouwd?", "Wil je een kopje koffie?", "Ik begrijp je niet", "Hallo, wat een lekker weer, hè?", "Ga je mee naar de winkel?", "Wil je koffie?", "Heb je liever thee?", "Wil je iets eten?", "Wil je iets drinken?", "Wat eet je vanavond?", "Waar ga je naartoe?", "Wanneer kom je weer?", "Mag ik jouw adres hebben?", "Mag ik je telefoonnummer?", "Wat kan ik voor U doen?", "Nog een keertje?", "Waar is het restaurant?", "Pizza?", "Mag ik call-zone?", "”Het regent meters bier.\nHet wordt dus pompen of verzuipen, dat is de enige manier.”", "”Hier aan de kust”.", "Wil je mee naar de Mc Donalds?"]
         
         // RE-Check
+        self.log("Sending to delegate \(withDelegate)")
         withDelegate.receivedChatMessage(
             messageID: 0,
             message: randomChatStrings.randomElement()!,
             nsfwScore: 0,
-            from: "Some one for you",
+            from: "🥷 Piet",
             verifiedUser: false
         )
         
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .seconds(30)) {
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .seconds(10)) {
             self.checkForChatMessages(forChatID: forChatID, withDelegate: withDelegate)
         }
     }

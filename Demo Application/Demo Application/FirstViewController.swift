@@ -101,4 +101,3 @@ class FirstViewController: UIViewController, BaaSDelegate {
             db.log("Returned data=\(withDataAs)")
         }
 }
-

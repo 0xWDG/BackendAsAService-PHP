@@ -20,11 +20,14 @@ public protocol BaaSDelegate {
      *
      */
     @objc optional func testForReturn(withDataAs: String)
-    @objc optional func receivedChatMessage(messageID: Int, message: String, nsfwScore: Int, from: String, verifiedUser: Bool)
+}
+
+@objc
+public protocol BaaSChatDelegate {
+    func receivedChatMessage(messageID: Int, message: String, nsfwScore: Int, from: String, verifiedUser: Bool)
 }
 
 // To make things optional.
 extension BaaSDelegate {
     func testForReturn(withDataAs: String) { }
-    func receivedChatMessage(messageID: Int, message: String, nsfwScore: Int, from: String, verifiedUser: Bool) { }
 }
