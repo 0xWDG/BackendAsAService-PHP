@@ -33,7 +33,7 @@ public enum JSON {
     // MARK: Dynamic Member Lookup
     public subscript(index: Int) -> JSON? {
         if case .array(let arr) = self {
-            return index < arr.count ? arr[index] : nil
+            return index < arr.count ? arr[index]: nil
         }
         return nil
     }
@@ -103,7 +103,7 @@ public enum JSON {
         if case .string(let value) = self {
             return value
         } else if case .bool(let value) = self {
-            return value ? "true" : "false"
+            return value ? "true": "false"
         } else if case .number(let value) = self {
             return value.stringValue
         }

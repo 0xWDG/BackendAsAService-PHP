@@ -87,7 +87,7 @@ open class BaaS {
     public weak var delegate: BaaSDelegate?
 
     /// This is the delegate where it calls back to.
-    public var chatDelegate: BaaSChatDelegate?
+    public weak var chatDelegate: BaaSChatDelegate?
     
     /// The API Key which the user provides
     private var apiKey: String = "DEVELOPMENT_UNSAFE_KEY"
@@ -858,7 +858,7 @@ open class BaaS {
                     "name": field.name,
                     "type": field.type,
                     "defaultValue": field.defaultValue,
-                    "canBeEmpty": field.canBeEmpty ? "yes" : "no"
+                    "canBeEmpty": field.canBeEmpty ? "yes": "no"
                 ]
             )
         }

@@ -234,7 +234,7 @@ extension BaaS {
         // Walk trough the post Fields
         for (key, val) in postFields {
             /// Check if we need to preAppend
-            let preAppend = (idx == 0) ? "" : "&"
+            let preAppend = (idx == 0) ? "": "&"
             
             /// Encode the value
             let encodedValue = val.addingPercentEncoding(

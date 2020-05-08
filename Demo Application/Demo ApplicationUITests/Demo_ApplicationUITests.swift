@@ -1,14 +1,6 @@
 // UITESTS WILL FAIL.
 // UI TESTS FAILS TO LOAD CommonCrypto and crashes.
 //
-////
-////  Demo_ApplicationUITests.swift
-////  Demo ApplicationUITests
-////
-////  Created by Wesley de Groot on 23/11/2018.
-////  Copyright © 2018 Wesley de Groot. All rights reserved.
-////
-//
 //import XCTest
 //
 //class Demo_ApplicationUITests: XCTestCase {
