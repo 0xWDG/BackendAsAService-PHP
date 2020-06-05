@@ -12,6 +12,10 @@ import Foundation
 // For Certificate/Public Key-Pinning
 import Security
 
+#if canImport(Aurora)
+import Aurora
+#endif
+
 #if !targetEnvironment(simulator)
 // For supporting SHA256
 import CommonCrypto
@@ -341,6 +345,9 @@ class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
         0x00, 0x03, 0x82, 0x01, 0x0f, 0x00
     ]
     
+    /// <#Description#>
+    /// - Parameter data: <#data description#>
+    /// - Returns: <#description#>
     private func sha256(data: Data) -> String {
         #if !targetEnvironment(simulator)
         /// Key header
@@ -360,6 +367,12 @@ class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
         #endif
     }
     
+    
+    /// <#Description#>
+    /// - Parameters:
+    ///   - session: <#session description#>
+    ///   - challenge: <#challenge description#>
+    ///   - completionHandler: <#completionHandler description#>
     func urlSession(
         _ session: URLSession,
         didReceive challenge: URLAuthenticationChallenge,

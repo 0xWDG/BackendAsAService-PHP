@@ -9,6 +9,10 @@
 import Foundation
 import Compression
 
+#if canImport(Aurora)
+import Aurora
+#endif
+
 /**
  * **B**ackend **a**s **a** **S**ervice (_BaaS_)
  *
@@ -29,9 +33,9 @@ import Compression
  *      }
  */
 extension BaaS {
-    /**
-     *
-     */
+    /// <#Description#>
+    /// - Parameter data: <#data description#>
+    /// - Returns: <#description#>
     func compress(data: Data) -> Data {
         guard let compressed = data.deflate() else {
             return "".data(using: .utf8)!
@@ -39,10 +43,10 @@ extension BaaS {
 
         return compressed
     }
-
-    /**
-     *
-     */
+    
+    /// <#Description#>
+    /// - Parameter data: <#data description#>
+    /// - Returns: <#description#>
     func decompress(data: Data) -> Data {
         guard let decompressed = data.inflate() else {
             return "".data(using: .utf8)!
@@ -53,17 +57,20 @@ extension BaaS {
 }
 
 public extension Data {
-    /**
-     *
-     */
+
+    /// <#Description#>
     fileprivate typealias Config = (
         operation: compression_stream_operation,
         algorithm: compression_algorithm
     )
-
-    /**
-     *
-     */
+    
+    /// <#Description#>
+    /// - Parameters:
+    ///   - config: <#config description#>
+    ///   - source: <#source description#>
+    ///   - sourceSize: <#sourceSize description#>
+    ///   - preload: <#preload description#>
+    /// - Returns: <#description#>
     fileprivate func perform(
         config: Config,
         source: UnsafePointer<UInt8>,
@@ -164,6 +171,10 @@ public extension Data {
 
 // Fix for swift 5.
 extension Data {
+    /// <#Description#>
+    /// - Parameter body: <#body description#>
+    /// - Throws: <#description#>
+    /// - Returns: <#description#>
     func withUnsafeBytes<ResultType, ContentType>(
         _ body: (UnsafePointer<ContentType>) throws -> ResultType
     ) rethrows -> ResultType {

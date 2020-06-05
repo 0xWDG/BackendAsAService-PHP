@@ -11,23 +11,29 @@ import XCTest
 @testable import BaaS
 
 class BaaSTests: XCTestCase, BaaSDelegate {
+    /// <#Description#>
+    /// - Parameter withDataAs: <#withDataAs description#>
     func testForReturn(withDataAs: String) {
         print(withDataAs)
     }
     
+    /// <#Description#>
     let db = BaaS.shared
     
+    /// <#Description#>
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         db.delegate = self
         db.set(server: "http://192.168.178.52:8000/index.php")
         db.set(apiKey: "DEVELOPMENT_UNSAFE_KEY")
     }
-
+    
+    /// <#Description#>
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-
+    
+    /// <#Description#>
     func testCreateUser() {
         // function is not done yet.
         XCTAssert(true)
@@ -42,6 +48,7 @@ class BaaSTests: XCTestCase, BaaSDelegate {
 //        )
     }
     
+    /// <#Description#>
     func testLoginUser() {
         // function is not done yet.
         XCTAssert(true)
@@ -54,7 +61,8 @@ class BaaSTests: XCTestCase, BaaSDelegate {
 //            "Unable to login"
 //        )
     }
-
+    
+    /// <#Description#>
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measure {

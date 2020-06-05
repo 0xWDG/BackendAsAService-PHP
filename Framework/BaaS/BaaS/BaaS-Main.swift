@@ -9,10 +9,15 @@
 // swiftlint:disable file_length
 import Foundation
 
+#if canImport(Aurora)
+import Aurora
+#endif
+
 #if os(iOS)
 import UserNotifications
 
 extension UIColor {
+    /// <#Description#>
     public class var baas: UIColor {
         return UIColor(red: 0, green: 212/255, blue: 255/255, alpha: 1.0)
     }
@@ -22,6 +27,7 @@ extension UIColor {
 #if os(macOS)
 extension NSColor
 {
+    /// <#Description#>
     private class var baas: NSColor {
         return NSColor(red: 0, green: 212/255, blue: 255/255, alpha: 1.0)
     }
@@ -242,6 +248,8 @@ open class BaaS {
         return true
     }
     
+    /// <#Description#>
+    /// - Returns: <#description#>
     public func checkForNotificationsInBackground() -> UIBackgroundFetchResult {
         self.fireNotification(withTitle: "Test for notifications", description: "Cool!")
         // Notifications
@@ -251,6 +259,9 @@ open class BaaS {
         //        return .noData
     }
     
+    /// <#Description#>
+    /// - Parameter length: <#length description#>
+    /// - Returns: <#description#>
     private func generateRandomString(length: Int) -> String {
         let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         return String(
@@ -258,6 +269,10 @@ open class BaaS {
         )
     }
     
+    /// <#Description#>
+    /// - Parameters:
+    ///   - withTitle: <#withTitle description#>
+    ///   - description: <#description description#>
     private func fireNotification(withTitle: String, description: String) {
         #if os(iOS) && !targetEnvironment(simulator)
         notificationCenter.getNotificationSettings { (settings) in
@@ -295,6 +310,7 @@ open class BaaS {
         #endif
     }
     
+    /// <#Description#>
     private func resetNotifications() {
         #if os(iOS) && !targetEnvironment(simulator)
         notificationCenter.removeAllPendingNotificationRequests()
@@ -986,12 +1002,20 @@ open class BaaS {
         return response.status == "Success"
     }
     
+    /// <#Description#>
+    /// - Parameter username: <#username description#>
     public func userGet(username: String) {
         
     }
+    
+    /// <#Description#>
+    /// - Parameter email: <#email description#>
     public func userGet(email: String) {
         
     }
+    
+    /// <#Description#>
+    /// - Parameter userID: <#userID description#>
     public func userGet(userID: Int) {
         
     }
@@ -1037,6 +1061,11 @@ open class BaaS {
         )
     }
     
+    /// <#Description#>
+    /// - Parameters:
+    ///   - forKey: <#forKey description#>
+    ///   - inDatabase: <#inDatabase description#>
+    /// - Returns: <#description#>
     public func value(forKey: String, inDatabase: String) -> JSON {
         return JSON(
             self.value(
@@ -1052,6 +1081,11 @@ open class BaaS {
         )
     }
     
+    /// <#Description#>
+    /// - Parameters:
+    ///   - expression: <#expression description#>
+    ///   - inDatabase: <#inDatabase description#>
+    /// - Returns: <#description#>
     public func value(expression: [BaaS_WhereExpression], inDatabase: String) -> String {
         var flatArray: [[String]] = []
         
@@ -1186,7 +1220,7 @@ open class BaaS {
     /**
      * File Exists
      *
-     * - parameter withFileID: The file identifier
+     * - parameter fileID: The file identifier
      * - returns: Boolean
      */
     public func fileExists(withFileID fileID: String) -> Bool {
@@ -1200,6 +1234,9 @@ open class BaaS {
         return baasResponseDecoder(jsonData: task).file == "Found"
     }
     
+    /// <#Description#>
+    /// - Parameter fileID: <#fileID description#>
+    /// - Returns: <#description#>
     public func fileDownload(withFileID fileID: String) -> Data {
         let task = self.networkRequest(
             "\(serverAddress)/file.download/\(fileID)",
@@ -1226,7 +1263,10 @@ open class BaaS {
         log("Something went wrong")
         return task
     }
-    
+
+    /// <#Description#>
+    /// - Parameter fileID: <#fileID description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func fileDelete(withFileID fileID: String) -> Any {
         let task = self.networkRequest(
@@ -1239,6 +1279,11 @@ open class BaaS {
         return String.init(data: task, encoding: .utf8)!
     }
     
+    /// <#Description#>
+    /// - Parameters:
+    ///   - whereStr: <#whereStr description#>
+    ///   - inDatabase: <#inDatabase description#>
+    /// - Returns: <#description#>
     internal func value(where whereStr: [[String]], inDatabase: String) -> String {
         let task = self.networkRequest(
             "\(serverAddress)/row.get/\(inDatabase)",
@@ -1251,6 +1296,11 @@ open class BaaS {
         return String.init(data: task, encoding: .utf8)!
     }
     
+    /// <#Description#>
+    /// - Parameters:
+    ///   - user: <#user description#>
+    ///   - message: <#message description#>
+    /// - Returns: <#description#>
     @discardableResult public func sendChatMessage(to user: String, message: String) -> Bool {
         let task = self.networkRequest(
             "\(serverAddress)/chat.send/\(user)",
@@ -1263,6 +1313,11 @@ open class BaaS {
         return baasResponseDecoder(jsonData: task).status == "Success"
     }
     
+    /// <#Description#>
+    /// - Parameters:
+    ///   - forChatID: <#forChatID description#>
+    ///   - file: <#file description#>
+    ///   - line: <#line description#>
     public func lisenForChatMessages(forChatID: String, file: StaticString = #file, line: UInt = #line) {
         guard let delegate = self.chatDelegate else {
             fatalError(
@@ -1279,6 +1334,10 @@ open class BaaS {
         }
     }
     
+    /// <#Description#>
+    /// - Parameters:
+    ///   - forChatID: <#forChatID description#>
+    ///   - withDelegate: <#withDelegate description#>
     internal func checkForChatMessages(forChatID: String, withDelegate: BaaSChatDelegate) {
         self.log("Checking for messages")
         
@@ -1300,6 +1359,9 @@ open class BaaS {
         }
     }
     
+    /// <#Description#>
+    /// - Parameter text: <#text description#>
+    /// - Returns: <#description#>
     public func convertToDictionary(text: String) -> [String: Any]? {
         if let data = text.data(using: .utf8) {
             do {
@@ -1318,6 +1380,7 @@ open class BaaS {
      */
     public func noop(_ any: Any) { }
     
+    /// <#Description#>
     @available(*, deprecated)
     internal func deprecated_placeholder() { }
 }
