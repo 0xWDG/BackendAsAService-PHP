@@ -24,7 +24,7 @@ class SecondViewController: UIViewController {
         let fileName = "thisIsMyFileName"
         
         // Empty file
-        var fileData: Data? = nil
+        var fileData: Data?
         
         // Does our file exists
         if database.fileExists(withFileID: fileName) {
@@ -56,12 +56,9 @@ class SecondViewController: UIViewController {
                 )
             )
             
-            
             super.viewDidLoad()
             // Do any additional setup after loading the view, typically from a nib.
         }
     }
     
-    
 }
-

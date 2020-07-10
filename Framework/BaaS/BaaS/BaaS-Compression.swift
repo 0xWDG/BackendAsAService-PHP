@@ -9,6 +9,10 @@
 import Foundation
 import Compression
 
+#if canImport(Aurora)
+import Aurora
+#endif
+
 /**
  * **B**ackend **a**s **a** **S**ervice (_BaaS_)
  *
@@ -29,9 +33,9 @@ import Compression
  *      }
  */
 extension BaaS {
-    /**
-     *
-     */
+    /// <#Description#>
+    /// - Parameter data: <#data description#>
+    /// - Returns: <#description#>
     func compress(data: Data) -> Data {
         guard let compressed = data.deflate() else {
             return "".data(using: .utf8)!
@@ -39,10 +43,10 @@ extension BaaS {
 
         return compressed
     }
-
-    /**
-     *
-     */
+    
+    /// <#Description#>
+    /// - Parameter data: <#data description#>
+    /// - Returns: <#description#>
     func decompress(data: Data) -> Data {
         guard let decompressed = data.inflate() else {
             return "".data(using: .utf8)!
@@ -52,26 +56,27 @@ extension BaaS {
     }
 }
 
-public extension Data
-{
-    /**
-     *
-     */
+public extension Data {
+
+    /// <#Description#>
     fileprivate typealias Config = (
         operation: compression_stream_operation,
         algorithm: compression_algorithm
     )
-
-    /**
-     *
-     */
+    
+    /// <#Description#>
+    /// - Parameters:
+    ///   - config: <#config description#>
+    ///   - source: <#source description#>
+    ///   - sourceSize: <#sourceSize description#>
+    ///   - preload: <#preload description#>
+    /// - Returns: <#description#>
     fileprivate func perform(
         config: Config,
         source: UnsafePointer<UInt8>,
         sourceSize: Int,
         preload: Data = Data()
-        ) -> Data?
-    {
+        ) -> Data? {
         guard config.operation == COMPRESSION_STREAM_ENCODE || sourceSize > 0 else { return nil }
         
         let streamBase = UnsafeMutablePointer<compression_stream>.allocate(capacity: 1)
@@ -127,10 +132,8 @@ public extension Data
      * - returns: raw deflated data according to [RFC-1951](https://tools.ietf.org/html/rfc1951).
      * - note: Fixed at compression level 5 (best trade off between speed and time)
      */
-    func deflate() -> Data?
-    {
-        return self.withUnsafeBytes {
-            (sourcePtr: UnsafePointer<UInt8>) -> Data? in
+    func deflate() -> Data? {
+        return self.withUnsafeBytes { (sourcePtr: UnsafePointer<UInt8>) -> Data? in
             let configuration = (
                 operation: COMPRESSION_STREAM_ENCODE,
                 algorithm: COMPRESSION_ZLIB
@@ -150,11 +153,8 @@ public extension Data
      * stream according to [RFC-1951](https://tools.ietf.org/html/rfc1951).
      * - returns: uncompressed data
      */
-    func inflate() -> Data?
-    {
-        //'withUnsafeBytes' is deprecated: use `withUnsafeBytes<R>(_: (UnsafeRawBufferPointer) throws -> R) rethrows -> R` instead
-        return self.withUnsafeBytes {
-            (sourcePtr: UnsafePointer<UInt8>) -> Data? in
+    func inflate() -> Data? {
+        return self.withUnsafeBytes { (sourcePtr: UnsafePointer<UInt8>) -> Data? in
             let configuration = (
                 operation: COMPRESSION_STREAM_DECODE,
                 algorithm: COMPRESSION_ZLIB
@@ -170,12 +170,15 @@ public extension Data
 }
 
 // Fix for swift 5.
-extension Data
-{
-    func withUnsafeBytes<ResultType, ContentType>(_ body: (UnsafePointer<ContentType>) throws -> ResultType) rethrows -> ResultType
-    {
-        return try self.withUnsafeBytes({
-            (rawBufferPointer: UnsafeRawBufferPointer) -> ResultType in
+extension Data {
+    /// <#Description#>
+    /// - Parameter body: <#body description#>
+    /// - Throws: <#description#>
+    /// - Returns: <#description#>
+    func withUnsafeBytes<ResultType, ContentType>(
+        _ body: (UnsafePointer<ContentType>) throws -> ResultType
+    ) rethrows -> ResultType {
+        return try self.withUnsafeBytes({ (rawBufferPointer: UnsafeRawBufferPointer) -> ResultType in
             return try body(
                 rawBufferPointer.bindMemory(to: ContentType.self).baseAddress!
             )

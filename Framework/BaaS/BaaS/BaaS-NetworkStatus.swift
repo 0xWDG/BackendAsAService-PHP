@@ -9,23 +9,40 @@
 import Foundation
 import Network
 
+#if canImport(Aurora)
+import Aurora
+#endif
+
+/// <#Description#>
 public class NetworkStatus {
     
     // MARK: - Properties
+    
+    /// <#Description#>
     public static let shared = NetworkStatus()
     
+    /// <#Description#>
     var monitor: NWPathMonitor?
+    
+    /// <#Description#>
     var isMonitoring = false
     
+    /// <#Description#>
     public var didStartMonitoringHandler: (() -> Void)?
+    
+    /// <#Description#>
     public var didStopMonitoringHandler: (() -> Void)?
+    
+    /// <#Description#>
     public var netStatusChangeHandler: (() -> Void)?
     
+    /// <#Description#>
     public var isConnected: Bool {
         guard let monitor = monitor else { return false }
         return monitor.currentPath.status == .satisfied
     }
     
+    /// <#Description#>
     public var interfaceType: NWInterface.InterfaceType? {
         guard let monitor = monitor else { return nil }
         
@@ -33,27 +50,31 @@ public class NetworkStatus {
             monitor.currentPath.usesInterfaceType($0.type) }.first?.type
     }
     
+    /// <#Description#>
     public var availableInterfacesTypes: [NWInterface.InterfaceType]? {
         guard let monitor = monitor else { return nil }
         return monitor.currentPath.availableInterfaces.map { $0.type }
     }
     
+    /// <#Description#>
     public var isExpensive: Bool {
         return monitor?.currentPath.isExpensive ?? false
     }
     
     // MARK: - Init & Deinit
     
+    /// <#Description#>
     private init() {
         startMonitoring()
     }
     
+    /// <#Description#>
     deinit {
         stopMonitoring()
     }
     
     // MARK: - Method Implementation
-    
+    /// <#Description#>
     public func startMonitoring() {
         guard !isMonitoring else { return }
         
@@ -69,6 +90,7 @@ public class NetworkStatus {
         didStartMonitoringHandler?()
     }
     
+    /// <#Description#>
     public func stopMonitoring() {
         guard isMonitoring, let monitor = monitor else { return }
         monitor.cancel()
@@ -76,5 +98,4 @@ public class NetworkStatus {
         isMonitoring = false
         didStopMonitoringHandler?()
     }
-    
 }

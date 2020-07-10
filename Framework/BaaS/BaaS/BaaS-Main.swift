@@ -6,31 +6,37 @@
 //  Copyright © 2018 Wesley de Groot. All rights reserved.
 //
 
+// swiftlint:disable file_length
 import Foundation
+
+#if canImport(Aurora)
+import Aurora
+#endif
 
 #if os(iOS)
 import UserNotifications
 
-extension UIColor
-{
-    public class var BaaS: UIColor
-    {
+extension UIColor {
+    /// <#Description#>
+    public class var baas: UIColor {
         return UIColor(red: 0, green: 212/255, blue: 255/255, alpha: 1.0)
     }
 }
 #endif
+
 #if os(macOS)
 extension NSColor
 {
-    private class var BaaS: NSColor
-    {
+    /// <#Description#>
+    private class var baas: NSColor {
         return NSColor(red: 0, green: 212/255, blue: 255/255, alpha: 1.0)
     }
 }
 #endif
 
+// swiftlint:disable type_body_length
 /**
- * **B**ackend **a**s **a** **S**ervice (_BaaS_)
+ * **B**ackend **a**s **a** **S**ervice (**BaaS**)
  *
  * This class is used for the BaaS Server Interface.
  *
@@ -38,19 +44,56 @@ extension NSColor
  *
  * **Simple usage**
  *
- *      class myClass: UIViewController, BaaSDelegate {
+ * **AppDelegate**
+ *
+ *     var database = BaaS.shared
+ *
+ *     func application(
+ *          _ application: UIApplication,
+ *          didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+ *          database.set(apiKey: "YOURAPIKEY")
+ *          database.set(server: "https://yourserver.tld/BaaS")
+ *     }
+ *
+ *     // To support Push Notifications
+ *     func application(
+ *          _ application: UIApplication,
+ *          performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+ *          completionHandler(
+ *              database.checkForNotificationsInBackground()
+ *          )
+ *     }
+ *
+ * **a ViewController (no chat)**
+ *
+ *      class myViewController: UIViewController, BaaSDelegate {
  *          let db = BaaS.shared
  *
  *          override func viewDidLoad() {
  *              db.delegate = self
- *              db.set(apiKey: "YOURAPIKEY")
- *              db.set(server: "https://yourserver.tld/BaaS")
  *          }
  *      }
+ *
+ * **a ViewController (with chat)**
+ *
+ *      class myViewController: UIViewController, BaaSDelegate, BaaSChatDelegate {
+ *          let db = BaaS.shared
+ *
+ *          override func viewDidLoad() {
+ *              db.delegate = self
+ *              db.chatDelegate = self
+ *          }
+ *      }
+ *
+ * - Copyright: [Wesley de Groot](https://wesleydegroot.nl) ([WDGWV](https://wdgwv.com))\
+ *  and [Contributors](https://github.com/BackendasaService/BaaS/graphs/contributors).
  */
 open class BaaS {
     /// This is the delegate where it calls back to.
     public weak var delegate: BaaSDelegate?
+
+    /// This is the delegate where it calls back to.
+    public weak var chatDelegate: BaaSChatDelegate?
     
     /// The API Key which the user provides
     private var apiKey: String = "DEVELOPMENT_UNSAFE_KEY"
@@ -61,15 +104,14 @@ open class BaaS {
     /// Maximum time before the BaaS Controller gives a timeout.
     private var serverTimeout: Int = 30
     
-    
     #if !targetEnvironment(simulator)
     /// Should we debug right now?
-    private let debug = _isDebugAssertConfiguration()
+    public let debug = _isDebugAssertConfiguration()
     #else
     /// Should we debug right now? (always)
-    private let debug = true
+    public let debug = true
     #endif
-
+    
     /// Last row ID
     private var lastRowID = 0
     
@@ -84,16 +126,19 @@ open class BaaS {
     private let version = "1.0"
     
     /// BaaS Build number
-    private let build = "20190809"
+    private let build = "20190323"
     
     /// Server's public key hash
     var publicKeyHash = ""
     
     /// Server's certificate hash
     var certificateHash = ""
-  
+    
     /// The user's session ID
-    var sessionID = ""
+    public var sessionID = ""
+    
+    /// Get all values
+    public let all = "*"
     
     #if !targetEnvironment(simulator)
     /// notificationCenter to send notifications
@@ -106,35 +151,37 @@ open class BaaS {
      * BaaS Color (hex, rgb, hsv, cmyk)
      */
     public enum BaaS_Color: String {
+        // swiftlint:disable identifier_name
         /// Official BaaS color in hex
         case hex = "#00d4ff"
-
+        
         /// Official BaaS color in rgb
         case rgb = "0,212,255"
-
+        
         /// Official BaaS color in r, y, k
         case r, y, k = "0"
-
+        
         /// Official BaaS color in g
         case g = "212"
-
+        
         /// Official BaaS color in b
         case b = "255"
-
+        
         /// Official BaaS color in hsv
         case hsv = "190,100,100"
-
+        
         /// Official BaaS color in h
         case h = "190"
-
+        
         /// Official BaaS color in s, v, c
         case s, v, c = "100"
-
+        
         /// Official BaaS color in cmyk
         case cmyk = "100,17,0,0"
-
+        
         /// Official BaaS color in m
         case m = "17"
+        // swiftlint:enable identifier_name
     }
     
     /**
@@ -144,14 +191,13 @@ open class BaaS {
      */
     public init() {
         #if os(iOS) && !targetEnvironment(simulator)
-        
         // Ask every quarter if there are new notifications
         UIApplication.shared.setMinimumBackgroundFetchInterval(
             UIApplication.backgroundFetchIntervalMinimum
         )
         
         // Request authorization to send push messages
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { (granted, error) in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { (granted, _) in
             if !granted {
                 // Acces not granted
                 self.log("[Notification center] Status not granted")
@@ -164,14 +210,16 @@ open class BaaS {
         switch(UIApplication.shared.backgroundRefreshStatus) {
         case .available:
             self.log("Background refresh available")
-            break;
         case .restricted:
             self.log("Background refresh restructed")
-            break;
         case .denied:
             self.log("Background refresh disabled for us")
+        default:
+            self.log("... unknow status")
         }
         #endif
+        
+        NetworkStatus.shared.startMonitoring()
     }
     
     /**
@@ -188,37 +236,44 @@ open class BaaS {
      * - parameter function: function name
      */
     @discardableResult
-    open func log(_ message: Any, file: String = #file, line: Int = #line, function: String = #function) -> Bool {
+    public func log(_ message: Any, file: String = #file, line: Int = #line, function: String = #function) -> Bool {
         if (debug) {
-            let x: String = String(
+            let fileName: String = String(
                 (file.split(separator: "/").last)!.split(separator: ".").first!
             )
             
-            Swift.print("[BaaS] \(x):\(line) \(function):\n \(message)\n")
+            Swift.print("[BaaS] \(fileName):\(line) \(function):\n \(message)\n")
         }
         
         return true
     }
     
+    /// <#Description#>
+    /// - Returns: <#description#>
     public func checkForNotificationsInBackground() -> UIBackgroundFetchResult {
-        self.fireNotification(withTitle: "Test for notifications", Description: "Cool!")
+        self.fireNotification(withTitle: "Test for notifications", description: "Cool!")
         // Notifications
         return .newData
         
         // No notifications
-//        return .noData
+        //        return .noData
     }
     
+    /// <#Description#>
+    /// - Parameter length: <#length description#>
+    /// - Returns: <#description#>
     private func generateRandomString(length: Int) -> String {
         let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         return String(
-            (0...(length - 1)).map {
-                _ in letters.randomElement()!
-            }
+            (0...(length - 1)).map { _ in letters.randomElement()! }
         )
     }
-
-    private func fireNotification(withTitle: String, Description: String) {
+    
+    /// <#Description#>
+    /// - Parameters:
+    ///   - withTitle: <#withTitle description#>
+    ///   - description: <#description description#>
+    private func fireNotification(withTitle: String, description: String) {
         #if os(iOS) && !targetEnvironment(simulator)
         notificationCenter.getNotificationSettings { (settings) in
             if settings.authorizationStatus != .authorized {
@@ -235,9 +290,9 @@ open class BaaS {
         
         /// make notification contents
         let content = UNMutableNotificationContent()
-            content.title = withTitle
-            content.body = Description
-            content.sound = .default
+        content.title = withTitle
+        content.body = description
+        content.sound = .default
         
         /// make a notification request
         let request = UNNotificationRequest(
@@ -255,6 +310,7 @@ open class BaaS {
         #endif
     }
     
+    /// <#Description#>
     private func resetNotifications() {
         #if os(iOS) && !targetEnvironment(simulator)
         notificationCenter.removeAllPendingNotificationRequests()
@@ -262,11 +318,11 @@ open class BaaS {
     }
     
     /**
-     * NOOP (**NO** **OP**eration)
+     * delegate-test- (**NO** **OP**eration)
      *
      * This performs nothing.
      */
-    public func noop() {
+    public func delegate_test_func() {
         if let del = delegate {
             del.testForReturn(withDataAs: "ABC")
         } else {
@@ -281,7 +337,7 @@ open class BaaS {
      *
      * - parameter apiKey: Your personal API key
      */
-    public func set(apiKey: String) -> Void {
+    public func set(apiKey: String) {
         self.apiKey = apiKey
     }
     
@@ -292,7 +348,7 @@ open class BaaS {
      *
      * - parameter certificateHash: Server's certificate hash
      */
-    public func set(certificateHash: String) -> Void {
+    public func set(certificateHash: String) {
         self.certificateHash = certificateHash
     }
     
@@ -303,7 +359,7 @@ open class BaaS {
      *
      * - parameter publicKeyHash: Server's public key hash
      */
-    public func set(publicKeyHash: String) -> Void {
+    public func set(publicKeyHash: String) {
         self.publicKeyHash = publicKeyHash
     }
     
@@ -349,7 +405,7 @@ open class BaaS {
      *
      * - parameter server: Server URL (_Without /_)
      */
-    public func set(server: URL) -> Void {
+    public func set(server: URL) {
         self.serverAddress = server
     }
     
@@ -358,7 +414,7 @@ open class BaaS {
      *
      * - parameter timeout: Maximum timeout
      */
-    public func set(timeout: Int) -> Void {
+    public func set(timeout: Int) {
         self.serverTimeout = timeout
     }
     
@@ -390,8 +446,8 @@ open class BaaS {
      * For numberic fields
      */
     public enum BaaS_dbFieldType: String {
-        case text = "text"
-        case number = "number"
+        case text
+        case number
     }
     
     /**
@@ -415,7 +471,7 @@ open class BaaS {
      * see: `BaaS_SearchType`
      */
     public enum BaaS_SearchType: String {
-        case value, equals, eq = "="
+        case value, equals, eql = "="
         case notValue, notEquals, neq = "!="
         case like = "LIKE"
         case location = "location"
@@ -451,11 +507,11 @@ open class BaaS {
      *     warning
      */
     public enum BaaS_Status: String, CodingKey {
-        case Success
-        case Failed, Fail
-        case Warning
+        case success
+        case failed, fail
+        case warning
     }
-
+    
     /**
      * BaaS Response JSON Field
      *
@@ -473,20 +529,20 @@ open class BaaS {
      *     Debug:     This a Debug message thrown by the BaaS Server call
      *     FilePath:  The FilePath is not writeable error thrown by the BaaS Server call
      */
-    public struct BaaS_Response: Codable {
+    public struct BaaSResponse: Codable {
         /**
          * BaaS Response: Status
          *
          * This is the Status of the BaaS Server call
          */
-        var Status: String
-
+        var status: String
+        
         /**
          * BaaS Response: Details
          *
          * This is the Details of the BaaS Server call
          */
-        var Details: String?
+        var details: String?
         
         // MARK: General errors
         /**
@@ -494,28 +550,28 @@ open class BaaS {
          *
          * This a Message thrown by the BaaS Server call
          */
-        var Error: String?
+        var error: String?
         
         /**
          * BaaS Response: Fix
          *
          * This a how to fix the BaaS Server call
          */
-        var Fix: String?
+        var fix: String?
         
         /**
          * BaaS Response: Exception
          *
          * This a Exception thrown by the BaaS Server call
          */
-        var Exception: String?
+        var exception: String?
         
         /**
          * BaaS Response: ReqURI
          *
          * This the requested URL which the BaaS Server has received
          */
-        var ReqURI: String?
+        var reqURI: String?
         
         // MARK: Which table?
         /**
@@ -523,77 +579,77 @@ open class BaaS {
          *
          * This the current table where the BaaS Server is working in
          */
-        var Table: String?
+        var table: String?
         
         /**
          * BaaS Response: Data
          *
          * This a Data string returned by the BaaS Server call
          */
-        var Data: String?
+        var data: String?
         
         /**
          * BaaS Response: File
          *
          * Is the file found?
          */
-        var File: String?
+        var file: String?
         
         /**
          * BaaS Response: Where
          *
          * This the Where cause where the BaaS Server searched on
          */
-        var Where: String?
+        var `where`: String?
         
         /**
          * BaaS Response: Method
          *
          * This Method is not recognized by the BaaS Server
          */
-        var Method: String?
+        var method: String?
         
         /**
          * BaaS Response: info
          *
          * This is extra information
          */
-        var Info: String?
+        var info: String?
         
         /**
          * BaaS Response: rowID
          *
          * This the row ID of the (last) inserted row
          */
-        var RowID: String?
+        var rowID: String?
         
         /**
          * BaaS Response: Debug
          *
          * This a Debug message thrown by the BaaS Server call
          */
-        var Debug: String?
+        var debug: String?
         
         /**
          * BaaS Response: FilePath
          *
          * The FilePath is not writeable error thrown by the BaaS Server call
          */
-        var FilePath: String?
-
+        var filePath: String?
+        
         /**
          * BaaS Response: Session ID
          *
          * The Session ID
          */
-        var SessionID: String?
-
+        var sessionID: String?
+        
         /**
          * BaaS Response: User ID
          *
          * The User ID
          */
-        var UserID: String?
+        var userID: String?
         
         /**
          * Initialize from a decoder.
@@ -606,143 +662,126 @@ open class BaaS {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             
             do {
-                Status = try values.decode(String.self, forKey: .Status)
-            }
-            catch {
-                Status = "Error"
-            }
-            
-            do {
-                Details = try values.decode(String.self, forKey: .Details)
-            }
-            catch {
-                Details = "N/A"
+                status = try values.decode(String.self, forKey: .status)
+            } catch {
+                status = "Error"
             }
             
             do {
-                Error = try values.decodeIfPresent(String.self, forKey: .Error)
-            }
-            catch {
-                Error = "Unable to parse JSON"
-            }
-            
-            do {
-                Fix = try values.decodeIfPresent(String.self, forKey: .Fix)
-            }
-            catch {
-                Fix = "Please send valid JSON"
+                details = try values.decode(String.self, forKey: .details)
+            } catch {
+                details = "N/A"
             }
             
             do {
-                Exception = try values.decodeIfPresent(String.self, forKey: .Exception)
-            }
-            catch {
-                Exception = "N/A"
-            }
-            
-            do {
-                ReqURI = try values.decodeIfPresent(String.self, forKey: .ReqURI)
-            }
-            catch {
-                ReqURI = "N/A"
+                error = try values.decodeIfPresent(String.self, forKey: .error)
+            } catch {
+                self.error = "Unable to parse JSON"
             }
             
             do {
-                Table = try values.decodeIfPresent(String.self, forKey: .Table)
-            }
-            catch {
-                Table = "N/A"
-            }
-            
-            do {
-                Data = try values.decodeIfPresent(String.self, forKey: .Data)
-            }
-            catch {
-                Data = "N/A"
+                fix = try values.decodeIfPresent(String.self, forKey: .fix)
+            } catch {
+                fix = "Please send valid JSON"
             }
             
             do {
-                File = try values.decodeIfPresent(String.self, forKey: .File)
-            }
-            catch {
-                File = "N/A"
-            }
-            
-            do {
-                Where = try values.decodeIfPresent(String.self, forKey: .Where)
-            }
-            catch {
-                Where = "N/A"
+                exception = try values.decodeIfPresent(String.self, forKey: .exception)
+            } catch {
+                exception = "N/A"
             }
             
             do {
-                Method = try values.decodeIfPresent(String.self, forKey: .Method)
-            }
-            catch {
-                Method = "N/A"
-            }
-            
-            do{
-                Info = try values.decodeIfPresent(String.self, forKey: .Info)
-            }
-            catch {
-                Info = "N/A"
+                reqURI = try values.decodeIfPresent(String.self, forKey: .reqURI)
+            } catch {
+                reqURI = "N/A"
             }
             
             do {
-                RowID = try values.decodeIfPresent(String.self, forKey: .RowID)
-            }
-            catch{
-                RowID = "N/A"
-            }
-            
-            do {
-                Debug = try values.decodeIfPresent(String.self, forKey: .Debug)
-            }
-            catch{
-                Debug = "N/A"
+                table = try values.decodeIfPresent(String.self, forKey: .table)
+            } catch {
+                table = "N/A"
             }
             
             do {
-                FilePath = try values.decodeIfPresent(String.self, forKey: .FilePath)
-            }
-            catch {
-                FilePath = "N/A"
-            }
-            
-            do {
-                SessionID = try values.decodeIfPresent(String.self, forKey: .SessionID)
-            }
-            catch {
-                SessionID = "N/A"
+                data = try values.decodeIfPresent(String.self, forKey: .data)
+            } catch {
+                data = "N/A"
             }
             
             do {
-                UserID = try values.decodeIfPresent(String.self, forKey: .UserID)
+                file = try values.decodeIfPresent(String.self, forKey: .file)
+            } catch {
+                file = "N/A"
             }
-            catch {
-                UserID = "N/A"
+            
+            do {
+                `where` = try values.decodeIfPresent(String.self, forKey: .where)
+            } catch {
+                `where` = "N/A"
+            }
+            
+            do {
+                method = try values.decodeIfPresent(String.self, forKey: .method)
+            } catch {
+                method = "N/A"
+            }
+            
+            do {
+                info = try values.decodeIfPresent(String.self, forKey: .info)
+            } catch {
+                info = "N/A"
+            }
+            
+            do {
+                rowID = try values.decodeIfPresent(String.self, forKey: .rowID)
+            } catch {
+                rowID = "N/A"
+            }
+            
+            do {
+                debug = try values.decodeIfPresent(String.self, forKey: .debug)
+            } catch {
+                debug = "N/A"
+            }
+            
+            do {
+                filePath = try values.decodeIfPresent(String.self, forKey: .filePath)
+            } catch {
+                filePath = "N/A"
+            }
+            
+            do {
+                sessionID = try values.decodeIfPresent(String.self, forKey: .sessionID)
+            } catch {
+                sessionID = "N/A"
+            }
+            
+            do {
+                userID = try values.decodeIfPresent(String.self, forKey: .userID)
+            } catch {
+                userID = "N/A"
             }
             
             // This looks like the weirdest if, which has ever lived.
             if (
-                Status == "Error" &&
-                    Details == "N/A" &&
-                    Error == "Unable to parse JSON" &&
-                    Fix == "Please send valid JSON" &&
-                    Exception == "N/A" &&
-                    ReqURI == "N/A" &&
-                    Table == "N/A" &&
-                    Data == "N/A" &&
-                    File == "N/A" &&
-                    Where == "N/A" &&
-                    Method == "N/A" &&
-                    Info == "N/A" &&
-                    RowID == "N/A" &&
-                    Debug == "N/A" &&
-                    FilePath == "N/A" &&
-                    SessionID == "N/A" &&
-                    UserID == "N/A"
+                status == "Error" &&
+                    details == "N/A" &&
+                    error == "Unable to parse JSON" &&
+                    fix == "Please send valid JSON" &&
+                    exception == "N/A" &&
+                    reqURI == "N/A" &&
+                    table == "N/A" &&
+                    data == "N/A" &&
+                    file == "N/A" &&
+                    `where` == "N/A" &&
+                    method == "N/A" &&
+                    info == "N/A" &&
+                    rowID == "N/A" &&
+                    debug == "N/A" &&
+                    filePath == "N/A" &&
+                    sessionID == "N/A" &&
+                    userID == "N/A"
                 ) {
                 throw BaaS_Errors.unableToDecodeJSON
             }
@@ -755,10 +794,33 @@ open class BaaS {
          * - parameter Error: Response Error
          * - returns: `BaaS_Response_JSON`
          */
-        public init(Status s_Status: String, Error s_Error: String) {
-            Status = s_Status
-            Error = s_Error
+        public init(status serverStatus: String, error serverError: String) {
+            status = serverStatus
+            error = serverError
         }
+    }
+    
+    /**
+     * Translate BaaS_Response_JSON to something understandable
+     *
+     * - parameter jsonData: JSON Data
+     * - returns: `baasResponse`
+     */
+    private func baasResponseDecoder(jsonData: Data) -> BaaSResponse {
+        var decoded: BaaSResponse?
+        
+        do {
+            let decoder = JSONDecoder()
+            decoded = try decoder.decode(BaaSResponse.self, from: jsonData)
+        } catch {
+            decoded = BaaSResponse.init(
+                status: "Incorrect",
+                error: "Incorrect BaaS Return String"
+            )
+        }
+        
+        self.log("Data=\(String.init(data: jsonData, encoding: .utf8)!)\nDecoded=\(decoded!)")
+        return decoded!
     }
     
     /**
@@ -767,22 +829,8 @@ open class BaaS {
      * - parameter jsonData: JSON Data
      * - returns: `BaaS_Response`
      */
-    private func BaaS_Response_Decoder(jsonData: Data) -> BaaS_Response {
-        var decoded: BaaS_Response? = nil
-        
-        do {
-            let decoder = JSONDecoder()
-            decoded = try decoder.decode(BaaS_Response.self, from: jsonData)
-        }
-        catch {
-            decoded = BaaS_Response.init(
-                Status: "Incorrect",
-                Error: "Incorrect BaaS Return String"
-            )
-        }
-        
-        self.log("Data=\(String.init(data: jsonData, encoding: .utf8)!)\nDecoded=\(decoded!)")
-        return decoded!
+    private func decode(jsonData: Data) -> JSON {
+        return JSON(jsonData)
     }
     
     /**
@@ -799,7 +847,7 @@ open class BaaS {
         type: BaaS_dbFieldType = .text,
         defaultValue: String = "",
         canBeEmpty: Bool = true
-        ) -> BaaS_dbField {
+    ) -> BaaS_dbField {
         return BaaS_dbField.init(
             name: createFieldWithName,
             type: type.rawValue,
@@ -815,6 +863,7 @@ open class BaaS {
      * - parameter withFields: Table fields
      * - returns: Boolean
      */
+    @discardableResult
     public func database(createWithName: String, withFields: [BaaS_dbField]) -> Bool {
         print(withFields)
         var data: [[String: String]] = []
@@ -825,7 +874,7 @@ open class BaaS {
                     "name": field.name,
                     "type": field.type,
                     "defaultValue": field.defaultValue,
-                    "canBeEmpty": field.canBeEmpty ? "yes" : "no"
+                    "canBeEmpty": field.canBeEmpty ? "yes": "no"
                 ]
             )
         }
@@ -881,13 +930,51 @@ open class BaaS {
         
         log(String.init(data: task, encoding: .utf8)!)
         
-        let response = BaaS_Response_Decoder(jsonData: task)
-
-        if let sessionID = response.SessionID {
+        let response = baasResponseDecoder(jsonData: task)
+        
+        if let sessionID = response.sessionID {
             self.sessionID = sessionID
         }
-
-        return response.Status == "Success"
+        
+        return response.status == "Success"
+    }
+    
+    /// user Login
+    /// - Parameters:
+    ///   - username: The username
+    ///   - password: The password
+    ///   - closure: closure description
+    ///     - succeed: Did the action succeed?
+    ///     - sessionID: The user's session Identifier
+    ///     - response: BaaS' response
+    public func userLogin(
+        username: String,
+        password: String,
+        closure: (_ succeed: Bool, _ sessionID: String, _ response: BaaSResponse) -> Void
+    ) {
+        let task = self.networkRequest(
+            "\(serverAddress)/user.login",
+            [
+                "APIKey": self.apiKey,
+                "username": username,
+                "password": password
+            ]
+        )
+        
+        log(String.init(data: task, encoding: .utf8)!)
+        
+        let response = baasResponseDecoder(jsonData: task)
+        
+        if let sessionID = response.sessionID {
+            self.sessionID = sessionID
+        }
+        
+        if userLogin(username: username, password: password) {
+            closure(true, self.sessionID, response)
+            return
+        }
+        
+        closure(false, self.sessionID, response)
     }
     
     /**
@@ -911,8 +998,47 @@ open class BaaS {
         
         log(String.init(data: task, encoding: .utf8)!)
         
-        let response = BaaS_Response_Decoder(jsonData: task)
-        return response.Status == "Success"
+        let response = baasResponseDecoder(jsonData: task)
+        return response.status == "Success"
+    }
+    
+    /// <#Description#>
+    /// - Parameter username: <#username description#>
+    public func userGet(username: String) {
+        
+    }
+    
+    /// <#Description#>
+    /// - Parameter email: <#email description#>
+    public func userGet(email: String) {
+        
+    }
+    
+    /// <#Description#>
+    /// - Parameter userID: <#userID description#>
+    public func userGet(userID: Int) {
+        
+    }
+    
+    public func getUsers(
+        latitude: Double,
+        longitude: Double,
+        distanceInMeters: Double
+    ) -> JSON {
+        // * valueWhere("lat,lon", .location, "distanceInMeters")
+        
+        let expression = self.expression(
+            "\(latitude),\(longitude)",
+            .location,
+            "\(distanceInMeters)"
+        )
+        
+        return JSON(
+            self.value(
+                expression: [expression],
+                inDatabase: "BaaS_UserDB"
+            ).data(using: .utf8) as Any
+        )
     }
     
     /**
@@ -927,7 +1053,7 @@ open class BaaS {
         _ expression1: String,
         _ searchType: BaaS_SearchType,
         _ expression2: String
-        ) -> BaaS_WhereExpression {
+    ) -> BaaS_WhereExpression {
         return BaaS_WhereExpression.init(
             searchType: searchType.rawValue,
             expression1: expression1.replacingOccurrences(of: "`", with: "\\`"),
@@ -935,7 +1061,32 @@ open class BaaS {
         )
     }
     
-    public func value(expression: [BaaS_WhereExpression], inDatabase: String) -> Any {
+    /// <#Description#>
+    /// - Parameters:
+    ///   - forKey: <#forKey description#>
+    ///   - inDatabase: <#inDatabase description#>
+    /// - Returns: <#description#>
+    public func value(forKey: String, inDatabase: String) -> JSON {
+        return JSON(
+            self.value(
+                where: [
+                    [
+                        forKey,
+                        "LIKE",
+                        "%"
+                    ]
+                ],
+                inDatabase: inDatabase
+            ).data(using: .utf8) as Any
+        )
+    }
+    
+    /// <#Description#>
+    /// - Parameters:
+    ///   - expression: <#expression description#>
+    ///   - inDatabase: <#inDatabase description#>
+    /// - Returns: <#description#>
+    public func value(expression: [BaaS_WhereExpression], inDatabase: String) -> String {
         var flatArray: [[String]] = []
         
         for item in expression {
@@ -961,6 +1112,7 @@ open class BaaS {
      * - parameter inDatabase: Which database?
      * - returns: Bool
      */
+    @discardableResult
     public func create(values: [String: String], inDatabase: String) -> Bool {
         let task = self.networkRequest(
             "\(serverAddress)/row.create/\(inDatabase)",
@@ -970,11 +1122,11 @@ open class BaaS {
             ]
         )
         
-        if let integer: Int = Int(BaaS_Response_Decoder(jsonData: task).RowID ?? "0") {
+        if let integer: Int = Int(baasResponseDecoder(jsonData: task).rowID ?? "0") {
             self.lastRowID = integer
         }
         
-        return BaaS_Response_Decoder(jsonData: task).Status == "Success"
+        return baasResponseDecoder(jsonData: task).status == "Success"
     }
     
     /**
@@ -988,11 +1140,11 @@ open class BaaS {
         let task = self.networkRequest(
             "\(serverAddress)/table.rename/\(from)/\(to)",
             [
-                "APIKey": self.apiKey,
+                "APIKey": self.apiKey
             ]
         )
         
-        return BaaS_Response_Decoder(jsonData: task).Status == "Success"
+        return baasResponseDecoder(jsonData: task).status == "Success"
     }
     
     /**
@@ -1005,11 +1157,11 @@ open class BaaS {
         let task = self.networkRequest(
             "\(serverAddress)/table.empty/\(table)",
             [
-                "APIKey": self.apiKey,
+                "APIKey": self.apiKey
             ]
         )
         
-        return BaaS_Response_Decoder(jsonData: task).Status == "Success"
+        return baasResponseDecoder(jsonData: task).status == "Success"
     }
     
     /**
@@ -1022,11 +1174,11 @@ open class BaaS {
         let task = self.networkRequest(
             "\(serverAddress)/table.remove/\(table)",
             [
-                "APIKey": self.apiKey,
+                "APIKey": self.apiKey
             ]
         )
         
-        return BaaS_Response_Decoder(jsonData: task).Status == "Success"
+        return baasResponseDecoder(jsonData: task).status == "Success"
     }
     
     /**
@@ -1068,7 +1220,7 @@ open class BaaS {
     /**
      * File Exists
      *
-     * - parameter withFileID: The file identifier
+     * - parameter fileID: The file identifier
      * - returns: Boolean
      */
     public func fileExists(withFileID fileID: String) -> Bool {
@@ -1079,10 +1231,12 @@ open class BaaS {
             ]
         )
         
-        return BaaS_Response_Decoder(jsonData: task).File == "Found"
+        return baasResponseDecoder(jsonData: task).file == "Found"
     }
     
-    
+    /// <#Description#>
+    /// - Parameter fileID: <#fileID description#>
+    /// - Returns: <#description#>
     public func fileDownload(withFileID fileID: String) -> Data {
         let task = self.networkRequest(
             "\(serverAddress)/file.download/\(fileID)",
@@ -1109,7 +1263,10 @@ open class BaaS {
         log("Something went wrong")
         return task
     }
-    
+
+    /// <#Description#>
+    /// - Parameter fileID: <#fileID description#>
+    /// - Returns: <#description#>
     @discardableResult
     public func fileDelete(withFileID fileID: String) -> Any {
         let task = self.networkRequest(
@@ -1122,7 +1279,12 @@ open class BaaS {
         return String.init(data: task, encoding: .utf8)!
     }
     
-    internal func value(where whereStr: [[String]], inDatabase: String) -> Any {
+    /// <#Description#>
+    /// - Parameters:
+    ///   - whereStr: <#whereStr description#>
+    ///   - inDatabase: <#inDatabase description#>
+    /// - Returns: <#description#>
+    internal func value(where whereStr: [[String]], inDatabase: String) -> String {
         let task = self.networkRequest(
             "\(serverAddress)/row.get/\(inDatabase)",
             [
@@ -1134,6 +1296,83 @@ open class BaaS {
         return String.init(data: task, encoding: .utf8)!
     }
     
+    /// <#Description#>
+    /// - Parameters:
+    ///   - user: <#user description#>
+    ///   - message: <#message description#>
+    /// - Returns: <#description#>
+    @discardableResult public func sendChatMessage(to user: String, message: String) -> Bool {
+        let task = self.networkRequest(
+            "\(serverAddress)/chat.send/\(user)",
+            [
+                "APIKey": self.apiKey,
+                "message": message
+            ]
+        )
+        
+        return baasResponseDecoder(jsonData: task).status == "Success"
+    }
+    
+    /// <#Description#>
+    /// - Parameters:
+    ///   - forChatID: <#forChatID description#>
+    ///   - file: <#file description#>
+    ///   - line: <#line description#>
+    public func lisenForChatMessages(forChatID: String, file: StaticString = #file, line: UInt = #line) {
+        guard let delegate = self.chatDelegate else {
+            fatalError(
+                "[BaaS] Lisening for messages without delegate, add BaaSChatDelegate to your main class,"
+                + "and link it (BaaS.shared.chatDelegate = self (or your other class)).",
+                file: file,
+                line: line
+            )
+        }
+        
+        self.log("Start Checking for messages (wait 10 sec)")
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .seconds(5)) {
+            self.checkForChatMessages(forChatID: forChatID, withDelegate: delegate)
+        }
+    }
+    
+    /// <#Description#>
+    /// - Parameters:
+    ///   - forChatID: <#forChatID description#>
+    ///   - withDelegate: <#withDelegate description#>
+    internal func checkForChatMessages(forChatID: String, withDelegate: BaaSChatDelegate) {
+        self.log("Checking for messages")
+        
+        // swiftlint:disable:next line_length
+        let randomChatStrings = ["The Japanese yen for commerce is still well-known.", "There was coal in his stocking and he was thrilled.", "My dentist tells me that chewing bricks is very bad for your teeth.", "They called out her name time and again, but were met with nothing but silence.", "Improve your goldfish's physical fitness by getting him a bicycle.", "We have a lot of rain in June.", "Nothing seemed out of place except the washing machine in the bar.", "Swim at your own risk was taken as a challenge for the group of Kansas City college students.", "She opened up her third bottle of wine of the night.", "There is a fly in the car with us.", "When nobody is around, the trees gossip about the people who have walked under them.", "With a single flip of the coin, his life changed forever.", "Don't put peanut butter on the dog's nose.", "The snow-covered path was no help in finding his way out of the backcountry.", "You're good at English when you know the difference between a man eating chicken and a man-eating chicken.", "His seven-layer cake only had six layers.", "At that moment she realized she had a sixth sense.", "I'm a great listener, really good with empathy vs sympathy and all that, but I hate people.", "She did her best to help him.", "As you consider all the possible ways to improve yourself and the world, you notice John Travolta seems fairly unhappy.", "There are few things better in life than a slice of pie.", "Flesh-colored yoga pants were far worse than even he feared.", "I just wanted to tell you I could see the love you have for your child by the way you look at her.", "Doris enjoyed tapping her nails on the table to annoy everyone.", "When he encountered maize for the first time, he thought it incredibly corny.", "She cried diamonds.", "This book is sure to liquefy your brain.", "Various sea birds are elegant, but nothing is as elegant as a gliding pelican.", "I hope that, when I've built up my savings, I'll be able to travel to Mexico.", "For oil spots on the floor, nothing beats parking a motorbike in the lounge.", "People who insist on picking their teeth with their elbows are so annoying!", "He wondered if she would appreciate his toenail collection.", "This is the last random sentence I will be writing and I am going to stop mid-sent", "Erin accidentally created a new universe.", "He wondered why at 18 he was old enough to go to war", "He went back to the video to see what had been recorded and was shocked at what he saw.", "Plans for this weekend include turning wine into water.", "Truth in advertising and dinosaurs with skateboards have much in common.", "Please wait outside of the house.", "My Mum tries to be cool by saying that she likes all the same things that I do.", "Don't piss in my garden and tell me you're trying to help my plants grow.", "Random words in front of other random words create a random sentence.", "It didn't make sense unless you had the power to eat colors.", "Hit me with your pet shark!", "The Tsunami wave crashed against the raised houses and broke the pilings as if they were toothpicks.", "They throw cabbage that turns your brain into emotional baggage.", "The quick brown fox jumps over the lazy dog.", "A song can make or ruin a person’s day if they let it get to them.", "There is so much to understand.", "You're unsure whether or not to trust him, but very thankful that you wore a turtle neck.", "Happen?", "Eten?", "Dineren?", "Uiteten?", "Hoe heet je?", "Hoe gaat het?", "Hoe oud ben je?", "Waar kom je vandaan?", "Heb je kinderen?", "Waar woon je?", "Welk werk heb je gedaan?", "Ben je getrouwd?", "Wil je een kopje koffie?", "Ik begrijp je niet", "Hallo, wat een lekker weer, hè?", "Ga je mee naar de winkel?", "Wil je koffie?", "Heb je liever thee?", "Wil je iets eten?", "Wil je iets drinken?", "Wat eet je vanavond?", "Waar ga je naartoe?", "Wanneer kom je weer?", "Mag ik jouw adres hebben?", "Mag ik je telefoonnummer?", "Wat kan ik voor U doen?", "Nog een keertje?", "Waar is het restaurant?", "Pizza?", "Mag ik call-zone?", "”Het regent meters bier.\nHet wordt dus pompen of verzuipen, dat is de enige manier.”", "”Hier aan de kust”.", "Wil je mee naar de Mc Donalds?"]
+        
+        // RE-Check
+        self.log("Sending to delegate \(withDelegate)")
+        withDelegate.receivedChatMessage(
+            messageID: 0,
+            message: randomChatStrings.randomElement()!,
+            nsfwScore: 0,
+            from: "🥷 Piet",
+            verifiedUser: false
+        )
+        
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .seconds(10)) {
+            self.checkForChatMessages(forChatID: forChatID, withDelegate: withDelegate)
+        }
+    }
+    
+    /// <#Description#>
+    /// - Parameter text: <#text description#>
+    /// - Returns: <#description#>
+    public func convertToDictionary(text: String) -> [String: Any]? {
+        if let data = text.data(using: .utf8) {
+            do {
+                return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+        return nil
+    }
+    
     /**
      * **No** **op**eration
      *
@@ -1141,6 +1380,9 @@ open class BaaS {
      */
     public func noop(_ any: Any) { }
     
+    /// <#Description#>
     @available(*, deprecated)
     internal func deprecated_placeholder() { }
 }
+
+// swiftlint:enable file_length type_body_length

@@ -12,6 +12,10 @@ import Foundation
 // For Certificate/Public Key-Pinning
 import Security
 
+#if canImport(Aurora)
+import Aurora
+#endif
+
 #if !targetEnvironment(simulator)
 // For supporting SHA256
 import CommonCrypto
@@ -56,6 +60,130 @@ extension BaaS {
         }
         
         /// Create a new post dict, for the JSON String
+        var post: String
+        
+        // Try
+        do {
+            /// Create JSON
+            let JSON = try JSONSerialization.data(
+                withJSONObject: posting as Any,
+                options: .sortedKeys
+            )
+            
+            // set NewPosting
+            post = String.init(
+                data: JSON,
+                encoding: .utf8
+                )!.addingPercentEncoding(
+                    withAllowedCharacters: .urlHostAllowed
+                )!
+        }
+            
+            /// Catch errors
+        catch let error as NSError {
+            return "Error: \(error.localizedDescription)".data(using: String.Encoding.utf8)!
+        }
+        
+        /// We are waiting for data
+        var waiting: Bool = true
+        
+        /// Setup a fake, empty data
+        var data: Data? = "" . data(using: .utf8)
+        
+        /// Create a URL Request
+        var request = URLRequest(url: myURL)
+        
+        // With method POST
+        request.httpMethod = "POST"
+        
+        // And custom Content-Type
+        request.setValue(
+            "application/x-www-form-urlencoded",
+            forHTTPHeaderField: "Content-Type"
+        )
+        
+        // Log, if we are in debugmode.
+        log("url: \(url)\npost body (escaped): \(post)\npost body (unescaped): \(post.removingPercentEncoding!)")
+        
+        // Set the httpBody
+        request.httpBody = post.data(using: .utf8)
+        
+        /// Create a pinned URLSession
+        var session = URLSession.init(
+            // With default configuration
+            configuration: .ephemeral,
+            
+            // With our pinning delegate
+            delegate: URLSessionPinningDelegate(),
+            
+            // with no queue
+            delegateQueue: nil
+        )
+        
+        // Check if we have a public key, or certificate hash.
+        if (self.publicKeyHash.count == 0 ||
+            self.certificateHash.count == 0) {
+            // Show a error, only on debug builds
+            log(
+                "[WARNING] No Public key pinning/Certificate pinning\n" +
+                "           Improve your security to enable this!\n"
+            )
+            // Use a non-pinned URLSession
+            session = URLSession.shared
+        }
+        
+        // Start our datatask
+        session.dataTask(with: request) { (sitedata, _, theError) in
+            /// Check if we got any useable site data
+            guard let sitedata = sitedata else {
+                data = theError?.localizedDescription.data(using: .utf8)
+                waiting = false
+                return
+            }
+            
+            // save the sitedata
+            data = sitedata
+            
+            // stop waiting
+            waiting = false
+            }.resume()
+        
+        // Dirty way to create a blocking function.
+        while (waiting) { }
+
+        /// Unwrap our data
+        guard let unwrappedData = data else {
+            return "Error while unwrapping data" . data(using: .utf8)!
+        }
+        
+        /// Unwrap for debug
+        if let returnedData = String.init(data: unwrappedData, encoding: .utf8) {
+            log("Return data: \(returnedData)")
+        }
+        
+        // Return the data.
+        return unwrappedData
+    }
+
+    /**
+     * networkRequest_dep (DEPRECATED)
+     *
+     * Start a network request
+     *
+     * - parameter url: The url to be parsed
+     * - parameter posting: What do you need to post
+     * - returns: the data we've got from the server
+     */
+    public func networkRequest_dep(
+        _ url: String,
+        _ posting: Dictionary<String, Any>? = ["nothing": "send"]
+        ) -> Data {
+        /// Check if the URL is valid
+        guard let myURL = URL(string: url) else {
+            return "Error: \(url) doesn't appear to be an URL".data(using: String.Encoding.utf8)!
+        }
+        
+        /// Create a new post dict, for the JSON String
         var newPosting: Dictionary<String, String>?
         
         // Try
@@ -67,10 +195,10 @@ extension BaaS {
             )
             
             // set NewPosting
-            newPosting = ["JSON": String.init(data: JSON,encoding: .utf8)!]
+            newPosting = ["JSON": String.init(data: JSON, encoding: .utf8)!]
         }
             
-        /// Catch errors
+            /// Catch errors
         catch let error as NSError {
             return "Error: \(error.localizedDescription)".data(using: String.Encoding.utf8)!
         }
@@ -110,12 +238,12 @@ extension BaaS {
         // Walk trough the post Fields
         for (key, val) in postFields {
             /// Check if we need to preAppend
-            let preAppend = (idx == 0) ? "" : "&"
+            let preAppend = (idx == 0) ? "": "&"
             
             /// Encode the value
             let encodedValue = val.addingPercentEncoding(
                 withAllowedCharacters: .urlHostAllowed
-            )!
+                )!
             
             // Append to httpPostBody
             httpPostBody.append(
@@ -127,7 +255,11 @@ extension BaaS {
         }
         
         // Log, if we are in debugmode.
-        self.log("url: \(url)\npost body (escaped): \(httpPostBody)\npost body (unescaped): \(httpPostBody.removingPercentEncoding!)")
+        self.log(""
+            + "url: \(url)\n"
+            + "post body (escaped): \(httpPostBody)\n"
+            + "post body (unescaped): \(httpPostBody.removingPercentEncoding!)"
+        )
         
         // Set the httpBody
         request.httpBody = httpPostBody.data(using: .utf8)
@@ -157,10 +289,10 @@ extension BaaS {
         }
         
         // Start our datatask
-        session.dataTask(with: request) { (sitedata, response, error) in
+        session.dataTask(with: request) { (sitedata, _, theError) in
             /// Check if we got any useable site data
             guard let sitedata = sitedata else {
-                data = "Error" . data(using: .utf8)
+                data = theError?.localizedDescription.data(using: .utf8)
                 waiting = false
                 return
             }
@@ -170,7 +302,7 @@ extension BaaS {
             
             // stop waiting
             waiting = false
-        }.resume()
+            }.resume()
         
         // Dirty way to create a blocking function.
         while (waiting) { }
@@ -178,6 +310,11 @@ extension BaaS {
         /// Unwrap our data
         guard let unwrappedData = data else {
             return "Error while unwrapping data" . data(using: .utf8)!
+        }
+        
+        /// Unwrap for debug
+        if let returnedData = String.init(data: unwrappedData, encoding: .utf8) {
+            log("Return data: \(returnedData)")
         }
         
         // Return the data.
@@ -201,17 +338,20 @@ class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
     }
     
     /// RSA2048 Asn1 Header
-    let rsa2048Asn1Header:[UInt8] = [
+    let rsa2048Asn1Header: [UInt8] = [
         0x30, 0x82, 0x01, 0x22, 0x30, 0x0d,
         0x06, 0x09, 0x2a, 0x86, 0x48, 0x86,
         0xf7, 0x0d, 0x01, 0x01, 0x01, 0x05,
         0x00, 0x03, 0x82, 0x01, 0x0f, 0x00
     ]
     
-    private func sha256(data : Data) -> String {
+    /// <#Description#>
+    /// - Parameter data: <#data description#>
+    /// - Returns: <#description#>
+    private func sha256(data: Data) -> String {
         #if !targetEnvironment(simulator)
         /// Key header
-        var keyWithHeader = Data(bytes: rsa2048Asn1Header)
+        var keyWithHeader = Data(rsa2048Asn1Header)
         keyWithHeader.append(data)
         
         /// Hash
@@ -221,13 +361,18 @@ class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
             _ = CC_SHA256($0, CC_LONG(keyWithHeader.count), &hash)
         }
         
-        
         return Data(hash).base64EncodedString()
         #else
         return data.base64EncodedString()
         #endif
     }
     
+    
+    /// <#Description#>
+    /// - Parameters:
+    ///   - session: <#session description#>
+    ///   - challenge: <#challenge description#>
+    ///   - completionHandler: <#completionHandler description#>
     func urlSession(
         _ session: URLSession,
         didReceive challenge: URLAuthenticationChallenge,
@@ -291,7 +436,7 @@ class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
                                 // Success! This is our server
                                 completionHandler(
                                     .useCredential,
-                                    URLCredential(trust:serverTrust)
+                                    URLCredential(trust: serverTrust)
                                 )
                                 return
                             }
