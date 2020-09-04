@@ -367,7 +367,6 @@ class URLSessionPinningDelegate: NSObject, URLSessionDelegate {
         #endif
     }
     
-    
     /// <#Description#>
     /// - Parameters:
     ///   - session: <#session description#>

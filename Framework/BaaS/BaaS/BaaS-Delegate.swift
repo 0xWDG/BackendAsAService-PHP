@@ -13,7 +13,7 @@ import Aurora
 #endif
 
 /**
- * **B**ackend **a**s **a** **S**ervice (_BaaS_)
+ * **B**ackend **a**s **a** **S**ervice (_BaaS_) Delegate
  *
  * This protocol is used for the BaaS Server Interface.
  */
@@ -24,7 +24,7 @@ import Aurora
 }
 
 /**
- * **B**ackend **a**s **a** **S**ervice (_BaaS_)
+ * **B**ackend **a**s **a** **S**ervice (_BaaS_) Delegate
  *
  * This protocol is used for the BaaS Server Interface.
  */
