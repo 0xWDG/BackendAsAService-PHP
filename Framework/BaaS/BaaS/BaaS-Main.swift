@@ -978,6 +978,64 @@ open class BaaS {
     }
     
     /**
+     * user logout
+     *
+     * - returns: Boolean
+     */
+    public func userLogout(username: String, password: String) -> Bool {
+        let task = self.networkRequest(
+            "\(serverAddress)/user.logout",
+            [
+                "APIKey": self.apiKey
+            ]
+        )
+        
+        log(String.init(data: task, encoding: .utf8)!)
+        
+        let response = baasResponseDecoder(jsonData: task)
+        
+        if let sessionID = response.sessionID {
+            self.sessionID = sessionID
+        }
+        
+        return response.status == "Success"
+    }
+    
+    /// user Login
+    /// - Parameters:
+    ///   - closure: closure description
+    ///     - succeed: Did the action succeed?
+    ///     - sessionID: The user's session Identifier
+    ///     - response: BaaS' response
+    public func userLogout(
+        username: String,
+        password: String,
+        closure: (_ succeed: Bool, _ sessionID: String, _ response: BaaSResponse) -> Void
+    ) {
+        let task = self.networkRequest(
+            "\(serverAddress)/user.logout",
+            [
+                "APIKey": self.apiKey
+            ]
+        )
+        
+        log(String.init(data: task, encoding: .utf8)!)
+        
+        let response = baasResponseDecoder(jsonData: task)
+        
+        if let sessionID = response.sessionID {
+            self.sessionID = sessionID
+        }
+        
+        if userLogin(username: username, password: password) {
+            closure(true, self.sessionID, response)
+            return
+        }
+        
+        closure(false, self.sessionID, response)
+    }
+    
+    /**
      * user Create
      *
      * - parameter username: The username
@@ -1307,6 +1365,21 @@ open class BaaS {
             [
                 "APIKey": self.apiKey,
                 "message": message
+            ]
+        )
+        
+        return baasResponseDecoder(jsonData: task).status == "Success"
+    }
+    
+    /// Upload a crash log
+    /// - Parameter crashLog: the crashlog
+    /// - Returns: true if uploaded without error.
+    public func uploadCrashlog(_ crashLog: String) -> Bool {
+        let task = self.networkRequest(
+            "\(serverAddress)/crash.report",
+            [
+                "APIKey": self.apiKey,
+                "report": crashLog
             ]
         )
         
