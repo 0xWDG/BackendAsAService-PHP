@@ -1863,7 +1863,7 @@ class Server {
 			$this->userDatabaseSetup();
 		}
 
-		$sSql = "SELECT `username` FROM `%s` WHERE (`username` = :username or `email` = :email) LIMIT 1;";
+		$sSql = "SELECT `username` FROM `%s` WHERE `username` = :username or `email` = :email;";
 
 		$databaseValues = $this->queryWithParameters(
 			sprintf($sSql, $this->defaultTables['users']),
@@ -1873,9 +1873,7 @@ class Server {
 			)
 		);
 
-		return (
-			@$databaseValues->Status == "Ok"
-		);
+		return sizeof(@$databaseValues->Values) < 1;
 	}
 
 	/**
