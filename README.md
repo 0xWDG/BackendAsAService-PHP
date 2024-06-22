@@ -27,6 +27,3 @@ Thanks to:
 - [Travis CI](https://travis-ci.org) for running our Tests
 - **[You](#)** For using `BaaS` 
 - **All our [Contributors](https://github.com/BackendasaService/BaaS/graphs/contributors)**.
-
----
-<center>Started with ❤️🧡💛💚💙💜 in 🇳🇱</center>
